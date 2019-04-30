@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"gitlab.com/Blockdaemon/runner/tasks"
+	"fmt"
 
 	"github.com/spf13/cobra"
+	"gitlab.com/Blockdaemon/runner/tasks"
 )
 
 var refreshCmd = &cobra.Command{
@@ -12,7 +13,20 @@ var refreshCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		apiKey := args[0]
-		return tasks.DownloadPluginList(apiKey)
+
+		if err := tasks.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
+			return err
+		}
+
+		upgradable, err := tasks.CheckRunnerUpgradable(baseDir, runnerVersion)
+		if err != nil {
+			return err
+		}
+		if upgradable {
+			fmt.Println("A new version of the runner is available, please upgrade!")
+		}
+
+		return nil
 	},
 }
 

@@ -5,10 +5,12 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/runner/tasks"
 )
 
 var apiKey string
+var pluginURL string
+var baseDir string
+var runnerVersion string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -23,12 +25,15 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
 }
 
 func init() {
-	cobra.OnInitialize(tasks.CheckVersion)
-	// pf := rootCmd.PersistentFlags()
-	// rootCmd.PersistentFlags().StringVar(&apiKey, "api-key", "", "The API key from the Blockdaemon dashboard [REQUIRED]")
-	// cobra.MarkFlagRequired(pf, "api-key")
+	// cobra.OnInitialize(tasks.CheckVersion)
+
+	rootCmd.PersistentFlags().StringVar(&pluginURL, "plugin-url", "https://runner-test.sfo2.digitaloceanspaces.com/", "The URL used to download the plugins")
+	rootCmd.PersistentFlags().StringVar(&baseDir, "base-dir", "~/.blockdaemon/", "The directory in which plugins and configuration is stored")
+
+	if runnerVersion == "" {
+		runnerVersion = "development"
+	}
 }
