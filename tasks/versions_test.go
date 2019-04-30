@@ -30,10 +30,12 @@ func TestDownloadVersionInfoUnauthorized(t *testing.T) {
 }
 
 func TestDownloadVersionInfoInvalidJSON(t *testing.T) {
-	testServer := setupMockHTTPServer("/version-info.json", "apiKey=testKey", []byte("{}"), t)
-	defer teardown("", testServer, t)
+	baseDir := setupBaseDir(t)
+	setupVersionInfo(baseDir, "", t)
+	testServer := setupMockHTTPServer("/version-info.json", "apiKey=testKey", []byte("invalid}"), t)
+	defer teardown(baseDir, testServer, t)
 
-	err := DownloadVersionInfo("testKey", testServer.URL, "/tmp")
+	err := DownloadVersionInfo("testKey", testServer.URL, baseDir)
 	assertError(err, t)
 }
 
