@@ -86,7 +86,10 @@ func setupMockHTTPServer(expectedPath string, expectedQuery string, mockBody []b
 		if req.URL.RawQuery != expectedQuery {
 			t.Errorf("expected query '%s' but got '%s'", expectedQuery, req.URL.RawQuery)
 		}
-		res.Write(mockBody)
+		_, err := res.Write(mockBody)
+		if err != nil {
+			t.Errorf("unexpected error: %s", err)
+		}
 	}))
 
 	return testServer

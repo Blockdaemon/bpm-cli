@@ -76,6 +76,9 @@ func DownloadVersionInfo(apiKey string, baseURL string, baseDir string) error {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
 
 	// Check if it is valid JSON and can be unmarshalled
 	var versionInfo VersionInfo

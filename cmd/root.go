@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var apiKey string
 var pluginURL string
 var baseDir string
 var runnerVersion string
