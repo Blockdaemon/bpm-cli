@@ -29,6 +29,22 @@ func assertFileExists(path string, t *testing.T) {
 	}
 }
 
+func assertFileExistsWithPermissions(path string, mode os.FileMode, t *testing.T) {
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Errorf("cannot stat file %s: %s", path, err)
+	}
+	if info.Mode() != mode {
+		t.Errorf("wrong permissions on file %s: %#o", path, info.Mode())
+	}
+}
+
+func assertEqual(object interface{}, expected interface{}, t *testing.T) {
+	if object != expected {
+		t.Errorf("expected '%s' but got '%s'", expected, object)
+	}
+}
+
 func setupBaseDir(t *testing.T) string {
 	baseDir := "/tmp/blockdaemon-test"
 
@@ -39,8 +55,33 @@ func setupBaseDir(t *testing.T) string {
 	return baseDir
 }
 
+func setupTestPlugin(baseDir string, mockPlugin string, t *testing.T) {
+	if mockPlugin == "" {
+		// If empty, use a default
+		mockPlugin = `#!/bin/bash
+		case "$1" in
+		version)
+			echo "1.0.0"
+			;;
+		esac`
+	}
+
+	pluginsPath := path.Join(baseDir, "plugins")
+
+	if err := os.MkdirAll(pluginsPath, os.ModePerm); err != nil {
+		t.Error(fmt.Sprintf("cannot create plugin directory: %s", err))
+	}
+
+	pluginFile := path.Join(pluginsPath, "test")
+
+	if err := ioutil.WriteFile(pluginFile, []byte(mockPlugin), 0700); err != nil {
+		t.Errorf("cannot write mock plugin: %s", err)
+	}
+}
+
 func setupVersionInfo(baseDir string, mockData string, t *testing.T) {
 	if mockData == "" {
+		// If empty, use a default
 		mockData = `
 		{
 			"runner-version": "1.2.3",
@@ -48,6 +89,10 @@ func setupVersionInfo(baseDir string, mockData string, t *testing.T) {
 				{
 					"name": "stellar-horizon",
 					"version": "1.2.3"
+				},
+				{
+					"name": "test",
+					"version": "1.1.0"
 				}
 			]
 		}`

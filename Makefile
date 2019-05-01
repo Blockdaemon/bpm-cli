@@ -23,7 +23,7 @@ ifeq ($(VERSION),)
 endif
 
 # Need to wrap in "bash -c" so env vars work in the compiler as well as on the cli to specify the output
-BUILD_CMD:=bash -c 'go build -ldflags "-X gitlab.com/Blockdaemon/runner/cmd.runnerVersion=HEAD" -o binaries/runner-HEAD-$$GOOS-$$GOARCH main.go'
+BUILD_CMD:=bash -c 'go build -ldflags "-X gitlab.com/Blockdaemon/runner/cmd.runnerVersion=$(VERSION)" -o binaries/runner-$(VERSION)-$$GOOS-$$GOARCH main.go'
 
 .PHONY: build
 build:

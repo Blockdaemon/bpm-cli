@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
-
-	"github.com/coreos/go-semver/semver"
 )
 
 func getVersionInfoFilename(baseDir string) (string, error) {
@@ -38,6 +36,20 @@ func LoadVersionInfo(baseDir string) (VersionInfo, error) {
 	return versionInfo, nil
 }
 
+func LoadPluginInfo(baseDir, pluginName string) (PluginInfo, error) {
+	versionInfo, err := LoadVersionInfo(baseDir)
+	if err != nil {
+		return PluginInfo{}, err
+	}
+
+	pluginInfo, ok := versionInfo.GetPluginInfo(pluginName)
+	if !ok {
+		return PluginInfo{}, fmt.Errorf("unknown plugin: %s", pluginName)
+	}
+
+	return pluginInfo, nil
+}
+
 func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {
 	if runnerVersion == "development" {
 		fmt.Printf("Skpping check if runner is upgradable during development!\n")
@@ -49,20 +61,7 @@ func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {
 		return false, err
 	}
 
-	// Since current version is set at build-time we do not need to check
-	// for an error explicitely. It will panic if it's not a valid version string
-	currentVersion := semver.New(runnerVersion)
-
-	availableVersion, err := semver.NewVersion(versionInfo.RunnerVersion)
-	if err != nil {
-		return false, err
-	}
-
-	if currentVersion.LessThan(*availableVersion) {
-		return true, nil
-	}
-
-	return false, nil
+	return needsUpgrade(runnerVersion, versionInfo.RunnerVersion)
 }
 
 func DownloadVersionInfo(apiKey string, baseURL string, baseDir string) error {

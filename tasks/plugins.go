@@ -51,7 +51,22 @@ func getPluginURL(baseURL, apiKey, pluginName, version, GOOS, GOARCH string) str
 	return buildURL(baseURL, path, apiKey)
 }
 
-func InstallPlugin(baseDir, baseURL, apiKey, pluginName string) error {
+func InstallPluginVersion(baseDir, baseURL, apiKey, pluginName, version string) error {
+	pluginFilename, err := getPluginFilename(baseDir, pluginName)
+	if err != nil {
+		return err
+	}
+
+	pluginURL := getPluginURL(baseURL, apiKey, pluginName, version, runtime.GOOS, runtime.GOARCH)
+
+	if err := downloadFile(pluginFilename, pluginURL); err != nil {
+		return err
+	}
+
+	return os.Chmod(pluginFilename, 0700)
+}
+
+func InstallPluginLatest(baseDir, baseURL, apiKey, pluginName string) error {
 	versionInfo, err := LoadVersionInfo(baseDir)
 	if err != nil {
 		return err
@@ -63,16 +78,57 @@ func InstallPlugin(baseDir, baseURL, apiKey, pluginName string) error {
 		return fmt.Errorf("unknown plugin: %s", pluginName)
 	}
 
-	pluginFilename, err := getPluginFilename(baseDir, pluginName)
+	return InstallPluginVersion(baseDir, baseURL, apiKey, pluginName, pluginInfo.Version)
+}
+
+func ListPlugins(baseDir string) ([]PluginListItem, error) {
+	versionInfo, err := LoadVersionInfo(baseDir)
+	if err != nil {
+		return nil, err
+	}
+
+	pluginListItems := []PluginListItem{}
+
+	for _, pluginInfo := range versionInfo.Plugins {
+		installedVersion, err := pluginInfo.RunVersionCommand(baseDir)
+		if err != nil {
+			return pluginListItems, fmt.Errorf("cannot get installed version of plugin '%s': %s", pluginInfo.Name, err)
+		}
+
+		pluginListItems = append(pluginListItems, PluginListItem{
+			Name:             pluginInfo.Name,
+			AvailableVersion: pluginInfo.Version,
+			InstalledVersion: installedVersion,
+		})
+
+	}
+
+	return pluginListItems, nil
+}
+
+func CheckPluginUpgradable(baseDir, pluginName string) (bool, error) {
+	pluginInfo, err := LoadPluginInfo(baseDir, pluginName)
+	if err != nil {
+		return false, err
+	}
+
+	return pluginInfo.NeedsUpgrade(baseDir)
+}
+
+func RunPlugin(baseDir, pluginName string) error {
+	pluginInfo, err := LoadPluginInfo(baseDir, pluginName)
 	if err != nil {
 		return err
 	}
 
-	pluginURL := getPluginURL(baseURL, apiKey, pluginName, pluginInfo.Version, runtime.GOOS, runtime.GOARCH)
+	// TODO: Might need changes depending on the plugin
 
-	if err := downloadFile(pluginFilename, pluginURL); err != nil {
-		return err
-	}
+	pluginInfo.RunCommand(baseDir, "create-secrets")
+	pluginInfo.RunCommand(baseDir, "pull-config")
+	pluginInfo.RunCommand(baseDir, "configure")
+	pluginInfo.RunCommand(baseDir, "validate")
+	pluginInfo.RunCommand(baseDir, "start")
 
-	return os.Chmod(pluginFilename, 0700)
+	return nil
+
 }
