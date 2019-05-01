@@ -123,11 +123,11 @@ func RunPlugin(baseDir, pluginName string) error {
 
 	// TODO: Might need changes depending on the plugin
 
-	pluginInfo.RunCommand(baseDir, "create-secrets")
-	pluginInfo.RunCommand(baseDir, "pull-config")
-	pluginInfo.RunCommand(baseDir, "configure")
-	pluginInfo.RunCommand(baseDir, "validate")
-	pluginInfo.RunCommand(baseDir, "start")
+	_, _ = pluginInfo.RunCommand(baseDir, "create-secrets")
+	_, _ = pluginInfo.RunCommand(baseDir, "pull-config")
+	_, _ = pluginInfo.RunCommand(baseDir, "configure")
+	_, _ = pluginInfo.RunCommand(baseDir, "validate")
+	_, _ = pluginInfo.RunCommand(baseDir, "start")
 
 	return nil
 
