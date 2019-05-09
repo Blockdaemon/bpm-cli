@@ -14,6 +14,16 @@ var runCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pluginName := args[0]
 
+		versionInfoExists, err := tasks.CheckVersionInfoExists(baseDir)
+		if err != nil {
+			return err
+		}
+
+		if !versionInfoExists {
+			fmt.Println(VERSION_INFO_MISSING)
+			return nil
+		}
+
 		upgradable, err := tasks.CheckPluginUpgradable(baseDir, pluginName)
 		if err != nil {
 			return err
@@ -29,4 +39,6 @@ var runCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(runCmd)
+
+	addAPIKeyFlag(runCmd)
 }

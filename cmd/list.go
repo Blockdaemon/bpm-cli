@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/landoop/tableprinter"
@@ -12,6 +13,16 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List available and installed blockchain protocols",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		versionInfoExists, err := tasks.CheckVersionInfoExists(baseDir)
+		if err != nil {
+			return err
+		}
+
+		if !versionInfoExists {
+			fmt.Println(VERSION_INFO_MISSING)
+			return nil
+		}
+
 		pluginListItems, err := tasks.ListPlugins(baseDir)
 		if err != nil {
 			return err

@@ -10,6 +10,9 @@ import (
 var pluginURL string
 var baseDir string
 var runnerVersion string
+var apiKey string
+
+const VERSION_INFO_MISSING = "The version info list does not exist. Please run `refresh` first."
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -27,12 +30,20 @@ func Execute() {
 }
 
 func init() {
-	// cobra.OnInitialize(tasks.CheckVersion)
-
-	rootCmd.PersistentFlags().StringVar(&pluginURL, "plugin-url", "https://runner-test.sfo2.digitaloceanspaces.com/", "The URL used to download the plugins")
-	rootCmd.PersistentFlags().StringVar(&baseDir, "base-dir", "~/.blockdaemon/", "The directory in which plugins and configuration is stored")
+	pf := rootCmd.PersistentFlags()
+	pf.StringVar(&pluginURL, "plugin-url", "https://runner-test.sfo2.digitaloceanspaces.com/", "The URL used to download the plugins")
+	pf.StringVar(&baseDir, "base-dir", "~/.blockdaemon/", "The directory in which plugins and configuration is stored")
 
 	if runnerVersion == "" {
 		runnerVersion = "development"
 	}
+}
+
+// addAPIKeyFlag adds the flag "--api-key"
+//
+// Most commands have this flag but some don't. Therefore we need to specify
+// it for each command that supports it.
+func addAPIKeyFlag(cmd *cobra.Command) {
+	cmd.Flags().StringVar(&apiKey, "api-key", "", "The API key from the Blockdaemon dashboard")
+	cmd.MarkFlagRequired("api-key")
 }

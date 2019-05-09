@@ -8,12 +8,9 @@ import (
 )
 
 var refreshCmd = &cobra.Command{
-	Use:   "refresh <api-key>",
-	Short: "Download the plugin list",
-	Args:  cobra.MinimumNArgs(1),
+	Use:   "refresh",
+	Short: "Download the plugin list and check if the runner is up-to-date",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		apiKey := args[0]
-
 		if err := tasks.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
 			return err
 		}
@@ -32,4 +29,6 @@ var refreshCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(refreshCmd)
+
+	addAPIKeyFlag(refreshCmd)
 }

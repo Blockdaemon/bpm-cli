@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"path/filepath"
 )
 
@@ -34,6 +35,25 @@ func LoadVersionInfo(baseDir string) (VersionInfo, error) {
 	}
 
 	return versionInfo, nil
+}
+
+func CheckVersionInfoExists(baseDir string) (bool, error) {
+	versionFilePath, err := getVersionInfoFilename(baseDir)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = os.Stat(versionFilePath)
+
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+
+		return false, err
+	}
+
+	return true, nil
 }
 
 func LoadPluginInfo(baseDir, pluginName string) (PluginInfo, error) {
