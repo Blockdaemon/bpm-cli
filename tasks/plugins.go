@@ -2,39 +2,10 @@ package tasks
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
 )
-
-func downloadFile(filepath string, url string) error {
-	// Create the file
-	out, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	// Get the data
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("bad status: %s", resp.Status)
-	}
-
-	_, err = io.Copy(out, resp.Body)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
 
 func getPluginFilename(baseDir, pluginName string) (string, error) {
 	pluginDir, err := makeDirectory(baseDir, "plugins")
@@ -89,15 +60,16 @@ func ListPlugins(baseDir string) ([]PluginListItem, error) {
 
 	pluginListItems := []PluginListItem{}
 
-	for _, pluginInfo := range versionInfo.Plugins {
-		installedVersion, err := pluginInfo.RunVersionCommand(baseDir)
+	for _, info := range versionInfo.Plugins {
+		plugin := NewPlugin(info, baseDir)
+		installedVersion, err := plugin.RunVersionCommand()
 		if err != nil {
-			return pluginListItems, fmt.Errorf("cannot get installed version of plugin '%s': %s", pluginInfo.Name, err)
+			return pluginListItems, fmt.Errorf("cannot get installed version of plugin '%s': %s", plugin.Info.Name, err)
 		}
 
 		pluginListItems = append(pluginListItems, PluginListItem{
-			Name:             pluginInfo.Name,
-			AvailableVersion: pluginInfo.Version,
+			Name:             plugin.Info.Name,
+			AvailableVersion: plugin.Info.Version,
 			InstalledVersion: installedVersion,
 		})
 
@@ -107,27 +79,27 @@ func ListPlugins(baseDir string) ([]PluginListItem, error) {
 }
 
 func CheckPluginUpgradable(baseDir, pluginName string) (bool, error) {
-	pluginInfo, err := LoadPluginInfo(baseDir, pluginName)
+	plugin, err := LoadPlugin(baseDir, pluginName)
 	if err != nil {
 		return false, err
 	}
 
-	return pluginInfo.NeedsUpgrade(baseDir)
+	return plugin.NeedsUpgrade()
 }
 
 func RunPlugin(baseDir, pluginName string) error {
-	pluginInfo, err := LoadPluginInfo(baseDir, pluginName)
+	plugin, err := LoadPlugin(baseDir, pluginName)
 	if err != nil {
 		return err
 	}
 
 	// TODO: Might need changes depending on the plugin
 
-	_, _ = pluginInfo.RunCommand(baseDir, "create-secrets")
-	_, _ = pluginInfo.RunCommand(baseDir, "pull-config")
-	_, _ = pluginInfo.RunCommand(baseDir, "configure")
-	_, _ = pluginInfo.RunCommand(baseDir, "validate")
-	_, _ = pluginInfo.RunCommand(baseDir, "start")
+	_, _ = plugin.RunCommand("create-secrets")
+	_, _ = plugin.RunCommand("pull-config")
+	_, _ = plugin.RunCommand("configure")
+	_, _ = plugin.RunCommand("validate")
+	_, _ = plugin.RunCommand("start")
 
 	return nil
 

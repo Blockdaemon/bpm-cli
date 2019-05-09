@@ -56,18 +56,20 @@ func CheckVersionInfoExists(baseDir string) (bool, error) {
 	return true, nil
 }
 
-func LoadPluginInfo(baseDir, pluginName string) (PluginInfo, error) {
+func LoadPlugin(baseDir, pluginName string) (Plugin, error) {
 	versionInfo, err := LoadVersionInfo(baseDir)
 	if err != nil {
-		return PluginInfo{}, err
+		return Plugin{}, err
 	}
 
-	pluginInfo, ok := versionInfo.GetPluginInfo(pluginName)
+	info, ok := versionInfo.GetPluginInfo(pluginName)
 	if !ok {
-		return PluginInfo{}, fmt.Errorf("unknown plugin: %s", pluginName)
+		return Plugin{}, fmt.Errorf("unknown plugin: %s", pluginName)
 	}
 
-	return pluginInfo, nil
+	plugin := NewPlugin(info, baseDir)
+
+	return plugin, nil
 }
 
 func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {

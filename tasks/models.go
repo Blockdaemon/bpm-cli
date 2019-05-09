@@ -7,13 +7,38 @@ import (
 	"strings"
 )
 
+// VersionInfo contains information about versions for the plugins and the runner
+type VersionInfo struct {
+	RunnerVersion string       `json:"runner-version"`
+	Plugins       []PluginInfo `json:"plugins"`
+}
+
+// GetPluginInfo returns a particular PluginInfo
+func (v VersionInfo) GetPluginInfo(pluginName string) (PluginInfo, bool) {
+	for _, pluginInfo := range v.Plugins {
+		if pluginName == pluginInfo.Name {
+			return pluginInfo, true
+		}
+	}
+
+	return PluginInfo{}, false
+}
+
+// PluginInfo contains information about an available (but not necessarily installed) plugin
 type PluginInfo struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
 }
 
-func (i PluginInfo) RunCommand(baseDir, command string) (string, error) {
-	filename, err := getPluginFilename(baseDir, i.Name)
+// Plugin contains information and functions for an installed plugin
+type Plugin struct {
+	Info    PluginInfo
+	baseDir string
+}
+
+// RunCommand runs a particular command with this plugin
+func (i Plugin) RunCommand(command string) (string, error) {
+	filename, err := getPluginFilename(i.baseDir, i.Info.Name)
 	if err != nil {
 		return "", err
 	}
@@ -36,34 +61,30 @@ func (i PluginInfo) RunCommand(baseDir, command string) (string, error) {
 	return strings.TrimSpace(string(output)), nil
 }
 
-func (i PluginInfo) RunVersionCommand(baseDir string) (string, error) {
-	return i.RunCommand(baseDir, "version")
+// RunVersionCommand runs the `version` command on the plugin
+func (i Plugin) RunVersionCommand() (string, error) {
+	return i.RunCommand("version")
 }
 
-func (i PluginInfo) NeedsUpgrade(baseDir string) (bool, error) {
-	installedVersionStr, err := i.RunVersionCommand(baseDir)
+// NeedsUpgrade checks if this plugin needs to be upgraded
+func (i Plugin) NeedsUpgrade() (bool, error) {
+	installedVersionStr, err := i.RunVersionCommand()
 	if err != nil {
-		return false, fmt.Errorf("cannot get installed version of plugin '%s': %s", i.Name, err)
+		return false, fmt.Errorf("cannot get installed version of plugin '%s': %s", i.Info.Name, err)
 	}
 
-	return needsUpgrade(installedVersionStr, i.Version)
+	return needsUpgrade(installedVersionStr, i.Info.Version)
 }
 
-type VersionInfo struct {
-	RunnerVersion string       `json:"runner-version"`
-	Plugins       []PluginInfo `json:"plugins"`
-}
-
-func (v VersionInfo) GetPluginInfo(pluginName string) (PluginInfo, bool) {
-	for _, pluginInfo := range v.Plugins {
-		if pluginName == pluginInfo.Name {
-			return pluginInfo, true
-		}
+// NewPlugin creates a new plugin from a PluginInfo
+func NewPlugin(info PluginInfo, baseDir string) Plugin {
+	return Plugin{
+		Info:    info,
+		baseDir: baseDir,
 	}
-
-	return PluginInfo{}, false
 }
 
+// PluginListItem contains the values used to print a row of the `list` command
 type PluginListItem struct {
 	Name             string `header:"Name"`
 	InstalledVersion string `header:"Installed Version"`
