@@ -6,14 +6,14 @@ import (
 
 	"github.com/landoop/tableprinter"
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/runner/tasks"
+	"gitlab.com/Blockdaemon/runner/models"
 )
 
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List available and installed blockchain protocols",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		versionInfoExists, err := tasks.CheckVersionInfoExists(baseDir)
+		versionInfoExists, err := models.CheckVersionInfoExists(baseDir)
 		if err != nil {
 			return err
 		}
@@ -23,7 +23,7 @@ var listCmd = &cobra.Command{
 			return nil
 		}
 
-		pluginListItems, err := tasks.ListPlugins(baseDir, pluginURL)
+		pluginListItems, err := models.ListPlugins(baseDir, pluginURL)
 		if err != nil {
 			return err
 		}

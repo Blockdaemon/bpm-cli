@@ -4,18 +4,18 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/runner/tasks"
+	"gitlab.com/Blockdaemon/runner/models"
 )
 
 var refreshCmd = &cobra.Command{
 	Use:   "refresh",
 	Short: "Download the plugin list and check if the runner is up-to-date",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if err := tasks.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
+		if err := models.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
 			return err
 		}
 
-		upgradable, err := tasks.CheckRunnerUpgradable(baseDir, runnerVersion)
+		upgradable, err := models.CheckRunnerUpgradable(baseDir, runnerVersion)
 		if err != nil {
 			return err
 		}
