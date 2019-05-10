@@ -99,7 +99,6 @@ func (i Plugin) RunPlugin() error {
 	// TODO: Might need changes depending on the plugin
 
 	_, _ = i.RunCommand("create-secrets")
-	_, _ = i.RunCommand("pull-config")
 	_, _ = i.RunCommand("configure")
 	_, _ = i.RunCommand("validate")
 	_, _ = i.RunCommand("start")
