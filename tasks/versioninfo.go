@@ -31,6 +31,7 @@ type PluginInfo struct {
 	Version string `json:"version"`
 }
 
+// LoadVersionInfo reads the version info from disk
 func LoadVersionInfo(baseDir string) (VersionInfo, error) {
 	var versionInfo VersionInfo
 
@@ -50,6 +51,7 @@ func LoadVersionInfo(baseDir string) (VersionInfo, error) {
 	return versionInfo, nil
 }
 
+// CheckVersionInfoExists checks if the version info file exists
 func CheckVersionInfoExists(baseDir string) (bool, error) {
 	versionFilePath, err := getVersionInfoFilename(baseDir)
 	if err != nil {
@@ -69,6 +71,7 @@ func CheckVersionInfoExists(baseDir string) (bool, error) {
 	return true, nil
 }
 
+// CheckRunnerUpgradable checks if there is a new version of the runner according to the version info on disk
 func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {
 	if runnerVersion == "development" {
 		fmt.Printf("Skpping check if runner is upgradable during development!\n")
@@ -83,6 +86,7 @@ func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {
 	return needsUpgrade(runnerVersion, versionInfo.RunnerVersion)
 }
 
+// DownloadVersionInfo downloads the version info onto disk
 func DownloadVersionInfo(apiKey string, baseURL string, baseDir string) error {
 	fullURL := buildURL(baseURL, "version-info.json", apiKey)
 	resp, err := http.Get(fullURL)
