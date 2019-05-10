@@ -12,8 +12,6 @@ var baseDir string
 var runnerVersion string
 var apiKey string
 
-const VERSION_INFO_MISSING = "The version info list does not exist. Please run `refresh` first."
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "runner",

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/runner/models"
+	"gitlab.com/Blockdaemon/runner/tasks"
 )
 
 var runCmd = &cobra.Command{
@@ -14,22 +14,13 @@ var runCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pluginName := args[0]
 
-		versionInfoExists, err := models.CheckVersionInfoExists(baseDir)
+		output, err := tasks.Run(apiKey, baseDir, pluginURL, pluginName)
 		if err != nil {
 			return err
 		}
 
-		if !versionInfoExists {
-			fmt.Println(VERSION_INFO_MISSING)
-			return nil
-		}
-
-		plugin, err := models.LoadPlugin(baseDir, pluginURL, pluginName)
-		if err != nil {
-			return err
-		}
-
-		return plugin.RunPlugin()
+		fmt.Println(output)
+		return nil
 	},
 }
 

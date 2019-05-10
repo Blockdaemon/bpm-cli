@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/runner/models"
+	"gitlab.com/Blockdaemon/runner/tasks"
 )
 
 // installCmd represents the install command
@@ -14,29 +14,18 @@ var installCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pluginName := args[0]
-
-		versionInfoExists, err := models.CheckVersionInfoExists(baseDir)
-		if err != nil {
-			return err
-		}
-
-		if !versionInfoExists {
-			fmt.Println(VERSION_INFO_MISSING)
-			return nil
-		}
-
-		plugin, err := models.LoadPlugin(baseDir, pluginURL, pluginName)
-		if err != nil {
-			return err
-		}
-
+		version := ""
 		if len(args) > 1 {
-			version := args[1]
-
-			return plugin.InstallVersion(apiKey, version)
+			version = args[1]
 		}
 
-		return plugin.InstallLatest(apiKey)
+		output, err := tasks.Install(apiKey, baseDir, pluginURL, pluginName, version)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(output)
+		return nil
 	},
 }
 

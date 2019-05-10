@@ -2,33 +2,21 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/landoop/tableprinter"
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/runner/models"
+	"gitlab.com/Blockdaemon/runner/tasks"
 )
 
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List available and installed blockchain protocols",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		versionInfoExists, err := models.CheckVersionInfoExists(baseDir)
+		output, err := tasks.List(apiKey, baseDir, pluginURL)
 		if err != nil {
 			return err
 		}
 
-		if !versionInfoExists {
-			fmt.Println(VERSION_INFO_MISSING)
-			return nil
-		}
-
-		pluginListItems, err := models.ListPlugins(baseDir, pluginURL)
-		if err != nil {
-			return err
-		}
-
-		tableprinter.Print(os.Stdout, pluginListItems)
+		fmt.Println(output)
 		return nil
 	},
 }
