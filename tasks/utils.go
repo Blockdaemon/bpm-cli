@@ -79,3 +79,12 @@ func needsUpgrade(currentVersionStr, availableVersionStr string) (bool, error) {
 
 	return false, nil
 }
+
+func getVersionInfoFilename(baseDir string) (string, error) {
+	configDir, err := makeDirectory(baseDir, "config")
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(configDir, "version-info.json"), nil
+}

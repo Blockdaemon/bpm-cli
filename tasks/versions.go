@@ -6,17 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path/filepath"
 )
-
-func getVersionInfoFilename(baseDir string) (string, error) {
-	configDir, err := makeDirectory(baseDir, "config")
-	if err != nil {
-		return "", err
-	}
-
-	return filepath.Join(configDir, "version-info.json"), nil
-}
 
 func LoadVersionInfo(baseDir string) (VersionInfo, error) {
 	var versionInfo VersionInfo
@@ -56,7 +46,7 @@ func CheckVersionInfoExists(baseDir string) (bool, error) {
 	return true, nil
 }
 
-func LoadPlugin(baseDir, pluginName string) (Plugin, error) {
+func LoadPlugin(baseDir, baseURL, pluginName string) (Plugin, error) {
 	versionInfo, err := LoadVersionInfo(baseDir)
 	if err != nil {
 		return Plugin{}, err
@@ -67,7 +57,7 @@ func LoadPlugin(baseDir, pluginName string) (Plugin, error) {
 		return Plugin{}, fmt.Errorf("unknown plugin: %s", pluginName)
 	}
 
-	plugin := NewPlugin(info, baseDir)
+	plugin := NewPlugin(info, baseDir, baseURL)
 
 	return plugin, nil
 }

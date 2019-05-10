@@ -23,7 +23,7 @@ var listCmd = &cobra.Command{
 			return nil
 		}
 
-		pluginListItems, err := tasks.ListPlugins(baseDir)
+		pluginListItems, err := tasks.ListPlugins(baseDir, pluginURL)
 		if err != nil {
 			return err
 		}

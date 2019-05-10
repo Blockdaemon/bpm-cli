@@ -24,16 +24,12 @@ var runCmd = &cobra.Command{
 			return nil
 		}
 
-		upgradable, err := tasks.CheckPluginUpgradable(baseDir, pluginName)
+		plugin, err := tasks.LoadPlugin(baseDir, pluginURL, pluginName)
 		if err != nil {
 			return err
 		}
-		if upgradable {
-			fmt.Printf("Please upgrade the plugin first by running: runner install %s\n", pluginName)
-			return nil
-		}
 
-		return tasks.RunPlugin(baseDir, pluginName)
+		return plugin.RunPlugin()
 	},
 }
 

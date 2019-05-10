@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -30,15 +32,53 @@ type PluginInfo struct {
 	Version string `json:"version"`
 }
 
-// Plugin contains information and functions for an installed plugin
+// Plugin contains information and functions for an installed (or to be installed) plugin
 type Plugin struct {
 	Info    PluginInfo
 	baseDir string
+	baseURL string
+}
+
+func (i Plugin) getPluginFilename() (string, error) {
+	pluginDir, err := makeDirectory(i.baseDir, "plugins")
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(pluginDir, i.Info.Name), nil
+}
+
+func (i Plugin) getPluginURL(apiKey, version, GOOS, GOARCH string) string {
+	path := fmt.Sprintf("%s-%s-%s-%s", i.Info.Name, version, GOOS, GOARCH)
+
+	return buildURL(i.baseURL, path, apiKey)
+}
+
+// InstallVersion installs a particular version of the plugin
+func (i Plugin) InstallVersion(apiKey, version string) error {
+	pluginFilename, err := i.getPluginFilename()
+	if err != nil {
+		return err
+	}
+
+	pluginURL := i.getPluginURL(apiKey, version, runtime.GOOS, runtime.GOARCH)
+
+	if err := downloadFile(pluginFilename, pluginURL); err != nil {
+		return err
+	}
+
+	return os.Chmod(pluginFilename, 0700)
+}
+
+// InstallLatest installs the latest version of the plugin
+func (i Plugin) InstallLatest(apiKey string) error {
+	return i.InstallVersion(apiKey, i.Info.Version)
 }
 
 // RunCommand runs a particular command with this plugin
 func (i Plugin) RunCommand(command string) (string, error) {
-	filename, err := getPluginFilename(i.baseDir, i.Info.Name)
+	fmt.Printf("Running plugin %s with command %s\n", i.Info.Name, command)
+	filename, err := i.getPluginFilename()
 	if err != nil {
 		return "", err
 	}
@@ -76,11 +116,27 @@ func (i Plugin) NeedsUpgrade() (bool, error) {
 	return needsUpgrade(installedVersionStr, i.Info.Version)
 }
 
+// RunPlugin runs through the plugin lifecycle
+func (i Plugin) RunPlugin() error {
+
+	// TODO: Might need changes depending on the plugin
+
+	_, _ = i.RunCommand("create-secrets")
+	_, _ = i.RunCommand("pull-config")
+	_, _ = i.RunCommand("configure")
+	_, _ = i.RunCommand("validate")
+	_, _ = i.RunCommand("start")
+
+	return nil
+
+}
+
 // NewPlugin creates a new plugin from a PluginInfo
-func NewPlugin(info PluginInfo, baseDir string) Plugin {
+func NewPlugin(info PluginInfo, baseDir, baseURL string) Plugin {
 	return Plugin{
 		Info:    info,
 		baseDir: baseDir,
+		baseURL: baseURL,
 	}
 }
 

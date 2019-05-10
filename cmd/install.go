@@ -25,12 +25,18 @@ var installCmd = &cobra.Command{
 			return nil
 		}
 
-		if len(args) > 1 {
-			version := args[1]
-			return tasks.InstallPluginVersion(baseDir, pluginURL, apiKey, pluginName, version)
+		plugin, err := tasks.LoadPlugin(baseDir, pluginURL, pluginName)
+		if err != nil {
+			return err
 		}
 
-		return tasks.InstallPluginLatest(baseDir, pluginURL, apiKey, pluginName)
+		if len(args) > 1 {
+			version := args[1]
+
+			return plugin.InstallVersion(apiKey, version)
+		}
+
+		return plugin.InstallLatest(apiKey)
 	},
 }
 
