@@ -8,6 +8,29 @@ import (
 	"os"
 )
 
+// VersionInfo contains information about versions for the plugins and the runner
+type VersionInfo struct {
+	RunnerVersion string       `json:"runner-version"`
+	Plugins       []PluginInfo `json:"plugins"`
+}
+
+// GetPluginInfo returns a particular PluginInfo
+func (v VersionInfo) GetPluginInfo(pluginName string) (PluginInfo, bool) {
+	for _, pluginInfo := range v.Plugins {
+		if pluginName == pluginInfo.Name {
+			return pluginInfo, true
+		}
+	}
+
+	return PluginInfo{}, false
+}
+
+// PluginInfo contains information about an available (but not necessarily installed) plugin
+type PluginInfo struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
+
 func LoadVersionInfo(baseDir string) (VersionInfo, error) {
 	var versionInfo VersionInfo
 
@@ -44,22 +67,6 @@ func CheckVersionInfoExists(baseDir string) (bool, error) {
 	}
 
 	return true, nil
-}
-
-func LoadPlugin(baseDir, baseURL, pluginName string) (Plugin, error) {
-	versionInfo, err := LoadVersionInfo(baseDir)
-	if err != nil {
-		return Plugin{}, err
-	}
-
-	info, ok := versionInfo.GetPluginInfo(pluginName)
-	if !ok {
-		return Plugin{}, fmt.Errorf("unknown plugin: %s", pluginName)
-	}
-
-	plugin := NewPlugin(info, baseDir, baseURL)
-
-	return plugin, nil
 }
 
 func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {

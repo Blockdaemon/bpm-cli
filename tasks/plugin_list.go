@@ -4,6 +4,14 @@ import (
 	"fmt"
 )
 
+// PluginListItem contains the values used to print a row of the `list` command
+type PluginListItem struct {
+	Name             string `header:"Name"`
+	InstalledVersion string `header:"Installed Version"`
+	AvailableVersion string `header:"Available Version"`
+}
+
+// ListPlugins lists all plugins with currently installed version and available version
 func ListPlugins(baseDir, baseURL string) ([]PluginListItem, error) {
 	versionInfo, err := LoadVersionInfo(baseDir)
 	if err != nil {

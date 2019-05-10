@@ -9,29 +9,6 @@ import (
 	"strings"
 )
 
-// VersionInfo contains information about versions for the plugins and the runner
-type VersionInfo struct {
-	RunnerVersion string       `json:"runner-version"`
-	Plugins       []PluginInfo `json:"plugins"`
-}
-
-// GetPluginInfo returns a particular PluginInfo
-func (v VersionInfo) GetPluginInfo(pluginName string) (PluginInfo, bool) {
-	for _, pluginInfo := range v.Plugins {
-		if pluginName == pluginInfo.Name {
-			return pluginInfo, true
-		}
-	}
-
-	return PluginInfo{}, false
-}
-
-// PluginInfo contains information about an available (but not necessarily installed) plugin
-type PluginInfo struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
-}
-
 // Plugin contains information and functions for an installed (or to be installed) plugin
 type Plugin struct {
 	Info    PluginInfo
@@ -140,9 +117,19 @@ func NewPlugin(info PluginInfo, baseDir, baseURL string) Plugin {
 	}
 }
 
-// PluginListItem contains the values used to print a row of the `list` command
-type PluginListItem struct {
-	Name             string `header:"Name"`
-	InstalledVersion string `header:"Installed Version"`
-	AvailableVersion string `header:"Available Version"`
+// LoadPlugin loads plugin information from disk
+func LoadPlugin(baseDir, baseURL, pluginName string) (Plugin, error) {
+	versionInfo, err := LoadVersionInfo(baseDir)
+	if err != nil {
+		return Plugin{}, err
+	}
+
+	info, ok := versionInfo.GetPluginInfo(pluginName)
+	if !ok {
+		return Plugin{}, fmt.Errorf("unknown plugin: %s", pluginName)
+	}
+
+	plugin := NewPlugin(info, baseDir, baseURL)
+
+	return plugin, nil
 }
