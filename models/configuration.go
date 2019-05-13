@@ -1,5 +1,9 @@
 package models
 
+import (
+	"github.com/fatih/structs"
+)
+
 type Container struct {
 	Image   string `json:"image"`
 	Name    string `json:"name"`
@@ -19,4 +23,8 @@ type NodeConfiguration struct {
 	BlockchainGID string `json:"blockchain_gid"`
 
 	Config map[string]interface{} `json:"config"`
+}
+
+func (c NodeConfiguration) AsMap() map[string]interface{} {
+	return structs.Map(c)
 }
