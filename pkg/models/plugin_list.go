@@ -22,9 +22,20 @@ func ListPlugins(baseDir, baseURL string) ([]PluginListItem, error) {
 
 	for _, info := range versionInfo.Plugins {
 		plugin := NewPlugin(info, baseDir, baseURL)
-		installedVersion, err := plugin.RunVersionCommand()
+
+
+		installed, err := plugin.IsInstalled()
 		if err != nil {
-			return pluginListItems, fmt.Errorf("cannot get installed version of plugin '%s': %s", plugin.Info.Name, err)
+			return pluginListItems, err
+		}
+
+		installedVersion := "not installed"
+
+		if installed {
+			installedVersion, err = plugin.RunVersionCommand()
+			if err != nil {
+				return pluginListItems, fmt.Errorf("cannot get installed version of plugin '%s': %s", plugin.Info.Name, err)
+			}
 		}
 
 		pluginListItems = append(pluginListItems, PluginListItem{

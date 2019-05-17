@@ -105,3 +105,15 @@ func indent(text, indent string) string {
 	}
 	return result[:len(result)-1]
 }
+
+
+func fileExists(name string) (bool, error) {
+    if _, err := os.Stat(name); err != nil {
+        if os.IsNotExist(err) {
+            return false, nil
+        }
+
+        return false, err
+    }
+    return true, nil
+}

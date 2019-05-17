@@ -4,7 +4,7 @@ import (
 	"bytes"
 
 	"github.com/landoop/tableprinter"
-	"gitlab.com/Blockdaemon/runner/models"
+	"gitlab.com/Blockdaemon/runner/pkg/models"
 )
 
 // List contains functionality for the `list` cmd

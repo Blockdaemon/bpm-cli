@@ -31,6 +31,15 @@ func (i Plugin) getPluginURL(apiKey, version, GOOS, GOARCH string) string {
 	return buildURL(i.baseURL, path, apiKey)
 }
 
+func (i Plugin) IsInstalled() (bool, error) {
+	filename, err := i.getPluginFilename()
+	if err != nil {
+		return false, err
+	}
+
+	return fileExists(filename)
+}
+
 // InstallVersion installs a particular version of the plugin
 func (i Plugin) InstallVersion(apiKey, version string) error {
 	pluginFilename, err := i.getPluginFilename()

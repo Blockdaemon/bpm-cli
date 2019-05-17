@@ -7,7 +7,7 @@ import (
 	"path"
 
 	homedir "github.com/mitchellh/go-homedir"
-	"gitlab.com/Blockdaemon/runner/models"
+	"gitlab.com/Blockdaemon/runner/pkg/models"
 )
 
 // Run contains functionality for the `run` cmd

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/runner/tasks"
+	"gitlab.com/Blockdaemon/runner/internal/bpm/tasks"
 )
 
 var refreshCmd = &cobra.Command{
