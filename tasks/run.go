@@ -14,6 +14,7 @@ import (
 //
 // This has been seperated out into a function to make it easily testable
 func Run(apiKey, baseDir, pluginURL, pluginName string) (string, error) {
+	// TODO
 	versionInfoExists, err := models.CheckVersionInfoExists(baseDir)
 	if err != nil {
 		return "", err
@@ -29,7 +30,7 @@ func Run(apiKey, baseDir, pluginURL, pluginName string) (string, error) {
 
 	mockData := `
 	{
-		"node_gid": "12345gid",
+		"node_gid": "12345",
 		"blockchain_gid": "6789gid",
 		"containers": [
 			{
@@ -59,6 +60,7 @@ func Run(apiKey, baseDir, pluginURL, pluginName string) (string, error) {
 		"protocol_type": "stellar-horizon",
 		"config": {
 			"core": {
+				"validator": false,
 				"catchup_complete": false,
 				"catchup_recent": 0,
 				"failure_safety": -1,
@@ -126,5 +128,5 @@ func Run(apiKey, baseDir, pluginURL, pluginName string) (string, error) {
 		return "", err
 	}
 
-	return "", plugin.RunPlugin()
+	return "", plugin.RunPlugin("12345")
 }

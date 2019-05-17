@@ -53,34 +53,41 @@ func (i Plugin) InstallLatest(apiKey string) error {
 }
 
 // RunCommand runs a particular command with this plugin
-func (i Plugin) RunCommand(command string) (string, error) {
+func (i Plugin) RunCommand(command, nodeGID string) (string, error) {
 	fmt.Printf("Running plugin %s with command %s\n", i.Info.Name, command)
+
 	filename, err := i.getPluginFilename()
 	if err != nil {
 		return "", err
 	}
 
-	cmd := exec.Command(filename, command)
+	var cmd *exec.Cmd
+
+	if nodeGID != "" {
+		cmd = exec.Command(filename, command, nodeGID)
+	} else {
+		cmd = exec.Command(filename, command)
+	}
 	output, err := cmd.CombinedOutput()
 
-	if err != nil {
-		_, isPathError := err.(*os.PathError)
+	// if err != nil {
+	// 	_, isPathError := err.(*os.PathError)
 
-		if isPathError {
-			// Looks like that plugin isn't installed
-			return "", nil
-		}
+	// 	if isPathError {
+	// 		// Looks like that plugin isn't installed
+	// 		return "", nil
+	// 	}
 
-		// Plugin is installed but something else is wrong
-		return "", err
-	}
+	// 	// Plugin is installed but something else is wrong
+	// 	return "", err
+	// }
 
-	return strings.TrimSpace(string(output)), nil
+	return strings.TrimSpace(string(output)), err
 }
 
 // RunVersionCommand runs the `version` command on the plugin
 func (i Plugin) RunVersionCommand() (string, error) {
-	return i.RunCommand("version")
+	return i.RunCommand("version", "")
 }
 
 // NeedsUpgrade checks if this plugin needs to be upgraded
@@ -94,14 +101,31 @@ func (i Plugin) NeedsUpgrade() (bool, error) {
 }
 
 // RunPlugin runs through the plugin lifecycle
-func (i Plugin) RunPlugin() error {
+func (i Plugin) RunPlugin(nodeGID string) error {
 
-	// TODO: Might need changes depending on the plugin
+	output, err := i.RunCommand("create-secrets", nodeGID)
+	fmt.Println(indent(output, "    "))
+	if err != nil {
+		return err
+	}
 
-	_, _ = i.RunCommand("create-secrets")
-	_, _ = i.RunCommand("configure")
-	_, _ = i.RunCommand("validate")
-	_, _ = i.RunCommand("start")
+	output, err = i.RunCommand("create-configurations", nodeGID)
+	fmt.Println(indent(output, "    "))
+	if err != nil {
+		return err
+	}
+
+	output, err = i.RunCommand("initialize", nodeGID)
+	fmt.Println(indent(output, "    "))
+	if err != nil {
+		return err
+	}
+
+	output, err = i.RunCommand("start", nodeGID)
+	fmt.Println(indent(output, "    "))
+	if err != nil {
+		return err
+	}
 
 	return nil
 

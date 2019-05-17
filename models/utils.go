@@ -39,13 +39,15 @@ func downloadFile(filepath string, url string) error {
 	return nil
 }
 
-func makeDirectory(baseDir, subDir string) (string, error) {
+func makeDirectory(baseDir string, subDirs ...string) (string, error) {
 	expandedBaseDir, err := homedir.Expand(baseDir)
 	if err != nil {
 		return "", err
 	}
 
-	path := filepath.Join(expandedBaseDir, subDir)
+	subDirs = append([]string{expandedBaseDir}, subDirs...)	
+
+	path := filepath.Join(subDirs...)
 
 	// Create directory structure if it doesn't exist
 	err = os.MkdirAll(path, os.ModePerm)
@@ -87,4 +89,19 @@ func getVersionInfoFilename(baseDir string) (string, error) {
 	}
 
 	return filepath.Join(configDir, "version-info.json"), nil
+}
+
+func indent(text, indent string) string {
+	if text[len(text)-1:] == "\n" {
+		result := ""
+		for _, j := range strings.Split(text[:len(text)-1], "\n") {
+			result += indent + j + "\n"
+		}
+		return result
+	}
+	result := ""
+	for _, j := range strings.Split(strings.TrimRight(text, "\n"), "\n") {
+		result += indent + j + "\n"
+	}
+	return result[:len(result)-1]
 }
