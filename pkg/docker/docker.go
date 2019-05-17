@@ -178,8 +178,8 @@ func (bm *BasicManager) ContainerRuns(ctx context.Context, params ContainerRunPa
 
 			portBindings[containerPort] = []nat.PortBinding{
 				nat.PortBinding{
-					portParameter.HostIP,
-					portParameter.HostPort,
+					HostIP: portParameter.HostIP,
+					HostPort: portParameter.HostPort,
 				},
 			}
 

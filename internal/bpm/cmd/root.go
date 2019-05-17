@@ -43,5 +43,8 @@ func init() {
 // it for each command that supports it.
 func addAPIKeyFlag(cmd *cobra.Command) {
 	cmd.Flags().StringVar(&apiKey, "api-key", "", "The API key from the Blockdaemon dashboard")
-	cmd.MarkFlagRequired("api-key")
+	if err := cmd.MarkFlagRequired("api-key"); err != nil {
+		panic(err) // Not much we can do here
+	}
+
 }
