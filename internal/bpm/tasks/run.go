@@ -39,44 +39,18 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 		return TEXT_NEW_PLUGIN_VERSION, nil
 	}
 
-
-	// TODO: Fetch the config based on the api key
+	// TODO: Fetch the config based on the api key from the PBG
+	mockGID := "12345"
 	mockData := `
 	{
-		"node_gid": "12345",
+		"node_gid": "` + mockGID + `",
 		"blockchain_gid": "6789gid",
-		"containers": [
-			{
-				"name": "stellar-horizon",
-				"image": "blockdaemon/docker-stellar-horizon",
-				"version": "0.17.5-1"
-			},
-			{
-				"name": "stellar-core",
-				"image": "blockdaemon/docker-stellar-core",
-				"version": "11.0.0-1"
-			},
-			{
-				"name": "postgres",
-				"image": "blockdaemon/docker-stellar-core",
-				"version": "11.1"
-			},
-			{
-				"name": "nodestate",
-				"image": "blockdaemon/nodestate",
-				"version": "1.2.0"
-			}
-		],
 		"environment": "mainnet",
 		"network_type": "public",
 		"node_subtype": "watcher",
 		"protocol_type": "stellar-horizon",
 		"config": {
 			"core": {
-				"validator": false,
-				"catchup_complete": false,
-				"catchup_recent": 0,
-				"failure_safety": -1,
 				"nodes": [
 					{
 						"id": "sdf1",
@@ -110,12 +84,7 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 					"satoshipay-de",
 					"satoshipay-sg",
 					"ibm-uk"
-				],
-				"testnet": false,
-				"unsafe_quorum": false
-			},
-			"horizon": {
-				"history_retention_count": 0
+				]
 			}
 		}
 	}`
@@ -124,7 +93,7 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 	if err != nil {
 		return "", err
 	}
-	nodePath := path.Join(expandedBaseDir, "nodes", "12345")
+	nodePath := path.Join(expandedBaseDir, "nodes", mockGID)
 
 	if err := os.MkdirAll(nodePath, os.ModePerm); err != nil {
 		return "", err
@@ -136,5 +105,5 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 		return "", err
 	}
 
-	return "", plugin.RunPlugin("12345")
+	return "", plugin.RunPlugin(mockGID)
 }
