@@ -18,6 +18,8 @@ type NodeConfiguration struct {
 
 	Config map[string]interface{} `json:"config"`
 	Secrets map[string]interface{} // No json here, never serialize secrets!
+
+	baseDir string
 }
 
 func (c NodeConfiguration) DockerNetworkName() string {
@@ -38,25 +40,25 @@ func (c NodeConfiguration) NodeDirectory(baseDir string) string {
 	return path.Join(expandedBaseDir, "nodes", c.NodeGID)
 }
 
-func (c NodeConfiguration) ConfigsDirectory(baseDir string) string {
-	return path.Join(c.NodeDirectory(baseDir), "configs")
+func (c NodeConfiguration) ConfigsDirectory() string {
+	return path.Join(c.NodeDirectory(c.baseDir), "configs")
 }
 
-func (c NodeConfiguration) SecretsDirectory(baseDir string) string {
-	return path.Join(c.NodeDirectory(baseDir), "secrets")
+func (c NodeConfiguration) SecretsDirectory() string {
+	return path.Join(c.NodeDirectory(c.baseDir), "secrets")
 }
 
 
-func (c NodeConfiguration) MakeConfigsDirectory(baseDir string) (string, error) {
-	return makeDirectory(c.ConfigsDirectory(baseDir))
+func (c NodeConfiguration) MakeConfigsDirectory() (string, error) {
+	return makeDirectory(c.ConfigsDirectory())
 }
 
-func (c NodeConfiguration) MakeSecretsDirectory(baseDir string) (string, error) {
-	return makeDirectory(c.SecretsDirectory(baseDir))
+func (c NodeConfiguration) MakeSecretsDirectory() (string, error) {
+	return makeDirectory(c.SecretsDirectory())
 }
 
-func (c NodeConfiguration) WritePluginVersion(baseDir, version string) error {
-	configsDir, err := c.MakeConfigsDirectory(baseDir)	
+func (c NodeConfiguration) WritePluginVersion(version string) error {
+	configsDir, err := c.MakeConfigsDirectory()
 
 	if err != nil {
 		return err
@@ -114,6 +116,8 @@ func LoadConfiguration(baseDir, nodeGID string) (NodeConfiguration, error) {
 	    	configuration.Secrets[f.Name()] = string(secret)
     	}
     }
+
+    configuration.baseDir = baseDir
 
 	return configuration, nil
 }

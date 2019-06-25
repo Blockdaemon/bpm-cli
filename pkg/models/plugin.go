@@ -147,7 +147,7 @@ func (i Plugin) RunPlugin(nodeGID string) error {
 	}
 
 	// After everything is done, write the current version so we know where we are in case of upgrades
-	configuration.WritePluginVersion(i.baseDir, version)
+	configuration.WritePluginVersion(version)
 
 	return nil
 }
