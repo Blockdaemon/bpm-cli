@@ -92,22 +92,3 @@ func TestCheckRunnerUpgradableInvalidVersion(t *testing.T) {
 	assertError(err, t)
 }
 
-func TestCheckVersionInfoExists(t *testing.T) {
-	baseDir := setupBaseDir(t)
-	defer teardown(baseDir, nil, t)
-
-	versionInfoExists, err := CheckVersionInfoExists(baseDir)
-	assertNoError(err, t)
-	if versionInfoExists {
-		t.Error("expect version info to not exist but it does")
-	}
-
-	// Now let's set up the version info and check to opposite
-	setupVersionInfo(baseDir, "", t)
-
-	versionInfoExists, err = CheckVersionInfoExists(baseDir)
-	assertNoError(err, t)
-	if !versionInfoExists {
-		t.Error("expect version info to exist but it does not")
-	}
-}
