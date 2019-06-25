@@ -1,7 +1,7 @@
 package tasks
 
 import (
-	"gitlab.com/Blockdaemon/runner/pkg/models"
+	"gitlab.com/Blockdaemon/bpm/pkg/models"
 )
 
 // Refresh contains functionality for the `refresh` cmd

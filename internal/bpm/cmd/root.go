@@ -14,8 +14,8 @@ var apiKey string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "runner",
-	Short: "The Blockdaemon runner manages Blockchain nodes in your own infrastructure",
+	Use:   "bpm",
+	Short: "The Blockchain Package Manager manages Blockchain nodes in your own infrastructure",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

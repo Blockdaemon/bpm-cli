@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/runner/internal/bpm/tasks"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/tasks"
 )
 
 var listCmd = &cobra.Command{

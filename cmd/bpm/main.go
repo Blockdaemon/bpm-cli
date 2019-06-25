@@ -1,6 +1,6 @@
 package main
 
-import "gitlab.com/Blockdaemon/runner/internal/bpm/cmd"
+import "gitlab.com/Blockdaemon/bpm/internal/bpm/cmd"
 
 func main() {
 	cmd.Execute()

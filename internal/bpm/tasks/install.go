@@ -1,7 +1,7 @@
 package tasks
 
 import (
-	"gitlab.com/Blockdaemon/runner/pkg/models"
+	"gitlab.com/Blockdaemon/bpm/pkg/models"
 )
 
 const VERSION_INFO_MISSING = "The version info list does not exist. Please run `refresh` first."

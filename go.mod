@@ -1,4 +1,4 @@
-module gitlab.com/Blockdaemon/runner
+module gitlab.com/Blockdaemon/bpm
 
 go 1.12
 
