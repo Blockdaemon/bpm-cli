@@ -4,19 +4,21 @@ import (
 	"gitlab.com/Blockdaemon/bpm/pkg/models"
 )
 
-const VERSION_INFO_MISSING = "The version info list does not exist. Please run `refresh` first."
 
 // Install contains functionality for the `install` cmd
 //
 // This has been seperated out into a function to make it easily testable
-func Install(apiKey, baseDir, pluginURL, pluginName, version string) (string, error) {
-	versionInfoExists, err := models.CheckVersionInfoExists(baseDir)
-	if err != nil {
+func Install(apiKey, baseDir, pluginURL, pluginName, pluginVersion, runnerVersion string) (string, error) {
+	if err := models.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
 		return "", err
 	}
 
-	if !versionInfoExists {
-		return VERSION_INFO_MISSING, nil
+	upgradable, err := models.CheckRunnerUpgradable(baseDir, runnerVersion)
+	if err != nil {
+		return "", err
+	}
+	if upgradable {
+		return TEXT_NEW_BPM_VERSION, nil
 	}
 
 	plugin, err := models.LoadPlugin(baseDir, pluginURL, pluginName)
@@ -24,13 +26,13 @@ func Install(apiKey, baseDir, pluginURL, pluginName, version string) (string, er
 		return "", err
 	}
 
-	if len(version) > 0 {
-		return "", plugin.InstallVersion(apiKey, version)
+	if len(pluginVersion) > 0 {
+		return "", plugin.InstallVersion(apiKey, pluginVersion)
 	}
 
 	if err = plugin.InstallLatest(apiKey); err != nil {
 		return "", err
 	}
 
-	return "Plugin succesfully installed", nil
+	return TEXT_PLUGIN_INSTALLED, nil
 }

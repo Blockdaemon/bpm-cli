@@ -18,25 +18,25 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 		return "", err
 	}
 
-	// upgradable, err := models.CheckRunnerUpgradable(baseDir, runnerVersion)
-	// if err != nil {
-	// 	return "", err
-	// }
-	// if upgradable {
-	// 	return "A new version of the runner is available, please upgrade!", nil
-	// }
+	bpmUpgradable, err := models.CheckRunnerUpgradable(baseDir, runnerVersion)
+	if err != nil {
+		return "", err
+	}
+	if bpmUpgradable {
+		return TEXT_NEW_BPM_VERSION, nil
+	}
 
 	plugin, err := models.LoadPlugin(baseDir, pluginURL, pluginName)
 	if err != nil {
 		return "", err
 	}
 
-	upgradable, err := plugin.NeedsUpgrade()
+	pluginUpgradable, err := plugin.NeedsUpgrade()
 	if err != nil {
 		return "", err
 	}
-	if upgradable {
-		return "A new version of the plugin is available, please upgrade!", nil
+	if pluginUpgradable {
+		return TEXT_NEW_PLUGIN_VERSION, nil
 	}
 
 

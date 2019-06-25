@@ -14,12 +14,12 @@ var installCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pluginName := args[0]
-		version := ""
+		pluginVersion := ""
 		if len(args) > 1 {
-			version = args[1]
+			pluginVersion = args[1]
 		}
 
-		output, err := tasks.Install(apiKey, baseDir, pluginURL, pluginName, version)
+		output, err := tasks.Install(apiKey, baseDir, pluginURL, pluginName, pluginVersion, runnerVersion)
 		if err != nil {
 			return err
 		}

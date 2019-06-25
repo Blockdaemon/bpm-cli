@@ -1,7 +1,14 @@
 
+# Upgrades
 
+BPM automatically downloads version info and prompts the user to upgrade if necessary.
 
+The rule-of-thumb is that every command that changes something should:
 
+- Check if BPM itself up-to-date
+- If it invokes a plugin, check if the plugin is up-to-date
+
+Read-only commands (e.g. `version`) don't have to check, since using an outdated version here doesn't have the potential to destroy anything.
 
 # Code structure
 

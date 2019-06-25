@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 )
 
 // VersionInfo contains information about versions for the plugins and the runner
@@ -49,26 +48,6 @@ func LoadVersionInfo(baseDir string) (VersionInfo, error) {
 	}
 
 	return versionInfo, nil
-}
-
-// CheckVersionInfoExists checks if the version info file exists
-func CheckVersionInfoExists(baseDir string) (bool, error) {
-	versionFilePath, err := getVersionInfoFilename(baseDir)
-	if err != nil {
-		return false, err
-	}
-
-	_, err = os.Stat(versionFilePath)
-
-	if err != nil {
-		if os.IsNotExist(err) {
-			return false, nil
-		}
-
-		return false, err
-	}
-
-	return true, nil
 }
 
 // CheckRunnerUpgradable checks if there is a new version of the runner according to the version info on disk
