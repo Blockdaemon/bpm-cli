@@ -51,6 +51,7 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 		"protocol_type": "stellar-horizon",
 		"config": {
 			"core": {
+				"full_history": true,
 				"nodes": [
 					{
 						"id": "sdf1",
