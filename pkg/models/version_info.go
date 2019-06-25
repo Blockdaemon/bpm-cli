@@ -73,8 +73,8 @@ func CheckVersionInfoExists(baseDir string) (bool, error) {
 
 // CheckRunnerUpgradable checks if there is a new version of the runner according to the version info on disk
 func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {
-	if runnerVersion == "development" {
-		fmt.Printf("Skpping check if runner is upgradable during development!\n")
+	if runnerVersion == "development" || runnerVersion == "master" {
+		fmt.Printf("Skipping check if runner is upgradable during development!\n")
 		return false, nil
 	}
 
@@ -89,6 +89,9 @@ func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {
 // DownloadVersionInfo downloads the version info onto disk
 func DownloadVersionInfo(apiKey string, baseURL string, baseDir string) error {
 	fullURL := buildURL(baseURL, "version-info.json", apiKey)
+
+	fmt.Printf("Downloading version info from %s\n", fullURL)
+
 	resp, err := http.Get(fullURL)
 	if err != nil {
 		return err

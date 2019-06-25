@@ -7,27 +7,40 @@ import (
 	"path"
 
 	homedir "github.com/mitchellh/go-homedir"
-	"gitlab.com/Blockdaemon/runner/pkg/models"
+	"gitlab.com/Blockdaemon/bpm/pkg/models"
 )
 
 // Run contains functionality for the `run` cmd
 //
 // This has been seperated out into a function to make it easily testable
-func Run(apiKey, baseDir, pluginURL, pluginName string) (string, error) {
-	// TODO
-	versionInfoExists, err := models.CheckVersionInfoExists(baseDir)
+func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, error) {
+	if err := models.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
+		return "", err
+	}
+
+	// upgradable, err := models.CheckRunnerUpgradable(baseDir, runnerVersion)
+	// if err != nil {
+	// 	return "", err
+	// }
+	// if upgradable {
+	// 	return "A new version of the runner is available, please upgrade!", nil
+	// }
+
+	plugin, err := models.LoadPlugin(baseDir, pluginURL, pluginName)
 	if err != nil {
 		return "", err
 	}
 
-	if !versionInfoExists {
-		return VERSION_INFO_MISSING, nil
+	upgradable, err := plugin.NeedsUpgrade()
+	if err != nil {
+		return "", err
+	}
+	if upgradable {
+		return "A new version of the plugin is available, please upgrade!", nil
 	}
 
-	// TODO: Auto upgrade at this point?
 
 	// TODO: Fetch the config based on the api key
-
 	mockData := `
 	{
 		"node_gid": "12345",
@@ -120,11 +133,6 @@ func Run(apiKey, baseDir, pluginURL, pluginName string) (string, error) {
 	nodeConfigPath := path.Join(nodePath, "config.json")
 
 	if err := ioutil.WriteFile(nodeConfigPath, []byte(mockData), 0644); err != nil {
-		return "", err
-	}
-
-	plugin, err := models.LoadPlugin(baseDir, pluginURL, pluginName)
-	if err != nil {
 		return "", err
 	}
 

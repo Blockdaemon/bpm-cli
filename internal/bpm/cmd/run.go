@@ -14,7 +14,7 @@ var runCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pluginName := args[0]
 
-		output, err := tasks.Run(apiKey, baseDir, pluginURL, pluginName)
+		output, err := tasks.Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion)
 		if err != nil {
 			return err
 		}

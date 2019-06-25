@@ -55,6 +55,17 @@ func (c NodeConfiguration) MakeSecretsDirectory(baseDir string) (string, error) 
 	return makeDirectory(c.SecretsDirectory(baseDir))
 }
 
+func (c NodeConfiguration) WritePluginVersion(baseDir, version string) error {
+	configsDir, err := c.MakeConfigsDirectory(baseDir)	
+
+	if err != nil {
+		return err
+	}
+
+
+	return ioutil.WriteFile(configsDir, []byte(version), 0644)
+}
+
 func LoadConfiguration(baseDir, nodeGID string) (NodeConfiguration, error) {
 	var configuration NodeConfiguration
 

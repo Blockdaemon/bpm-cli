@@ -136,8 +136,20 @@ func (i Plugin) RunPlugin(nodeGID string) error {
 		return err
 	}
 
-	return nil
+	configuration, err := LoadConfiguration(i.baseDir, nodeGID)
+	if err != nil {
+		return err
+	}
 
+	version, err := i.RunVersionCommand()
+	if err != nil {
+		return err
+	}
+
+	// After everything is done, write the current version so we know where we are in case of upgrades
+	configuration.WritePluginVersion(i.baseDir, version)
+
+	return nil
 }
 
 // NewPlugin creates a new plugin from a PluginInfo
