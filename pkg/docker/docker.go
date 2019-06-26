@@ -76,6 +76,23 @@ func (bm *BasicManager) ContainerAbsent(ctx context.Context, containerName strin
 	return nil
 }
 
+// NetworkAbsent removes a network if it exists
+func (bm *BasicManager) NetworkAbsent(ctx context.Context, networkID string) error {
+	exists, err := bm.doesNetworkExist(ctx, networkID)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		fmt.Printf("Removing network '%s'\n", networkID)
+		if err := bm.cli.NetworkRemove(ctx, networkID); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // NetworkExists creates a network if it doesn't exist yet
 func (bm *BasicManager) NetworkExists(ctx context.Context, networkID string) error {
 	exists, err := bm.doesNetworkExist(ctx, networkID)
