@@ -30,6 +30,9 @@ func (c NodeConfiguration) ContainerName(containerName string) string {
 	return "bd-" + c.NodeGID + "-" + containerName
 }
 
+func (c NodeConfiguration) VolumeName(volumeName string) string {
+	return "bd-" + c.NodeGID + "-" + volumeName
+}
 
 func (c NodeConfiguration) NodeDirectory(baseDir string) string {
 	expandedBaseDir, err := homedir.Expand(baseDir)

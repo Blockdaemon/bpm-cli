@@ -112,6 +112,24 @@ func (bm *BasicManager) VolumeAbsent(ctx context.Context, volumeID string) error
 	return bm.cli.VolumeRemove(ctx, volumeID, false)
 }
 
+// VolumeAbsent removes a network if it exists
+func (bm *BasicManager) VolumeAbsent(ctx context.Context, volumeID string) error {
+	exists, err := bm.doesVolumeExist(ctx, volumeID)
+	if err != nil {
+		fmt.Printf("Cannot find volume '%s', skipping removal\n", volumeID)
+		return err
+	}
+
+	if exists {
+		fmt.Printf("Removing volume '%s'\n", volumeID)
+		if err := bm.cli.VolumeRemove(ctx, volumeID, false); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // NetworkExists creates a network if it doesn't exist yet
 func (bm *BasicManager) NetworkExists(ctx context.Context, networkID string) error {
 	exists, err := bm.doesNetworkExist(ctx, networkID)
@@ -132,6 +150,7 @@ func (bm *BasicManager) NetworkExists(ctx context.Context, networkID string) err
 
 // Mount defines a docker volume mount
 type Mount struct {
+	Type string;
 	From string;
 	To string;
 }
@@ -217,8 +236,23 @@ func (bm *BasicManager) doesNetworkExist(ctx context.Context, networkID string) 
 
 
 	return true, nil
-
 }
+
+func (bm *BasicManager) doesVolumeExist(ctx context.Context, volumeID string) (bool, error) {
+	_, err := bm.cli.VolumeInspect(ctx, volumeID)
+	if err != nil {
+		if client.IsErrVolumeNotFound(err) {
+			return false, nil
+		}
+
+		return false, err
+	}
+
+
+	return true, nil
+}
+
+
 
 func (bm *BasicManager) isContainerRunning(ctx context.Context, containerName string) (bool, error) {
 	inspect, err := bm.cli.ContainerInspect(ctx, containerName)
@@ -231,7 +265,6 @@ func (bm *BasicManager) isContainerRunning(ctx context.Context, containerName st
 	}
 
 	return inspect.State.Running, nil
-
 }
 
 func (bm *BasicManager) pullImage(ctx context.Context, imageName string) error {
@@ -279,7 +312,7 @@ func (bm *BasicManager) createContainer(ctx context.Context, container Container
 	var mounts []mount.Mount 
 	for _, mountParam := range container.Mounts {
 		mounts = append(mounts, mount.Mount {
-            Type:   mount.TypeBind,
+            Type:   mount.Type(mountParam.Type),
             Source: mountParam.From,
             Target: mountParam.To,
 		})
