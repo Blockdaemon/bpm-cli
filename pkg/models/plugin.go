@@ -37,7 +37,7 @@ func (i Plugin) IsInstalled() (bool, error) {
 		return false, err
 	}
 
-	return fileExists(filename)
+	return FileExists(filename)
 }
 
 // InstallVersion installs a particular version of the plugin

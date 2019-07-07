@@ -107,7 +107,7 @@ func indent(text, indent string) string {
 }
 
 
-func fileExists(name string) (bool, error) {
+func FileExists(name string) (bool, error) {
     if _, err := os.Stat(name); err != nil {
         if os.IsNotExist(err) {
             return false, nil
