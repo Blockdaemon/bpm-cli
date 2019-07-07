@@ -9,7 +9,7 @@ import (
 	"gitlab.com/Blockdaemon/bpm/pkg/models"
 )
 
-// RenderTemplate renders a template with node confguration and writes it to disk
+// TemplateRendered renders a template with node confguration and writes it to disk if it doesn't exist yet
 //
 // In order to allow comma separated lists in the template it defines the template
 // function `notLast` which can be used like this:
@@ -18,8 +18,18 @@ import (
 //		"${{ $id }}"{{if notLast $index $.Config.core.quorum_set_ids}},{{end}}
 //		{{end -}}
 //
-func RenderTemplate(outputFilename, templateContent string, configuration models.NodeConfiguration) error {
-	fmt.Printf("Writing file '%s'\n", outputFilename)
+func TemplateRendered(outputFilename, templateContent string, configuration models.NodeConfiguration) error {
+	exists, err := models.FileExists(outputFilename)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		fmt.Printf("File '%s' already exists, skipping rendering of template\n", outputFilename)
+		return nil
+	}
+
+	fmt.Printf("Rendering template to file '%s'\n", outputFilename)
 
 	var templateFunctions = template.FuncMap{
 		"notLast": func(x int, a []interface{}) bool {
