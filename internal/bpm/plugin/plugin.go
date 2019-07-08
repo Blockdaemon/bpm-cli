@@ -96,6 +96,11 @@ func (i Plugin) NeedsUpgrade() (bool, error) {
 		return false, fmt.Errorf("cannot get installed version of plugin '%s': %s", i.Info.Name, err)
 	}
 
+	// During development we use master, in that case it doesn't need an upgrade since we are on the bleeding edge already
+	if installedVersionStr == "master" {
+		return false, nil
+	}
+
 	return util.NeedsUpgrade(installedVersionStr, i.Info.Version)
 }
 
