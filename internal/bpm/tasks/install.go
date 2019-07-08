@@ -1,7 +1,7 @@
 package tasks
 
 import (
-	"gitlab.com/Blockdaemon/bpm/pkg/models"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
 )
 
 
@@ -9,11 +9,11 @@ import (
 //
 // This has been seperated out into a function to make it easily testable
 func Install(apiKey, baseDir, pluginURL, pluginName, pluginVersion, runnerVersion string) (string, error) {
-	if err := models.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
+	if err := plugin.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
 		return "", err
 	}
 
-	upgradable, err := models.CheckRunnerUpgradable(baseDir, runnerVersion)
+	upgradable, err := plugin.CheckRunnerUpgradable(baseDir, runnerVersion)
 	if err != nil {
 		return "", err
 	}
@@ -21,16 +21,16 @@ func Install(apiKey, baseDir, pluginURL, pluginName, pluginVersion, runnerVersio
 		return TEXT_NEW_BPM_VERSION, nil
 	}
 
-	plugin, err := models.LoadPlugin(baseDir, pluginURL, pluginName)
+	pluginToInstall, err := plugin.LoadPlugin(baseDir, pluginURL, pluginName)
 	if err != nil {
 		return "", err
 	}
 
 	if len(pluginVersion) > 0 {
-		return "", plugin.InstallVersion(apiKey, pluginVersion)
+		return "", pluginToInstall.InstallVersion(apiKey, pluginVersion)
 	}
 
-	if err = plugin.InstallLatest(apiKey); err != nil {
+	if err = pluginToInstall.InstallLatest(apiKey); err != nil {
 		return "", err
 	}
 

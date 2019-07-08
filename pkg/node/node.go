@@ -1,13 +1,14 @@
-package models
+package node
 
 import (
 	"io/ioutil"
 	"encoding/json"
 	"path"
 	homedir "github.com/mitchellh/go-homedir"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
 )
 
-type NodeConfiguration struct {
+type Node struct {
 	NodeGID string `json:"node_gid"`
 	BlockchainGID string `json:"blockchain_gid"`
 
@@ -22,19 +23,19 @@ type NodeConfiguration struct {
 	baseDir string
 }
 
-func (c NodeConfiguration) DockerNetworkName() string {
+func (c Node) DockerNetworkName() string {
 	return "bd-" + c.NodeGID
 }
 
-func (c NodeConfiguration) ContainerName(containerName string) string {
+func (c Node) ContainerName(containerName string) string {
 	return "bd-" + c.NodeGID + "-" + containerName
 }
 
-func (c NodeConfiguration) VolumeName(volumeName string) string {
+func (c Node) VolumeName(volumeName string) string {
 	return "bd-" + c.NodeGID + "-" + volumeName
 }
 
-func (c NodeConfiguration) NodeDirectory(baseDir string) string {
+func (c Node) NodeDirectory(baseDir string) string {
 	expandedBaseDir, err := homedir.Expand(baseDir)
 	if err != nil {
 		panic(err) // Should never happen because, at this stage, the directory should already be created
@@ -43,24 +44,24 @@ func (c NodeConfiguration) NodeDirectory(baseDir string) string {
 	return path.Join(expandedBaseDir, "nodes", c.NodeGID)
 }
 
-func (c NodeConfiguration) ConfigsDirectory() string {
+func (c Node) ConfigsDirectory() string {
 	return path.Join(c.NodeDirectory(c.baseDir), "configs")
 }
 
-func (c NodeConfiguration) SecretsDirectory() string {
+func (c Node) SecretsDirectory() string {
 	return path.Join(c.NodeDirectory(c.baseDir), "secrets")
 }
 
 
-func (c NodeConfiguration) MakeConfigsDirectory() (string, error) {
-	return makeDirectory(c.ConfigsDirectory())
+func (c Node) MakeConfigsDirectory() (string, error) {
+	return util.MakeDirectory(c.ConfigsDirectory())
 }
 
-func (c NodeConfiguration) MakeSecretsDirectory() (string, error) {
-	return makeDirectory(c.SecretsDirectory())
+func (c Node) MakeSecretsDirectory() (string, error) {
+	return util.MakeDirectory(c.SecretsDirectory())
 }
 
-func (c NodeConfiguration) WritePluginVersion(version string) error {
+func (c Node) WritePluginVersion(version string) error {
 	configsDir, err := c.MakeConfigsDirectory()
 
 	if err != nil {
@@ -71,57 +72,57 @@ func (c NodeConfiguration) WritePluginVersion(version string) error {
 	return ioutil.WriteFile(configsDir, []byte(version), 0644)
 }
 
-func LoadConfiguration(baseDir, nodeGID string) (NodeConfiguration, error) {
-	var configuration NodeConfiguration
+func LoadNode(baseDir, nodeGID string) (Node, error) {
+	var node Node
 
 	// Prepare directories
-	configDir, err := makeDirectory(baseDir, "nodes")
+	configDir, err := util.MakeDirectory(baseDir, "nodes")
 	if err != nil {
-		return configuration, err
+		return node, err
 	}
-	nodeDir, err := makeDirectory(configDir, nodeGID)
+	nodeDir, err := util.MakeDirectory(configDir, nodeGID)
 	if err != nil {
-		return configuration, err
+		return node, err
 	}
 
 	// Load config
-	configPath := path.Join(nodeDir, "config.json")
+	configPath := path.Join(nodeDir, "node.json")
 	configData, err := ioutil.ReadFile(configPath)
 	if err != nil {
-		return configuration, err
+		return node, err
 	}
 
-	err = json.Unmarshal(configData, &configuration)
+	err = json.Unmarshal(configData, &node)
 	if err != nil {
-		return configuration, err
+		return node, err
 	}
 
 	// Load secrets
-	configuration.Secrets = make(map[string]interface{})
+	node.Secrets = make(map[string]interface{})
 
-	secretsDir, err := makeDirectory(nodeDir, "secrets")
+	secretsDir, err := util.MakeDirectory(nodeDir, "secrets")
 	if err != nil {
-		return NodeConfiguration{}, err
+		return Node{}, err
 	}
 
 	files, err := ioutil.ReadDir(secretsDir)
     if err != nil {
-    	return configuration, err
+    	return node, err
     }
 
     for _, f := range files {
     	if !f.IsDir() {
 	    	secret, err := ioutil.ReadFile(path.Join(secretsDir, f.Name()))
 	    	if err != nil {
-	    		return configuration, err
+	    		return node, err
 	    	}
 
-	    	configuration.Secrets[f.Name()] = string(secret)
+	    	node.Secrets[f.Name()] = string(secret)
     	}
     }
 
-    configuration.baseDir = baseDir
+    node.baseDir = baseDir
 
-	return configuration, nil
+	return node, nil
 }
 

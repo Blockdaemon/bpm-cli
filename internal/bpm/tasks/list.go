@@ -4,18 +4,18 @@ import (
 	"bytes"
 
 	"github.com/landoop/tableprinter"
-	"gitlab.com/Blockdaemon/bpm/pkg/models"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
 )
 
 // List contains functionality for the `list` cmd
 //
 // This has been seperated out into a function to make it easily testable
 func List(apiKey, baseDir, pluginURL string) (string, error) {
-	if err := models.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
+	if err := plugin.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
 		return "", err
 	}
 
-	pluginListItems, err := models.ListPlugins(baseDir, pluginURL)
+	pluginListItems, err := plugin.ListPlugins(baseDir, pluginURL)
 	if err != nil {
 		return "", err
 	}

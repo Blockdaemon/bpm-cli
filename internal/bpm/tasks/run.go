@@ -7,18 +7,18 @@ import (
 	"path"
 
 	homedir "github.com/mitchellh/go-homedir"
-	"gitlab.com/Blockdaemon/bpm/pkg/models"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
 )
 
 // Run contains functionality for the `run` cmd
 //
 // This has been seperated out into a function to make it easily testable
 func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, error) {
-	if err := models.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
+	if err := plugin.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
 		return "", err
 	}
 
-	bpmUpgradable, err := models.CheckRunnerUpgradable(baseDir, runnerVersion)
+	bpmUpgradable, err := plugin.CheckRunnerUpgradable(baseDir, runnerVersion)
 	if err != nil {
 		return "", err
 	}
@@ -26,12 +26,12 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 		return TEXT_NEW_BPM_VERSION, nil
 	}
 
-	plugin, err := models.LoadPlugin(baseDir, pluginURL, pluginName)
+	pluginToRun, err := plugin.LoadPlugin(baseDir, pluginURL, pluginName)
 	if err != nil {
 		return "", err
 	}
 
-	pluginUpgradable, err := plugin.NeedsUpgrade()
+	pluginUpgradable, err := pluginToRun.NeedsUpgrade()
 	if err != nil {
 		return "", err
 	}
@@ -100,11 +100,11 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 		return "", err
 	}
 
-	nodeConfigPath := path.Join(nodePath, "config.json")
+	nodeConfigPath := path.Join(nodePath, "node.json")
 
 	if err := ioutil.WriteFile(nodeConfigPath, []byte(mockData), 0644); err != nil {
 		return "", err
 	}
 
-	return "", plugin.RunPlugin(mockGID)
+	return "", pluginToRun.RunPlugin(mockGID)
 }

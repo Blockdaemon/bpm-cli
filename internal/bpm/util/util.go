@@ -1,4 +1,4 @@
-package models
+package util
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
-func downloadFile(filepath string, url string) error {
+func DownloadFile(filepath string, url string) error {
 	// Create the file
 	out, err := os.Create(filepath)
 	if err != nil {
@@ -39,7 +39,7 @@ func downloadFile(filepath string, url string) error {
 	return nil
 }
 
-func makeDirectory(baseDir string, subDirs ...string) (string, error) {
+func MakeDirectory(baseDir string, subDirs ...string) (string, error) {
 	expandedBaseDir, err := homedir.Expand(baseDir)
 	if err != nil {
 		return "", err
@@ -54,7 +54,7 @@ func makeDirectory(baseDir string, subDirs ...string) (string, error) {
 	return path, err
 }
 
-func buildURL(baseURL, path, apiKey string) string {
+func BuildURL(baseURL, path, apiKey string) string {
 	var result = baseURL
 
 	if !strings.HasSuffix(result, "/") {
@@ -64,7 +64,7 @@ func buildURL(baseURL, path, apiKey string) string {
 	return result + path + "?apiKey=" + apiKey
 }
 
-func needsUpgrade(currentVersionStr, availableVersionStr string) (bool, error) {
+func NeedsUpgrade(currentVersionStr, availableVersionStr string) (bool, error) {
 	currentVersion, err := semver.NewVersion(currentVersionStr)
 	if err != nil {
 		return false, err
@@ -82,8 +82,8 @@ func needsUpgrade(currentVersionStr, availableVersionStr string) (bool, error) {
 	return false, nil
 }
 
-func getVersionInfoFilename(baseDir string) (string, error) {
-	configDir, err := makeDirectory(baseDir, "config")
+func GetVersionInfoFilename(baseDir string) (string, error) {
+	configDir, err := MakeDirectory(baseDir, "config")
 	if err != nil {
 		return "", err
 	}
@@ -91,7 +91,7 @@ func getVersionInfoFilename(baseDir string) (string, error) {
 	return filepath.Join(configDir, "version-info.json"), nil
 }
 
-func indent(text, indent string) string {
+func Indent(text, indent string) string {
 	if text[len(text)-1:] == "\n" {
 		result := ""
 		for _, j := range strings.Split(text[:len(text)-1], "\n") {

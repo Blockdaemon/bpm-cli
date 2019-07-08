@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
 )
 
 // VersionInfo contains information about versions for the plugins and the runner
@@ -34,7 +35,7 @@ type PluginInfo struct {
 func LoadVersionInfo(baseDir string) (VersionInfo, error) {
 	var versionInfo VersionInfo
 
-	versionFilePath, err := getVersionInfoFilename(baseDir)
+	versionFilePath, err := util.GetVersionInfoFilename(baseDir)
 	if err != nil {
 		return versionInfo, err
 	}
@@ -62,12 +63,12 @@ func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {
 		return false, err
 	}
 
-	return needsUpgrade(runnerVersion, versionInfo.RunnerVersion)
+	return util.NeedsUpgrade(runnerVersion, versionInfo.RunnerVersion)
 }
 
 // DownloadVersionInfo downloads the version info onto disk
 func DownloadVersionInfo(apiKey string, baseURL string, baseDir string) error {
-	fullURL := buildURL(baseURL, "version-info.json", apiKey)
+	fullURL := util.BuildURL(baseURL, "version-info.json", apiKey)
 
 	fmt.Printf("Downloading version info from %s\n", fullURL)
 
@@ -90,7 +91,7 @@ func DownloadVersionInfo(apiKey string, baseURL string, baseDir string) error {
 		return err
 	}
 
-	filePath, err := getVersionInfoFilename(baseDir)
+	filePath, err := util.GetVersionInfoFilename(baseDir)
 	if err != nil {
 		return err
 	}

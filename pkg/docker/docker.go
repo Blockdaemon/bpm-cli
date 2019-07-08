@@ -112,24 +112,6 @@ func (bm *BasicManager) VolumeAbsent(ctx context.Context, volumeID string) error
 	return bm.cli.VolumeRemove(ctx, volumeID, false)
 }
 
-// VolumeAbsent removes a network if it exists
-func (bm *BasicManager) VolumeAbsent(ctx context.Context, volumeID string) error {
-	exists, err := bm.doesVolumeExist(ctx, volumeID)
-	if err != nil {
-		fmt.Printf("Cannot find volume '%s', skipping removal\n", volumeID)
-		return err
-	}
-
-	if exists {
-		fmt.Printf("Removing volume '%s'\n", volumeID)
-		if err := bm.cli.VolumeRemove(ctx, volumeID, false); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 // NetworkExists creates a network if it doesn't exist yet
 func (bm *BasicManager) NetworkExists(ctx context.Context, networkID string) error {
 	exists, err := bm.doesNetworkExist(ctx, networkID)

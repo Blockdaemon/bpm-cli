@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"gitlab.com/Blockdaemon/bpm/pkg/node"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
 )
 
 // Plugin contains information and functions for an installed (or to be installed) plugin
@@ -17,7 +19,7 @@ type Plugin struct {
 }
 
 func (i Plugin) getPluginFilename() (string, error) {
-	pluginDir, err := makeDirectory(i.baseDir, "plugins")
+	pluginDir, err := util.MakeDirectory(i.baseDir, "plugins")
 	if err != nil {
 		return "", err
 	}
@@ -28,7 +30,7 @@ func (i Plugin) getPluginFilename() (string, error) {
 func (i Plugin) getPluginURL(apiKey, version, GOOS, GOARCH string) string {
 	path := fmt.Sprintf("%s-%s-%s-%s", i.Info.Name, version, GOOS, GOARCH)
 
-	return buildURL(i.baseURL, path, apiKey)
+	return util.BuildURL(i.baseURL, path, apiKey)
 }
 
 func (i Plugin) IsInstalled() (bool, error) {
@@ -37,7 +39,7 @@ func (i Plugin) IsInstalled() (bool, error) {
 		return false, err
 	}
 
-	return FileExists(filename)
+	return util.FileExists(filename)
 }
 
 // InstallVersion installs a particular version of the plugin
@@ -49,7 +51,7 @@ func (i Plugin) InstallVersion(apiKey, version string) error {
 
 	pluginURL := i.getPluginURL(apiKey, version, runtime.GOOS, runtime.GOARCH)
 
-	if err := downloadFile(pluginFilename, pluginURL); err != nil {
+	if err := util.DownloadFile(pluginFilename, pluginURL); err != nil {
 		return err
 	}
 
@@ -106,37 +108,37 @@ func (i Plugin) NeedsUpgrade() (bool, error) {
 		return false, fmt.Errorf("cannot get installed version of plugin '%s': %s", i.Info.Name, err)
 	}
 
-	return needsUpgrade(installedVersionStr, i.Info.Version)
+	return util.NeedsUpgrade(installedVersionStr, i.Info.Version)
 }
 
 // RunPlugin runs through the plugin lifecycle
 func (i Plugin) RunPlugin(nodeGID string) error {
 
 	output, err := i.RunCommand("create-secrets", nodeGID)
-	fmt.Println(indent(output, "    "))
+	fmt.Println(util.Indent(output, "    "))
 	if err != nil {
 		return err
 	}
 
 	output, err = i.RunCommand("create-configurations", nodeGID)
-	fmt.Println(indent(output, "    "))
+	fmt.Println(util.Indent(output, "    "))
 	if err != nil {
 		return err
 	}
 
 	output, err = i.RunCommand("initialize", nodeGID)
-	fmt.Println(indent(output, "    "))
+	fmt.Println(util.Indent(output, "    "))
 	if err != nil {
 		return err
 	}
 
 	output, err = i.RunCommand("start", nodeGID)
-	fmt.Println(indent(output, "    "))
+	fmt.Println(util.Indent(output, "    "))
 	if err != nil {
 		return err
 	}
 
-	configuration, err := LoadConfiguration(i.baseDir, nodeGID)
+	node, err := node.LoadNode(i.baseDir, nodeGID)
 	if err != nil {
 		return err
 	}
@@ -147,7 +149,7 @@ func (i Plugin) RunPlugin(nodeGID string) error {
 	}
 
 	// After everything is done, write the current version so we know where we are in case of upgrades
-	configuration.WritePluginVersion(version)
+	node.WritePluginVersion(version)
 
 	return nil
 }
