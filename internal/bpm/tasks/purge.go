@@ -4,6 +4,7 @@ import (
 	"os"
 	"fmt"
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
 )
 
 // Purge contains functionality for the `purge` cmd
@@ -20,5 +21,7 @@ func Purge(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string
 		return "", fmt.Errorf("env variable `MOCK_GID` isn't set. This is just used temporarily until we get the token from the BPG")
 	}
 
-	return pluginToRun.RunCommand("purge", gid)
+	output, err := pluginToRun.RunCommand("purge", gid)
+	fmt.Println(util.Indent(output, "    "))
+	return "", err
 }

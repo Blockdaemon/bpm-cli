@@ -4,6 +4,7 @@ import (
 	"os"
 	"fmt"
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
 )
 
 // Remove contains functionality for the `remove` cmd
@@ -20,5 +21,7 @@ func Remove(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (strin
 		return "", fmt.Errorf("env variable `MOCK_GID` isn't set. This is just used temporarily until we get the token from the BPG")
 	}
 
-	return pluginToRun.RunCommand("remove", gid)
+	output, err := pluginToRun.RunCommand("remove", gid)
+	fmt.Println(util.Indent(output, "    "))
+	return "", err
 }
