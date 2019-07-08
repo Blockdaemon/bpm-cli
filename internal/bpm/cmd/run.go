@@ -9,7 +9,7 @@ import (
 
 var runCmd = &cobra.Command{
 	Use:   "run <plugin>",
-	Short: "Run an installed plugin",
+	Short: "Start a blockchain client",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pluginName := args[0]

@@ -81,18 +81,6 @@ func (i Plugin) RunCommand(command, nodeGID string) (string, error) {
 	}
 	output, err := cmd.CombinedOutput()
 
-	// if err != nil {
-	// 	_, isPathError := err.(*os.PathError)
-
-	// 	if isPathError {
-	// 		// Looks like that plugin isn't installed
-	// 		return "", nil
-	// 	}
-
-	// 	// Plugin is installed but something else is wrong
-	// 	return "", err
-	// }
-
 	return strings.TrimSpace(string(output)), err
 }
 
