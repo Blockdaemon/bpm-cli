@@ -106,13 +106,13 @@ func (i Plugin) NeedsUpgrade() (bool, error) {
 
 // RunPlugin runs through the plugin lifecycle
 func (i Plugin) RunPlugin(nodeGID string) error {
-	output, err := i.RunCommand("create-configurations", nodeGID)
+	output, err := i.RunCommand("create-secrets", nodeGID)
 	fmt.Println(util.Indent(output, "    "))
 	if err != nil {
 		return err
 	}
 
-	output, err = i.RunCommand("create-secrets", nodeGID)
+	output, err = i.RunCommand("create-configurations", nodeGID)
 	fmt.Println(util.Indent(output, "    "))
 	if err != nil {
 		return err
