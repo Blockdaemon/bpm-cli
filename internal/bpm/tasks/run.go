@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"fmt"
+	"bytes"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
@@ -50,10 +51,12 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 		return "", fmt.Errorf("env variable `MOCK_NODE_FILE` isn't set. This is just used temporarily until we get the token from the BPG")
 	}
 
-	content, err := ioutil.ReadFile(mockNodeFile)
+	mockNodeFileContent, err := ioutil.ReadFile(mockNodeFile)
 	if err != nil {
 		return "", err
 	}
+
+	mockNodeFileContent = bytes.Replace(mockNodeFileContent, []byte("<mock-gid>"), []byte(gid), -1)
 
 	expandedBaseDir, err := homedir.Expand(baseDir)
 	if err != nil {
@@ -67,7 +70,7 @@ func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, 
 
 	nodeConfigPath := path.Join(nodePath, "node.json")
 
-	if err := ioutil.WriteFile(nodeConfigPath, content, 0644); err != nil {
+	if err := ioutil.WriteFile(nodeConfigPath, mockNodeFileContent, 0644); err != nil {
 		return "", err
 	}
 
