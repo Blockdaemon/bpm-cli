@@ -8,8 +8,8 @@ import (
 // Install contains functionality for the `install` cmd
 //
 // This has been seperated out into a function to make it easily testable
-func Install(apiKey, baseDir, pluginURL, pluginName, pluginVersion, runnerVersion string) (string, error) {
-	if err := plugin.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
+func Install(baseDir, pluginURL, pluginName, pluginVersion, runnerVersion string) (string, error) {
+	if err := plugin.DownloadVersionInfo(pluginURL, baseDir); err != nil {
 		return "", err
 	}
 
@@ -27,10 +27,10 @@ func Install(apiKey, baseDir, pluginURL, pluginName, pluginVersion, runnerVersio
 	}
 
 	if len(pluginVersion) > 0 {
-		return "", pluginToInstall.InstallVersion(apiKey, pluginVersion)
+		return "", pluginToInstall.InstallVersion(pluginVersion)
 	}
 
-	if err = pluginToInstall.InstallLatest(apiKey); err != nil {
+	if err = pluginToInstall.InstallLatest(); err != nil {
 		return "", err
 	}
 

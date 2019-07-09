@@ -67,8 +67,8 @@ func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {
 }
 
 // DownloadVersionInfo downloads the version info onto disk
-func DownloadVersionInfo(apiKey string, baseURL string, baseDir string) error {
-	fullURL := util.BuildURL(baseURL, "version-info.json", apiKey)
+func DownloadVersionInfo(baseURL string, baseDir string) error {
+	fullURL := util.BuildURL(baseURL, "version-info.json", "")
 
 	fmt.Printf("Downloading version info from %s\n", fullURL)
 

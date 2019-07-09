@@ -11,7 +11,7 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List available and installed blockchain protocols",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		output, err := tasks.List(apiKey, baseDir, pluginURL)
+		output, err := tasks.List(baseDir, pluginURL)
 		if err != nil {
 			return err
 		}
@@ -23,6 +23,4 @@ var listCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(listCmd)
-
-	addAPIKeyFlag(listCmd)
 }

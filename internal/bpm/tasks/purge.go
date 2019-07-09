@@ -10,7 +10,7 @@ import (
 // Purge contains functionality for the `purge` cmd
 //
 // This has been seperated out into a function to make it easily testable
-func Purge(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, error) {
+func Purge(baseDir, pluginURL, pluginName, runnerVersion string) (string, error) {
 	pluginToRun, err := plugin.LoadPlugin(baseDir, pluginURL, pluginName)
 	if err != nil {
 		return "", err

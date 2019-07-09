@@ -27,10 +27,10 @@ func (i Plugin) getPluginFilename() (string, error) {
 	return filepath.Join(pluginDir, i.Info.Name), nil
 }
 
-func (i Plugin) getPluginURL(apiKey, version, GOOS, GOARCH string) string {
+func (i Plugin) getPluginURL(version, GOOS, GOARCH string) string {
 	path := fmt.Sprintf("%s-%s-%s-%s", i.Info.Name, version, GOOS, GOARCH)
 
-	return util.BuildURL(i.baseURL, path, apiKey)
+	return util.BuildURL(i.baseURL, path, "")
 }
 
 func (i Plugin) IsInstalled() (bool, error) {
@@ -43,13 +43,13 @@ func (i Plugin) IsInstalled() (bool, error) {
 }
 
 // InstallVersion installs a particular version of the plugin
-func (i Plugin) InstallVersion(apiKey, version string) error {
+func (i Plugin) InstallVersion(version string) error {
 	pluginFilename, err := i.getPluginFilename()
 	if err != nil {
 		return err
 	}
 
-	pluginURL := i.getPluginURL(apiKey, version, runtime.GOOS, runtime.GOARCH)
+	pluginURL := i.getPluginURL(version, runtime.GOOS, runtime.GOARCH)
 
 	if err := util.DownloadFile(pluginFilename, pluginURL); err != nil {
 		return err
@@ -59,8 +59,8 @@ func (i Plugin) InstallVersion(apiKey, version string) error {
 }
 
 // InstallLatest installs the latest version of the plugin
-func (i Plugin) InstallLatest(apiKey string) error {
-	return i.InstallVersion(apiKey, i.Info.Version)
+func (i Plugin) InstallLatest() error {
+	return i.InstallVersion(i.Info.Version)
 }
 
 // RunCommand runs a particular command with this plugin

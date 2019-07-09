@@ -10,7 +10,7 @@ import (
 // Remove contains functionality for the `remove` cmd
 //
 // This has been seperated out into a function to make it easily testable
-func Remove(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, error) {
+func Remove(baseDir, pluginURL, pluginName, runnerVersion string) (string, error) {
 	pluginToRun, err := plugin.LoadPlugin(baseDir, pluginURL, pluginName)
 	if err != nil {
 		return "", err

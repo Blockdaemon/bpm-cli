@@ -10,8 +10,8 @@ import (
 // List contains functionality for the `list` cmd
 //
 // This has been seperated out into a function to make it easily testable
-func List(apiKey, baseDir, pluginURL string) (string, error) {
-	if err := plugin.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
+func List(baseDir, pluginURL string) (string, error) {
+	if err := plugin.DownloadVersionInfo(pluginURL, baseDir); err != nil {
 		return "", err
 	}
 

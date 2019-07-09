@@ -61,6 +61,10 @@ func BuildURL(baseURL, path, apiKey string) string {
 		result = result + "/"
 	}
 
+	if apiKey == "" {
+		return result + path
+	} 
+
 	return result + path + "?apiKey=" + apiKey
 }
 

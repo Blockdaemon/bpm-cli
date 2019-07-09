@@ -14,7 +14,7 @@ import (
 //
 // This has been seperated out into a function to make it easily testable
 func Run(apiKey, baseDir, pluginURL, pluginName, runnerVersion string) (string, error) {
-	if err := plugin.DownloadVersionInfo(apiKey, pluginURL, baseDir); err != nil {
+	if err := plugin.DownloadVersionInfo(pluginURL, baseDir); err != nil {
 		return "", err
 	}
 

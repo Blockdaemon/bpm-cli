@@ -9,10 +9,10 @@ import (
 
 func TestDownloadVersionInfo(t *testing.T) {
 	baseDir := setupBaseDir(t)
-	testServer := setupMockHTTPServer("/version-info.json", "apiKey=testKey", []byte("{}"), t)
+	testServer := setupMockHTTPServer("/version-info.json", "", []byte("{}"), t)
 	defer teardown(baseDir, testServer, t)
 
-	err := DownloadVersionInfo("testKey", testServer.URL, baseDir)
+	err := DownloadVersionInfo(testServer.URL, baseDir)
 
 	assertNoError(err, t)
 	assertFileExists(path.Join(baseDir, "config", "version-info.json"), t)
@@ -25,17 +25,17 @@ func TestDownloadVersionInfoUnauthorized(t *testing.T) {
 	}))
 	defer func() { testServer.Close() }()
 
-	err := DownloadVersionInfo("testKey", testServer.URL, "/tmp")
+	err := DownloadVersionInfo(testServer.URL, "/tmp")
 	assertError(err, t)
 }
 
 func TestDownloadVersionInfoInvalidJSON(t *testing.T) {
 	baseDir := setupBaseDir(t)
 	setupVersionInfo(baseDir, "", t)
-	testServer := setupMockHTTPServer("/version-info.json", "apiKey=testKey", []byte("invalid}"), t)
+	testServer := setupMockHTTPServer("/version-info.json", "", []byte("invalid}"), t)
 	defer teardown(baseDir, testServer, t)
 
-	err := DownloadVersionInfo("testKey", testServer.URL, baseDir)
+	err := DownloadVersionInfo(testServer.URL, baseDir)
 	assertError(err, t)
 }
 

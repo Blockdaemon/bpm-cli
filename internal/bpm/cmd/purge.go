@@ -14,7 +14,7 @@ var purgeCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pluginName := args[0]
 
-		output, err := tasks.Purge(apiKey, baseDir, pluginURL, pluginName, runnerVersion)
+		output, err := tasks.Purge(baseDir, pluginURL, pluginName, runnerVersion)
 		if err != nil {
 			return err
 		}
@@ -26,6 +26,4 @@ var purgeCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(purgeCmd)
-
-	addAPIKeyFlag(purgeCmd)
 }

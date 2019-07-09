@@ -19,7 +19,7 @@ var installCmd = &cobra.Command{
 			pluginVersion = args[1]
 		}
 
-		output, err := tasks.Install(apiKey, baseDir, pluginURL, pluginName, pluginVersion, runnerVersion)
+		output, err := tasks.Install(baseDir, pluginURL, pluginName, pluginVersion, runnerVersion)
 		if err != nil {
 			return err
 		}
@@ -31,6 +31,4 @@ var installCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(installCmd)
-
-	addAPIKeyFlag(installCmd)
 }

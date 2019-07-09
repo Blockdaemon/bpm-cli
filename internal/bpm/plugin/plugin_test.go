@@ -11,13 +11,13 @@ func TestPluginInstallLatest(t *testing.T) {
 	baseDir := setupBaseDir(t)
 	setupVersionInfo(baseDir, "", t)
 	expectedPath := fmt.Sprintf("/stellar-horizon-1.2.3-%s-%s", runtime.GOOS, runtime.GOARCH)
-	testServer := setupMockHTTPServer(expectedPath, "apiKey=test", []byte("asdf"), t)
+	testServer := setupMockHTTPServer(expectedPath, "", []byte("asdf"), t)
 	defer teardown(baseDir, testServer, t)
 
 	plugin, err := LoadPlugin(baseDir, testServer.URL, "stellar-horizon")
 	assertNoError(err, t)
 
-	err = plugin.InstallLatest("test")
+	err = plugin.InstallLatest()
 	assertNoError(err, t)
 
 	pluginFile := path.Join(baseDir, "plugins", "stellar-horizon")
@@ -28,13 +28,13 @@ func TestPluginInstallVersion(t *testing.T) {
 	baseDir := setupBaseDir(t)
 	setupVersionInfo(baseDir, "", t)
 	expectedPath := fmt.Sprintf("/stellar-horizon-1.2.3-%s-%s", runtime.GOOS, runtime.GOARCH)
-	testServer := setupMockHTTPServer(expectedPath, "apiKey=test", []byte("asdf"), t)
+	testServer := setupMockHTTPServer(expectedPath, "", []byte("asdf"), t)
 	defer teardown(baseDir, testServer, t)
 
 	plugin, err := LoadPlugin(baseDir, testServer.URL, "stellar-horizon")
 	assertNoError(err, t)
 
-	err = plugin.InstallVersion("test", "1.2.3")
+	err = plugin.InstallVersion("1.2.3")
 	assertNoError(err, t)
 
 	pluginFile := path.Join(baseDir, "plugins", "stellar-horizon")

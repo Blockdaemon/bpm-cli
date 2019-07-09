@@ -14,7 +14,7 @@ var removeCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pluginName := args[0]
 
-		output, err := tasks.Remove(apiKey, baseDir, pluginURL, pluginName, runnerVersion)
+		output, err := tasks.Remove(baseDir, pluginURL, pluginName, runnerVersion)
 		if err != nil {
 			return err
 		}
@@ -26,6 +26,4 @@ var removeCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(removeCmd)
-
-	addAPIKeyFlag(removeCmd)
 }
