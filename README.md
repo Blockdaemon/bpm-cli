@@ -19,7 +19,7 @@ Download and copy the `bpm` binary into `/usr/local/bin` and make sure it is exe
 	sudo cp bpm-<VERSION>-<OS>-amd64 /usr/local/bin/bpm
 	sudo chmod 755 /usr/local/bin/bpm
 
-Replace `<VERSION>` with the acutal version of BPM (e.g. `0.2.0`) and `<OS>` with either `linux` or `darwin`.
+Replace `<VERSION>` with the actual version of BPM (e.g. `0.2.0`) and `<OS>` with either `linux` or `darwin`.
 
 # Usage
 
