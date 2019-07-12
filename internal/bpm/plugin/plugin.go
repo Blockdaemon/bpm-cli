@@ -72,8 +72,7 @@ func (i Plugin) RunCommand(args ...string) (string, error) {
 		return "", err
 	}
 
-	var cmd *exec.Cmd
-	cmd = exec.Command(filename, args...)
+	cmd := exec.Command(filename, args...)
 	output, err := cmd.CombinedOutput()
 
 	return strings.TrimSpace(string(output)), err
