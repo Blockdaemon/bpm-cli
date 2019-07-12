@@ -64,8 +64,8 @@ func (i Plugin) InstallLatest() error {
 }
 
 // RunCommand runs a particular command with this plugin
-func (i Plugin) RunCommand(command, nodeGID string) (string, error) {
-	fmt.Printf("Running plugin %s with command %s\n", i.Info.Name, command)
+func (i Plugin) RunCommand(args ...string) (string, error) {
+	fmt.Printf("Running plugin %s with command %s\n", i.Info.Name, args[0])
 
 	filename, err := i.getPluginFilename()
 	if err != nil {
@@ -73,12 +73,7 @@ func (i Plugin) RunCommand(command, nodeGID string) (string, error) {
 	}
 
 	var cmd *exec.Cmd
-
-	if nodeGID != "" {
-		cmd = exec.Command(filename, command, nodeGID)
-	} else {
-		cmd = exec.Command(filename, command)
-	}
+	cmd = exec.Command(filename, args...)
 	output, err := cmd.CombinedOutput()
 
 	return strings.TrimSpace(string(output)), err

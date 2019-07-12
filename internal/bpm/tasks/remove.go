@@ -10,7 +10,7 @@ import (
 // Remove contains functionality for the `remove` cmd
 //
 // This has been seperated out into a function to make it easily testable
-func Remove(baseDir, pluginURL, pluginName, runnerVersion string) (string, error) {
+func Remove(baseDir, pluginURL, pluginName, runnerVersion string, purge bool) (string, error) {
 	pluginToRun, err := plugin.LoadPlugin(baseDir, pluginURL, pluginName)
 	if err != nil {
 		return "", err
@@ -21,7 +21,12 @@ func Remove(baseDir, pluginURL, pluginName, runnerVersion string) (string, error
 		return "", fmt.Errorf("env variable `MOCK_GID` isn't set. This is just used temporarily until we get the token from the BPG")
 	}
 
-	output, err := pluginToRun.RunCommand("remove", gid)
+	var output string
+	if purge {
+		output, err = pluginToRun.RunCommand("remove", gid, "--purge")
+	} else {
+		output, err = pluginToRun.RunCommand("remove", gid)
+	}
 	fmt.Println(util.Indent(output, "    "))
 	return "", err
 }

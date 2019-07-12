@@ -7,6 +7,8 @@ import (
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/tasks"
 )
 
+var purge bool
+
 var removeCmd = &cobra.Command{
 	Use:   "remove <plugin>",
 	Short: "Removes a running blockchain client. Data and configuration will not be removed.",
@@ -14,7 +16,7 @@ var removeCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pluginName := args[0]
 
-		output, err := tasks.Remove(baseDir, pluginURL, pluginName, runnerVersion)
+		output, err := tasks.Remove(baseDir, pluginURL, pluginName, runnerVersion, purge)
 		if err != nil {
 			return err
 		}
@@ -25,5 +27,6 @@ var removeCmd = &cobra.Command{
 }
 
 func init() {
+	removeCmd.Flags().BoolVar(&purge, "purge", false, "Purge all data and configuration files")
 	rootCmd.AddCommand(removeCmd)
 }
