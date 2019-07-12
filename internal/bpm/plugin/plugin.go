@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"strings"
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
-	"gitlab.com/Blockdaemon/blockchain/bpm-lib/pkg/node"
+	"gitlab.com/Blockdaemon/bpm-sdk/pkg/node"
 )
 
 // Plugin contains information and functions for an installed (or to be installed) plugin
