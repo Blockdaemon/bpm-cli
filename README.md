@@ -15,9 +15,9 @@ BPM itself provides the framework, the actual deployment is performed by plugins
 
 Download and copy the `bpm` binary into `/usr/local/bin` and make sure it is executable:
 
-	wget https://runner-test.sfo2.digitaloceanspaces.com/bpm-<VERSION>-<OS>-amd64 
+	wget https://runner-test.sfo2.digitaloceanspaces.com/bpm-<VERSION>-<OS>-amd64
 	sudo cp bpm-<VERSION>-<OS>-amd64 /usr/local/bin/bpm
-	sudo chmod 755 /usr/local/bin/bpm	
+	sudo chmod 755 /usr/local/bin/bpm
 
 Replace `<VERSION>` with the acutal version of BPM (e.g. `0.2.0`) and `<OS>` with either `linux` or `darwin`.
 
@@ -44,20 +44,23 @@ During the development of a plugin it might be useful to specify which version t
 
 Downloaded plugins are stored in `~/.blockdaemon/plugins`.
 
---- 
+----
 
-**The public blockchain gateway which would provide configuration for the nodes doesn't exist yet. Until it does, we have to mock it. This process will change!** 
+**The public blockchain gateway which would provide configuration for the nodes doesn't exist yet. Until it does, we have to mock it. This process will change!**
 
 1. Download the mock config:
-	- https://gitlab.com/Blockdaemon/bpm-stellar/blob/master/mock_node.json
-	- https://gitlab.com/Blockdaemon/bpm-polkadot/blob/master/mock_node.json
-2. Set the mock environment variable pointing to the config: `export MOCK_NODE_FILE=~/Downloads/mock_node.json`
-3. Set the mock environment variable for the node id: `export MOCK_GID=test123`
-4. Set the mock environment variable for the data ingress: `export DATA_INGRESS_TOKEN=XXXX`
+	- https://gitlab.com/Blockdaemon/bpm-stellar/raw/master/mock_node.json
+	- https://gitlab.com/Blockdaemon/bpm-polkadot/raw/master/mock_node.json
+2. Set the mock environment variables pointing to the config, node id and data ingress token:
+```
+export MOCK_NODE_FILE=${PWD}/mock_node.json
+export MOCK_GID=test123
+export DATA_INGRESS_TOKEN=XXXX
+```
 
 **End of workaround**
 
---- 
+----
 
 Let's start the blockchain client:
 
