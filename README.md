@@ -42,6 +42,8 @@ Then, install the latest version of one of the plugins:
 
 During the development of a plugin it might be useful to specify which version to install. See `bpm install --help` for details.
 
+Downloaded plugins are stored in `~/.blockdaemon/plugins`.
+
 --- 
 
 **The public blockchain gateway which would provide configuration for the nodes doesn't exist yet. Until it does, we have to mock it. This process will change!** 
