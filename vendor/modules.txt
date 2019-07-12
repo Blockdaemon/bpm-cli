@@ -12,7 +12,10 @@ github.com/landoop/tableprinter
 github.com/mattn/go-runewidth
 # github.com/mitchellh/go-homedir v1.1.0
 github.com/mitchellh/go-homedir
-# github.com/spf13/cobra v0.0.3
+# github.com/spf13/cobra v0.0.5
 github.com/spf13/cobra
 # github.com/spf13/pflag v1.0.3
 github.com/spf13/pflag
+# gitlab.com/Blockdaemon/bpm-sdk v0.0.0-20190712112114-a3bdcedacba1
+gitlab.com/Blockdaemon/bpm-sdk/pkg/node
+gitlab.com/Blockdaemon/bpm-sdk/internal/util
