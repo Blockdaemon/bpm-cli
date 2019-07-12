@@ -135,9 +135,7 @@ func (i Plugin) RunPlugin(nodeGID string) error {
 	}
 
 	// After everything is done, write the current version so we know where we are in case of upgrades
-	node.WritePluginVersion(version)
-
-	return nil
+	return node.WritePluginVersion(version)
 }
 
 // NewPlugin creates a new plugin from a PluginInfo
