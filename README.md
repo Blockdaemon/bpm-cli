@@ -7,7 +7,7 @@ BPM itself provides the framework, the actual deployment is performed by plugins
 # Requirements
 
 - Linux or OSX
-- Docker
+- Running Docker
 
 `wget` must be installed to follow these instructions. The simplest way to install it on Ubuntu is:
 
