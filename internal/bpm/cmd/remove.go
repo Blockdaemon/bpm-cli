@@ -27,6 +27,6 @@ var removeCmd = &cobra.Command{
 }
 
 func init() {
-	removeCmd.Flags().BoolVar(&purge, "purge", false, "Purge all data and configuration files")
+	removeCmd.Flags().BoolVar(&purge, "purge", false, "Purge all data and configuration files. Secrets (e.g. private keys) will not be removed because they may protect sensitive information/funds.")
 	rootCmd.AddCommand(removeCmd)
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
+	"gitlab.com/Blockdaemon/bpm-sdk/pkg/node"
 )
 
 // Remove contains functionality for the `remove` cmd
@@ -27,6 +28,17 @@ func Remove(baseDir, pluginURL, pluginName, runnerVersion string, purge bool) (s
 	} else {
 		output, err = pluginToRun.RunCommand("remove", gid)
 	}
-	fmt.Println(util.Indent(output, "    "))
-	return "", err
+
+	output = util.Indent(output, "    ")
+
+	if purge {
+		currentNode, err := node.LoadNode(baseDir, gid)
+		if err != nil {
+			return output, err
+		}
+
+		output = output + fmt.Sprintf("\nThe directory %s has not been removed. It may contain private keys that protect sensitive information/funds. Please remove it manually if it is not needed anymore.", currentNode.SecretsDirectory())
+	}
+
+	return output, err
 }
