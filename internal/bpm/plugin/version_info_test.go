@@ -44,15 +44,15 @@ func TestCheckRunnerUpgradable(t *testing.T) {
 	setupVersionInfo(baseDir, "", t)
 	defer teardown(baseDir, nil, t)
 
-	upgradable, err := CheckRunnerUpgradable(baseDir, "1.2.2")
+	upgradeVersion, err := CheckRunnerUpgradable(baseDir, "1.2.2")
 	assertNoError(err, t)
-	if !upgradable {
+	if upgradeVersion == "" {
 		t.Errorf("no upgrade available")
 	}
 
-	upgradable, err = CheckRunnerUpgradable(baseDir, "1.2.3")
+	upgradeVersion, err = CheckRunnerUpgradable(baseDir, "1.2.3")
 	assertNoError(err, t)
-	if upgradable {
+	if upgradeVersion != "" {
 		t.Errorf("unexpecedly there is an upgrade available")
 	}
 }
@@ -61,9 +61,9 @@ func TestCheckRunnerUpgradableSkipInDevelopment(t *testing.T) {
 	baseDir := setupBaseDir(t)
 	defer teardown(baseDir, nil, t)
 
-	upgradable, err := CheckRunnerUpgradable(baseDir, "development")
+	upgradeVersion, err := CheckRunnerUpgradable(baseDir, "development")
 	assertNoError(err, t)
-	if upgradable {
+	if upgradeVersion != "" {
 		t.Errorf("unexpectedly there is an upgrade available")
 	}
 }

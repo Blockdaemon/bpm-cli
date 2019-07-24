@@ -84,18 +84,28 @@ func (i Plugin) RunVersionCommand() (string, error) {
 }
 
 // NeedsUpgrade checks if this plugin needs to be upgraded
-func (i Plugin) NeedsUpgrade() (bool, error) {
+func (i Plugin) NeedsUpgrade() (string, error) {
 	installedVersionStr, err := i.RunVersionCommand()
 	if err != nil {
-		return false, fmt.Errorf("cannot get installed version of plugin '%s': %s", i.Info.Name, err)
+		return "", fmt.Errorf("cannot get installed version of plugin '%s': %s", i.Info.Name, err)
 	}
 
 	// During development we use master, in that case it doesn't need an upgrade since we are on the bleeding edge already
 	if installedVersionStr == "master" {
-		return false, nil
+		return "", nil
 	}
 
-	return util.NeedsUpgrade(installedVersionStr, i.Info.Version)
+	upgradable, err := util.NeedsUpgrade(installedVersionStr, i.Info.Version)
+
+	if err != nil {
+		return "", err
+	}
+
+	if upgradable {
+		return i.Info.Version, nil
+	}
+
+	return "", nil
 }
 
 // RunPlugin runs through the plugin lifecycle

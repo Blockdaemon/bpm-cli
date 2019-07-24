@@ -60,9 +60,9 @@ func TestPluginNeedsUpgrade(t *testing.T) {
 	// First, test if it is upgradable
 	plugin, err := LoadPlugin(baseDir, "", "test")
 	assertNoError(err, t)
-	upgradable, err := plugin.NeedsUpgrade()
+	upgradeVersion, err := plugin.NeedsUpgrade()
 	assertNoError(err, t)
-	if !upgradable {
+	if upgradeVersion == "" {
 		t.Errorf("expected the plugin to be upgradable but it is not")
 	}
 
@@ -80,9 +80,9 @@ func TestPluginNeedsUpgrade(t *testing.T) {
 
 	plugin, err = LoadPlugin(baseDir, "", "test")
 	assertNoError(err, t)
-	upgradable, err = plugin.NeedsUpgrade()
+	upgradeVersion, err = plugin.NeedsUpgrade()
 	assertNoError(err, t)
-	if upgradable {
+	if upgradeVersion != "" {
 		t.Errorf("expected the plugin to NOT be upgradable but it is")
 	}
 }

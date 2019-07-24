@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
+	"fmt"
 )
 
 
@@ -13,12 +14,12 @@ func Install(baseDir, pluginURL, pluginName, pluginVersion, runnerVersion string
 		return "", err
 	}
 
-	upgradable, err := plugin.CheckRunnerUpgradable(baseDir, runnerVersion)
+	runnerUpgradeVersion, err := plugin.CheckRunnerUpgradable(baseDir, runnerVersion)
 	if err != nil {
 		return "", err
 	}
-	if upgradable {
-		return TEXT_NEW_BPM_VERSION, nil
+	if len(runnerUpgradeVersion) > 0 {
+		return fmt.Sprintf(TEXT_NEW_BPM_VERSION, runnerUpgradeVersion), nil
 	}
 
 	pluginToInstall, err := plugin.LoadPlugin(baseDir, pluginURL, pluginName)

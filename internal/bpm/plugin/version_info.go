@@ -52,18 +52,27 @@ func LoadVersionInfo(baseDir string) (VersionInfo, error) {
 }
 
 // CheckRunnerUpgradable checks if there is a new version of the runner according to the version info on disk
-func CheckRunnerUpgradable(baseDir string, runnerVersion string) (bool, error) {
+func CheckRunnerUpgradable(baseDir string, runnerVersion string) (string, error) {
 	if runnerVersion == "development" || runnerVersion == "master" {
 		fmt.Printf("Skipping check if runner is upgradable during development!\n")
-		return false, nil
+		return "", nil
 	}
 
 	versionInfo, err := LoadVersionInfo(baseDir)
 	if err != nil {
-		return false, err
+		return "", err
 	}
 
-	return util.NeedsUpgrade(runnerVersion, versionInfo.RunnerVersion)
+	upgradable, err := util.NeedsUpgrade(runnerVersion, versionInfo.RunnerVersion) 
+	if err != nil {
+		return "", err
+	}
+
+	if upgradable {
+		return versionInfo.RunnerVersion, nil
+	}
+
+	return "", nil
 }
 
 // DownloadVersionInfo downloads the version info onto disk
