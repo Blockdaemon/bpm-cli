@@ -9,6 +9,16 @@ BPM itself provides the framework, the actual deployment is performed by plugins
 - Linux or OSX
 - Docker
 
+`wget` must be installed to follow these instructions. The simplest way to install it on Ubuntu is:
+
+	sudo apt install wget
+
+and on OSX (using the [homebrew package manager](https://brew.sh/)):
+
+	brew install wget
+
+Please see the official [wget homepage](https://www.gnu.org/software/wget/) for further details.
+
 # Installation
 
 **These instructions are just temporary until we have proper packages!**
