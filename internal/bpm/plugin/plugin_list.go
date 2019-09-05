@@ -23,7 +23,6 @@ func ListPlugins(baseDir, baseURL string) ([]PluginListItem, error) {
 	for _, info := range versionInfo.Plugins {
 		plugin := NewPlugin(info, baseDir, baseURL)
 
-
 		installed, err := plugin.IsInstalled()
 		if err != nil {
 			return pluginListItems, err

@@ -3,9 +3,9 @@ package plugin
 import (
 	"encoding/json"
 	"fmt"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
 	"io/ioutil"
 	"net/http"
-	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
 )
 
 // VersionInfo contains information about versions for the plugins and the runner
@@ -63,7 +63,7 @@ func CheckRunnerUpgradable(baseDir string, runnerVersion string) (string, error)
 		return "", err
 	}
 
-	upgradable, err := util.NeedsUpgrade(runnerVersion, versionInfo.RunnerVersion) 
+	upgradable, err := util.NeedsUpgrade(runnerVersion, versionInfo.RunnerVersion)
 	if err != nil {
 		return "", err
 	}

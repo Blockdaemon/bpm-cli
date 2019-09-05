@@ -91,4 +91,3 @@ func TestCheckRunnerUpgradableInvalidVersion(t *testing.T) {
 	_, err := CheckRunnerUpgradable(baseDir, "1.2.2")
 	assertError(err, t)
 }
-

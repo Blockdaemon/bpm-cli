@@ -1,11 +1,11 @@
 package tasks
 
 import (
-	"os"
 	"fmt"
+	"gitlab.com/Blockdaemon/bpm-sdk/pkg/node"
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/util"
-	"gitlab.com/Blockdaemon/bpm-sdk/pkg/node"
+	"os"
 )
 
 // Remove contains functionality for the `remove` cmd

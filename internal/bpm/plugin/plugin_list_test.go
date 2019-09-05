@@ -15,7 +15,7 @@ func TestListPlugins(t *testing.T) {
 
 	assertEqual(pluginListItems[0].Name, "stellar-horizon", t)
 	assertEqual(pluginListItems[0].AvailableVersion, "1.2.3", t)
-	assertEqual(pluginListItems[0].InstalledVersion, "not installed", t) 
+	assertEqual(pluginListItems[0].InstalledVersion, "not installed", t)
 	assertEqual(pluginListItems[1].Name, "test", t)
 	assertEqual(pluginListItems[1].AvailableVersion, "1.1.0", t)
 	assertEqual(pluginListItems[1].InstalledVersion, "1.0.0", t)

@@ -1,10 +1,9 @@
 package tasks
 
 import (
-	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
 	"fmt"
+	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
 )
-
 
 // Install contains functionality for the `install` cmd
 //

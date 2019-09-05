@@ -45,7 +45,7 @@ func MakeDirectory(baseDir string, subDirs ...string) (string, error) {
 		return "", err
 	}
 
-	subDirs = append([]string{expandedBaseDir}, subDirs...)	
+	subDirs = append([]string{expandedBaseDir}, subDirs...)
 
 	path := filepath.Join(subDirs...)
 
@@ -63,7 +63,7 @@ func BuildURL(baseURL, path, apiKey string) string {
 
 	if apiKey == "" {
 		return result + path
-	} 
+	}
 
 	return result + path + "?apiKey=" + apiKey
 }
@@ -114,14 +114,13 @@ func Indent(text, indent string) string {
 	return result[:len(result)-1]
 }
 
-
 func FileExists(name string) (bool, error) {
-    if _, err := os.Stat(name); err != nil {
-        if os.IsNotExist(err) {
-            return false, nil
-        }
+	if _, err := os.Stat(name); err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
 
-        return false, err
-    }
-    return true, nil
+		return false, err
+	}
+	return true, nil
 }

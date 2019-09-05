@@ -1,11 +1,11 @@
 package tasks
 
 import (
+	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
-	"fmt"
-	"bytes"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"gitlab.com/Blockdaemon/bpm/internal/bpm/plugin"
