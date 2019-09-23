@@ -1,5 +1,3 @@
-export GO111MODULE=on
-
 # Vendoring is a bit controversial. I'm doing it for these reasons:
 #
 # - Being able to build without internet
@@ -14,7 +12,6 @@ export GO111MODULE=on
 #
 # (https://www.theregister.co.uk/2017/02/26/git_fscked_by_sha1_collision_not_so_fast_says_linus_torvalds/)
 export GOFLAGS=-mod=vendor
-
 VERSION:=$(CI_COMMIT_REF_NAME)
 
 ifeq ($(VERSION),)
@@ -23,15 +20,16 @@ ifeq ($(VERSION),)
 endif
 
 # Need to wrap in "bash -c" so env vars work in the compiler as well as on the cli to specify the output
-BUILD_CMD:=bash -c 'go build -ldflags "-X gitlab.com/Blockdaemon/bpm/internal/bpm/cmd.runnerVersion=$(VERSION)" -o binaries/bpm-$(VERSION)-$$GOOS-$$GOARCH cmd/bpm/main.go'
+BUILD_CMD:=bash -c 'go build -ldflags "-X main.version=$(VERSION)" -o bin/bpm-$(VERSION)-$$GOOS-$$GOARCH cmd/*'
 
 .PHONY: build
 build:
 	GOOS=linux GOARCH=amd64 $(BUILD_CMD)
 	GOOS=darwin GOARCH=amd64 $(BUILD_CMD)
+	GOOS=windows GOARCH=amd64 $(BUILD_CMD)
 
 .PHONY: check
-check: lint test
+check: test lint
 
 .PHONY: test
 test:

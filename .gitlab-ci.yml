@@ -28,11 +28,11 @@ check:
     - make check
 
 build:
-  image: golang:1.12
+  image: golang:1.13
   stage: build
   script:
     - make build
   artifacts:
     untracked: true
     paths:
-      - binaries/
+      - bin/
