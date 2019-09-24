@@ -46,12 +46,14 @@ func (c *command) Wrap(f cmdFunc) runEFunc {
 				}
 
 				// Create an empty manifest file
+				m = config.Manifest{
+					Plugins: map[string]config.Plugin{},
+				}
+
 				if err := config.WriteFile(
 					homeDir,
 					config.ManifestFilename,
-					&config.Manifest{
-						Plugins: map[string]config.Plugin{},
-					},
+					&m,
 				); err != nil {
 					return err
 				}
