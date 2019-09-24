@@ -1,14 +1,13 @@
 package plugin
 
 import (
-	"fmt"
 	"path/filepath"
 
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
 	"gitlab.com/Blockdaemon/bpm/pkg/manager"
 )
 
-func Stop(homeDir, name, id string, purge bool) error {
+func Stop(homeDir, name, id string, purge bool, debug bool) error {
 	// Run plugin commands
 	pluginFilename := filepath.Join(config.PluginsDir(homeDir), name)
 	baseDirArgs := []string{"--base-dir", config.NodesDir(homeDir)}
@@ -20,9 +19,8 @@ func Stop(homeDir, name, id string, purge bool) error {
 		stopArgs = append(stopArgs, "--purge")
 	}
 
-	output, err := manager.ExecCmd(name, pluginFilename, stopArgs...)
+	_, err := manager.ExecCmd(debug, pluginFilename, stopArgs...)
 	if err != nil {
-		fmt.Println(output)
 		return err
 	}
 

@@ -14,6 +14,7 @@ type runEFunc func(*cobra.Command, []string) error
 
 type command struct {
 	baseDir string
+	debug   bool
 }
 
 func (c *command) Wrap(f cmdFunc) runEFunc {

@@ -27,7 +27,7 @@ func newStopCmd(c *command) *cobra.Command {
 			}
 
 			// Remove plugin
-			if err := plugin.Stop(homeDir, pluginName, id, purge); err != nil {
+			if err := plugin.Stop(homeDir, pluginName, id, purge, c.debug); err != nil {
 				return err
 			}
 

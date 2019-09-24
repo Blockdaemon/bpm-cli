@@ -43,7 +43,7 @@ func newStatusCmd(c *command) *cobra.Command {
 
 				pluginName := n.Protocol
 
-				status, err := plugin.Status(homeDir, pluginName, nodeID)
+				status, err := plugin.Status(homeDir, pluginName, nodeID, c.debug)
 				if err != nil {
 					return err
 				}
@@ -59,7 +59,7 @@ func newStatusCmd(c *command) *cobra.Command {
 			}
 
 			table.Render()
-			fmt.Println("\n\n" + buf.String())
+			fmt.Println(buf.String())
 
 			return nil
 
