@@ -25,7 +25,7 @@ func newStartCmd(c *command) *cobra.Command {
 			}
 
 			// Run the plugin
-			if err := plugin.Start(homeDir, pluginName, id); err != nil {
+			if err := plugin.Start(homeDir, pluginName, id, c.debug); err != nil {
 				return err
 			}
 

@@ -17,6 +17,7 @@ func New(os, version string) *cobra.Command {
 
 	pf := rootCmd.PersistentFlags()
 	pf.StringVar(&c.baseDir, "base-dir", "~/.bpm/", "The directory plugins and configuration are stored")
+	pf.BoolVar(&c.debug, "debug", false, "Enable debug output")
 
 	// Commands
 	rootCmd.AddCommand(

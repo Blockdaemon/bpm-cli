@@ -8,11 +8,11 @@ import (
 )
 
 // Status returns the status of a particular node
-func Status(homeDir, pluginName, nodeID string) (string, error) {
+func Status(homeDir, pluginName, nodeID string, debug bool) (string, error) {
 	// Run plugin commands
 	pluginFilename := filepath.Join(config.PluginsDir(homeDir), pluginName)
 	baseDirArgs := []string{"--base-dir", config.NodesDir(homeDir)}
 	statusArgs := append([]string{"status", nodeID}, baseDirArgs...)
 
-	return manager.ExecCmd(pluginName, pluginFilename, statusArgs...)
+	return manager.ExecCmd(debug, pluginFilename, statusArgs...)
 }
