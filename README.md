@@ -12,15 +12,15 @@ Blockchain Package Manager by [Blockdaemon](https://blockdaemon.com/). Deploy, m
 
 `wget` must be installed to follow these instructions. The simplest way to install it on Ubuntu is:
 
-    ```bash
-    sudo apt install wget
-    ```
+```bash
+sudo apt install wget
+```
 
 and on MacOS (using the [homebrew package manager](https://brew.sh/)):
 
-    ```bash
-    brew install wget
-    ```
+```bash
+brew install wget
+```
 
 Please see the official [wget homepage](https://www.gnu.org/software/wget/) for further details.
 
@@ -82,10 +82,13 @@ Add your configs and secrets to the directory above then:
 bpm start polkadot bm0lmirmvbaj4is78gtg
 ```
 
-You should now see docker containers being started:
+Check for running nodes with the status command:
 
 ```bash
-docker ps
+bpm status
+        NODE ID        | PLUGIN  |  STATUS  | SECRETS
++----------------------+---------+----------+---------+
+  bm0lmirmvbaj4is78gtg | running | polkadot |       0
 ```
 
 To remove the blockchain client, run:

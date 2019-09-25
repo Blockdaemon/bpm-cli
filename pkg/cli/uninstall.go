@@ -9,9 +9,7 @@ import (
 )
 
 func newUninstallCmd(c *command) *cobra.Command {
-	var purge bool
-
-	cmd := &cobra.Command{
+	return &cobra.Command{
 		Use:   "uninstall <package>",
 		Short: "Uninstall a package. Data and configuration will not be removed.",
 		Args:  cobra.MinimumNArgs(1),
@@ -48,8 +46,4 @@ func newUninstallCmd(c *command) *cobra.Command {
 			return nil
 		}),
 	}
-
-	cmd.Flags().BoolVar(&purge, "purge", false, "Purge all data and configuration files. Secrets (e.g. private keys) will not be removed because they may protect sensitive information/funds.")
-
-	return cmd
 }

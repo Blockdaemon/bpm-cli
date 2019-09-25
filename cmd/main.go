@@ -16,15 +16,6 @@ const versionDev = "0.0.0-dev"
 func main() {
 	logger := log.New(os.Stdout, "", 0)
 
-	// Check the runner version
-	/*runnerUpgradeVersion, err := plugin.CheckRunnerUpgradable(baseDir, runnerVersion)
-	if err != nil {
-		return "", err
-	}
-	if len(runnerUpgradeVersion) > 0 {
-		return fmt.Sprintf(TEXT_NEW_BPM_VERSION, runnerUpgradeVersion), nil
-	}*/
-
 	if version == "" {
 		version = versionDev
 	}
