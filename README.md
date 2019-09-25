@@ -94,16 +94,18 @@ bpm status
 To remove the blockchain client, run:
 
 ```bash
-bpm stop polkadot
+bpm stop polkadot bm0lmirmvbaj4is78gtg
 ```
 
 Please note that the above does not remove data volumes or configurations. To force the removal of all data use:
 
 ```bash
-bpm stop polkadot --purge
+bpm stop polkadot bm0lmirmvbaj4is78gtg --purge
 ```
 
 > Be careful with the `--purge` parameters. If you purge an already fully synced blockchain you loose all data and have to re-sync from scratch. Any manual customisations to the configuration files will be lost as well.
+
+To uninstall the package use:
 
 ```bash
 bpm uninstall polkadot
