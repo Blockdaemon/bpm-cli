@@ -61,14 +61,14 @@ Use "bpm [command] --help" for more information about a command.
 
 ### Example (Polkadot)
 
-Install the polkadot blockchain:
+Install the polkadot package:
 
 ```bash
 export BPM_REGISTRY_URL= 
 bpm install polkadot 1.0.0
 ```
 
-Configure the blockchain node and optionally pass additional fields:
+Configure the node and optionally pass additional fields:
 
 ```bash
 bpm configure polkadot --field name=polkadot
@@ -91,7 +91,7 @@ bpm status
   bm0lmirmvbaj4is78gtg | running | polkadot |       0
 ```
 
-To remove the blockchain client, run:
+To stop the node run:
 
 ```bash
 bpm stop polkadot bm0lmirmvbaj4is78gtg
