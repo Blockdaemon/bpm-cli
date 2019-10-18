@@ -12,7 +12,7 @@ import (
 	"path"
 
 	"github.com/Blockdaemon/bpm-sdk/internal/util"
- 	homedir "github.com/mitchellh/go-homedir"
+	homedir "github.com/mitchellh/go-homedir"
 )
 
 // Node represents a blockchain node, it's configuration and related information
