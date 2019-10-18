@@ -14,7 +14,7 @@ func newStopCmd(c *command) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "stop <id>",
-		Short: "Removes a running blockchain client. Data and configuration will not be removed.",
+		Short: "Stops a running blockchain node",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
 			id := args[0]
@@ -36,7 +36,7 @@ func newStopCmd(c *command) *cobra.Command {
 				return err
 			}
 
-			fmt.Println("\nThe directory node has not been removed. It may contain private keys that protect sensitive information/funds. Please remove it manually if it is not needed anymore.")
+			fmt.Printf("The node %q has been stopped.\n", id)
 
 			return nil
 		}),

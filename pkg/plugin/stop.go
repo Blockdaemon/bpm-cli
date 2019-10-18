@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
@@ -19,10 +20,12 @@ func Stop(homeDir, name, id string, purge bool, debug bool) error {
 		stopArgs = append(stopArgs, "--purge")
 	}
 
-	_, err := manager.ExecCmd(debug, pluginFilename, stopArgs...)
+	output, err := manager.ExecCmd(debug, pluginFilename, stopArgs...)
 	if err != nil {
 		return err
 	}
+
+	fmt.Println(output)
 
 	return nil
 }
