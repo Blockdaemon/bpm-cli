@@ -13,6 +13,7 @@ func New(os, version string) *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   "bpm",
 		Short: "Blockchain Package Manager (BPM) manages blockchain nodes on your own infrastructure.",
+		SilenceUsage: true,
 	}
 
 	pf := rootCmd.PersistentFlags()
