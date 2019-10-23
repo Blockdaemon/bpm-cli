@@ -2,11 +2,10 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/node"
 	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
 )
 

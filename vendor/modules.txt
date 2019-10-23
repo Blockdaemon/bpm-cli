@@ -1,4 +1,4 @@
-# github.com/Blockdaemon/bpm-sdk v0.0.0-20190923132945-53b6830dfb4d
+# github.com/Blockdaemon/bpm-sdk v0.0.0-20190923132945-53b6830dfb4d => ../bpm-sdk
 github.com/Blockdaemon/bpm-sdk/internal/util
 github.com/Blockdaemon/bpm-sdk/pkg/node
 # github.com/inconshreveable/mousetrap v1.0.0

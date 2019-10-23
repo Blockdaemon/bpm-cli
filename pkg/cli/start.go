@@ -2,11 +2,10 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/node"
 	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
 )
 
@@ -14,7 +13,7 @@ func newStartCmd(c *command) *cobra.Command {
 	return &cobra.Command{
 		Use:   "start <id>",
 		Short: "Start a blockchain node",
-		Args:  cobra.MinimumNArgs(2),
+		Args:  cobra.MinimumNArgs(1),
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
 			id := args[0]
 
