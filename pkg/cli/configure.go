@@ -9,11 +9,14 @@ import (
 	"github.com/rs/xid"
 	"github.com/spf13/cobra"
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
+	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
+	"gitlab.com/Blockdaemon/bpm/pkg/version"
 	"golang.org/x/xerrors"
 )
 
-func newConfigureCmd(c *command) *cobra.Command {
+func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
 	var fields []string
+	var skipUpgradeCheck bool
 
 	cmd := &cobra.Command{
 		Use:   "configure <package>",
@@ -30,6 +33,26 @@ func newConfigureCmd(c *command) *cobra.Command {
 			if !ok {
 				fmt.Printf("The package %q is currently not installed.\n", pluginName)
 				return nil
+			}
+
+			if !skipUpgradeCheck {
+				// Check if plugin is using the latest version
+				client := pbr.New(c.registry)
+				packageVersion, err := client.GetLatestPackageVersion(pluginName, runtimeOS)
+				if err != nil {
+					return err
+				}
+				latestVersion := packageVersion.Version
+
+				needsUpgrade, err := version.NeedsUpgrade(p.Version, latestVersion)
+				if err != nil {
+					return err
+				}
+
+				if needsUpgrade {
+					fmt.Printf("A new version of package %q is available. Please install using \"bpm install %s %s\".\n", pluginName, pluginName, latestVersion)
+					return nil
+				}
 			}
 
 			// Create node config
@@ -71,6 +94,7 @@ func newConfigureCmd(c *command) *cobra.Command {
 	}
 
 	cmd.Flags().StringSliceVar(&fields, "field", []string{}, "Custom fields to add to node.json")
+	cmd.Flags().BoolVar(&skipUpgradeCheck, "skip-upgrade-check", false, "Skip checking whether a new version of the package is available")
 
 	return cmd
 }

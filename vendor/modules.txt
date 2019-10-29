@@ -1,6 +1,8 @@
 # github.com/Blockdaemon/bpm-sdk v0.0.0-20190923132945-53b6830dfb4d => ../bpm-sdk
 github.com/Blockdaemon/bpm-sdk/internal/util
 github.com/Blockdaemon/bpm-sdk/pkg/node
+# github.com/coreos/go-semver v0.2.0
+github.com/coreos/go-semver/semver
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
 # github.com/kataras/tablewriter v0.0.0-20180708051242-e063d29b7c23

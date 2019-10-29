@@ -23,9 +23,9 @@ func New(os, version string) *cobra.Command {
 
 	// Commands
 	rootCmd.AddCommand(
-		newConfigureCmd(c),
+		newConfigureCmd(c, os),
 		newInstallCmd(c, os),
-		newListCmd(c),
+		newListCmd(c, os),
 		newShowCmd(c),
 		newStartCmd(c),
 		newStatusCmd(c),

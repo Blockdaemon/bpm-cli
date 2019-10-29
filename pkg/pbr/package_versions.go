@@ -31,3 +31,7 @@ func (c *Client) GetPackageVersion(packageName, version, os string) (Version, er
 	return ver, nil
 
 }
+
+func (c *Client) GetLatestPackageVersion(packageName, os string) (Version, error) {
+	return c.GetPackageVersion(packageName, "latest", os)
+}
