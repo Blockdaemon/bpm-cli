@@ -32,6 +32,8 @@ func New(os, version string) *cobra.Command {
 		newUninstallCmd(c),
 		newVersionCmd(version),
 		newTestCmd(c),
+		newSearchCmd(c, os),
+		newInfoCmd(c, os),
 	)
 
 	return rootCmd

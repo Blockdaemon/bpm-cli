@@ -18,6 +18,7 @@ type Package struct {
 	Environment string `json:"environment"`
 	Name        string `json:"name"`
 	NetworkType string `json:"networkType"`
+	Description string `json:"description"`
 	Protocol    string `json:"protocol"`
 	Subtype     string `json:"subtype"`
 }

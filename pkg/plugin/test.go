@@ -24,6 +24,5 @@ func Test(homeDir, name, id string, debug bool) error {
 		return err
 	}
 
-
 	return nil
 }

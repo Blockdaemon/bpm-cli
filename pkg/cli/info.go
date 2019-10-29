@@ -2,18 +2,26 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
 	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
 )
 
-func newListCmd(c *command) *cobra.Command {
+func newInfoCmd(c *command, os string) *cobra.Command {
 	return &cobra.Command{
-		Use:   "list",
-		Short: "List installed packages",
+		Use:   "info <package>",
+		Short: "Show information about a package",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			output, err := plugin.List(m)
+
+			query := ""
+			if len(args) > 0 {
+				query = strings.ToLower(args[0])
+			}
+
+			output, err := plugin.Info(query, os, m)
 			if err != nil {
 				return err
 			}
