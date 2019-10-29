@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
+	"github.com/spf13/cobra"
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
 )
 
