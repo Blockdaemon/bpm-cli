@@ -2,14 +2,13 @@ package plugin
 
 import (
 	"bytes"
-	stdlibos "os"
 
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
 	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
 )
 
-func Info(packageName string, os string, m config.Manifest) (string, error) {
-	client := pbr.New(stdlibos.Getenv("BPM_REGISTRY_ADDR"))
+func Info(registry string, packageName string, os string, m config.Manifest) (string, error) {
+	client := pbr.New(registry)
 
 	versions, err := client.ListVersions(os, packageName)
 	if err != nil {

@@ -2,15 +2,14 @@ package plugin
 
 import (
 	"bytes"
-	stdlibos "os"
 
 	"github.com/kataras/tablewriter"
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
 	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
 )
 
-func Search(query string, os string, m config.Manifest) (string, error) {
-	client := pbr.New(stdlibos.Getenv("BPM_REGISTRY_ADDR"))
+func Search(registry string, query string, os string, m config.Manifest) (string, error) {
+	client := pbr.New(registry)
 
 	packages, err := client.SearchPackages(query, os)
 	if err != nil {

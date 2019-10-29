@@ -28,7 +28,7 @@ func newInstallCmd(c *command, os string) *cobra.Command {
 			}
 
 			// Download plugin from registry
-			installedVersion, err := plugin.Install(homeDir, pluginName, version, os)
+			installedVersion, err := plugin.Install(homeDir, c.registry, pluginName, version, os)
 			if err != nil {
 				return err
 			}

@@ -11,13 +11,14 @@ func New(os, version string) *cobra.Command {
 	c := &command{}
 
 	rootCmd := &cobra.Command{
-		Use:   "bpm",
-		Short: "Blockchain Package Manager (BPM) manages blockchain nodes on your own infrastructure.",
+		Use:          "bpm",
+		Short:        "Blockchain Package Manager (BPM) manages blockchain nodes on your own infrastructure.",
 		SilenceUsage: true,
 	}
 
 	pf := rootCmd.PersistentFlags()
 	pf.StringVar(&c.baseDir, "base-dir", "~/.bpm/", "The directory plugins and configuration are stored")
+	pf.StringVar(&c.registry, "package-registry", "https://dev.registry.blockdaemon.com", "The package registry provides packages to install")
 	pf.BoolVar(&c.debug, "debug", false, "Enable debug output")
 
 	// Commands

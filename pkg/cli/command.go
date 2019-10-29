@@ -13,8 +13,9 @@ type cmdFunc func(string, config.Manifest, []string) error
 type runEFunc func(*cobra.Command, []string) error
 
 type command struct {
-	baseDir string
-	debug   bool
+	baseDir  string
+	registry string
+	debug    bool
 }
 
 func (c *command) Wrap(f cmdFunc) runEFunc {

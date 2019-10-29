@@ -19,7 +19,7 @@ func newSearchCmd(c *command, os string) *cobra.Command {
 				query = strings.ToLower(args[0])
 			}
 
-			output, err := plugin.Search(query, os, m)
+			output, err := plugin.Search(c.registry, query, os, m)
 			if err != nil {
 				return err
 			}
