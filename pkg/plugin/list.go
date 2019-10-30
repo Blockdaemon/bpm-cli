@@ -15,10 +15,6 @@ func List(registry string, m config.Manifest, os string) (string, error) {
 	table.SetBorder(false)
 	table.SetHeader([]string{
 		"NAME",
-		"PROTOCOL",
-		"ENVIRONMENT",
-		"NETWORK TYPE",
-		"SUBTYPE",
 		"INSTALLED VERSION",
 		"AVAILABLE VERSION",
 	})
@@ -37,10 +33,6 @@ func List(registry string, m config.Manifest, os string) (string, error) {
 
 		table.Append([]string{
 			name,
-			p.Protocol,
-			p.Environment,
-			p.NetworkType,
-			p.Subtype,
 			p.Version,
 			latestVersion,
 		})
