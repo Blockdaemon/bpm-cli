@@ -97,10 +97,14 @@ func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS s
 			n.NetworkType = networkType
 
 			// Only temporary until we find a better solution to distribute the certs
-			n.Collection.Host = "dev-1.logstash.blockdaemon.com:5044"
-			n.Collection.Cert = "~/.bpm/beats/beat.crt"
-			n.Collection.CA = "~/.bpm/beats/ca.crt"
-			n.Collection.Key = "~/.bpm/beats/beat.key"
+			if config.FileExists(homeDir, "beats") {
+				n.Collection.Host = "dev-1.logstash.blockdaemon.com:5044"
+				n.Collection.Cert = "~/.bpm/beats/beat.crt"
+				n.Collection.CA = "~/.bpm/beats/ca.crt"
+				n.Collection.Key = "~/.bpm/beats/beat.key"
+			} else {
+				fmt.Printf("No credentials found in %q, skipping configuration of Blockdaemon monitoring. Please configure your own monitoring in the node configuration files.\n\n", filepath.Join(homeDir, "beats"))
+			}
 
 			if err := config.WriteFile(
 				n.NodeDirectory(),

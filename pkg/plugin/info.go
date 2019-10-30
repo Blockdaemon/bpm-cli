@@ -1,14 +1,14 @@
 package plugin
 
 import (
-	"strings"
 	"bytes"
 	"path/filepath"
+	"strings"
 
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
-	"gitlab.com/Blockdaemon/bpm/pkg/manager"
 	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
+	"gitlab.com/Blockdaemon/bpm/pkg/config"
+	"gitlab.com/Blockdaemon/bpm/pkg/manager"
+	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
 	"gopkg.in/yaml.v2"
 )
 
