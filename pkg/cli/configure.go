@@ -20,7 +20,7 @@ func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
 			pluginName := strings.ToLower(args[0])
 
-			output, err := plugin.Configure(pluginName, homeDir, m, runtimeOS, c.registry, fields, skipUpgradeCheck)
+			output, err := plugin.Configure(pluginName, homeDir, m, runtimeOS, c.registry, fields, skipUpgradeCheck, c.debug)
 			if err != nil {
 				return err
 			}

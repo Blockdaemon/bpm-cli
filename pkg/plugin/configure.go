@@ -3,18 +3,20 @@ package plugin
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/rs/xid"
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
+	"gitlab.com/Blockdaemon/bpm/pkg/manager"
 	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
 	"gitlab.com/Blockdaemon/bpm/pkg/version"
 	"golang.org/x/xerrors"
 )
 
-func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS string, registry string, fields []string, skipUpgradeCheck bool) (string, error) {
+func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS string, registry string, fields []string, skipUpgradeCheck bool, debug bool) (string, error) {
 	// Generate instance id
 	id := xid.New().String()
 
@@ -75,7 +77,29 @@ func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS s
 		}
 	}
 
-	return fmt.Sprintf("Node with id %q has been initialized, add your configuration (node.json) and secrets here:\n%s\n", id, n.NodeDirectory()), nil
+	// Run plugin commands
+	pluginFilename := filepath.Join(config.PluginsDir(homeDir), pluginName)
+	baseDirArgs := []string{"--base-dir", config.NodesDir(homeDir)}
+
+	// Secrets
+	secretArgs := append([]string{"create-secrets", id}, baseDirArgs...)
+	output, err := manager.ExecCmd(debug, pluginFilename, secretArgs...)
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Println(output)
+
+	// Config
+	configArgs := append([]string{"create-configurations", id}, baseDirArgs...)
+	output, err = manager.ExecCmd(debug, pluginFilename, configArgs...)
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Println(output)
+
+	return fmt.Sprintf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm start %s\nTo see the status of configured nodes, run:\n    bpm status\n", id, n.ConfigsDirectory(), id), nil
 }
 
 func parseKeyPairs(fields []string) map[string]interface{} {
