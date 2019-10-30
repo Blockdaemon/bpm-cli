@@ -16,11 +16,13 @@ func Start(homeDir, name, id string, debug bool) error {
 	// Start
 	startArgs := append([]string{"start", id}, baseDirArgs...)
 	output, err := manager.ExecCmd(debug, pluginFilename, startArgs...)
+
+	// This needs to be printed even if err != nil because the output typically contains more information about what went wrong
+	fmt.Println(output)
+
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(output)
 
 	return nil
 }
