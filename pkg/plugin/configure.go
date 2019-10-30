@@ -47,6 +47,7 @@ func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS s
 		}
 	}
 
+	// TODO: Duplicated code in info.go - remove when we simplify the plugin cli interface
 	// Prepare running the plugin
 	pluginFilename := filepath.Join(config.PluginsDir(homeDir), pluginName)
 	baseDirArgs := []string{"--base-dir", config.NodesDir(homeDir)}

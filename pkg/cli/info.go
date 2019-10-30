@@ -21,7 +21,7 @@ func newInfoCmd(c *command, os string) *cobra.Command {
 				query = strings.ToLower(args[0])
 			}
 
-			output, err := plugin.Info(c.registry, query, os, m)
+			output, err := plugin.Info(c.registry, query, os, m, homeDir, c.debug)
 			if err != nil {
 				return err
 			}
