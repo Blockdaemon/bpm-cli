@@ -6,23 +6,35 @@ import (
 
 	"github.com/spf13/cobra"
 	"gitlab.com/Blockdaemon/bpm/pkg/config"
+	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
 	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
 )
 
 // newInstallCmd downloads and install a plugin from the PBR to the plugins directory
 func newInstallCmd(c *command, os string) *cobra.Command {
 	return &cobra.Command{
-		Use:   "install <package> <version>",
-		Short: "Installs or upgrades a package",
-		Args:  cobra.MinimumNArgs(2),
+		Use:   "install <package> [version]",
+		Short: "Installs or upgrades a package to a specific version or latest if no version is specified",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
 			pluginName := strings.ToLower(args[0])
-			version := args[1]
+
+			version := ""
+			if len(args) > 1 {
+				version = args[1]
+			} else {
+				client := pbr.New(c.registry)
+				packageVersion, err := client.GetLatestPackageVersion(pluginName, os)
+				if err != nil {
+					return err
+				}
+				version = packageVersion.Version
+			}
 
 			// Check if plugin is already installed
 			if p, ok := m.Plugins[pluginName]; ok {
 				if version == p.Version {
-					fmt.Printf("%q has already been installed.\n", pluginName)
+					fmt.Printf("%q version %q has already been installed.\n", pluginName, version)
 					return nil
 				}
 			}
