@@ -46,6 +46,9 @@ func newStartCmd(c *command) *cobra.Command {
 				}
 
 				content, err := ioutil.ReadFile(path)
+				if err != nil {
+					return err
+				}
 
 				var substitute = regexp.MustCompile(`{%[^%]*%}`)
 
