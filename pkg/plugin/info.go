@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"bytes"
+	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -40,15 +41,15 @@ func Info(registry string, packageName string, os string, m config.Manifest, hom
 
 	var buf bytes.Buffer
 
-	buf.WriteString("Name:         " + versions[0].Package.Name + "\n")
-	buf.WriteString("Description:  " + versions[0].Package.Description + "\n")
-	buf.WriteString("Protocol:     " + strings.Join(parameterOptions.Protocol, ", ") + "\n")
-	buf.WriteString("Network:      " + strings.Join(parameterOptions.Network, ", ") + "\n")
-	buf.WriteString("Network Type: " + strings.Join(parameterOptions.NetworkType, ", ") + "\n")
-	buf.WriteString("Subtype:      " + strings.Join(parameterOptions.Subtype, ", ") + "\n")
+	buf.WriteString(fmt.Sprintf("Name:         %s\n", versions[0].Package.Name))
+	buf.WriteString(fmt.Sprintf("Description:  %s\n", versions[0].Package.Description))
+	buf.WriteString(fmt.Sprintf("Protocol:     %s\n", strings.Join(parameterOptions.Protocol, ", ")))
+	buf.WriteString(fmt.Sprintf("Network:      %s\n", strings.Join(parameterOptions.Network, ", ")))
+	buf.WriteString(fmt.Sprintf("Network Type: %s\n", strings.Join(parameterOptions.NetworkType, ", ")))
+	buf.WriteString(fmt.Sprintf("Subtype:      %s\n", strings.Join(parameterOptions.Subtype, ", ")))
 	prefix := "Versions:     "
 	for ix, version := range versions {
-		buf.WriteString(prefix + version.Version + "\n")
+		buf.WriteString(fmt.Sprintf("%s%s\n", prefix, version.Version))
 
 		if ix == 0 {
 			prefix = "              "
