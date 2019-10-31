@@ -26,11 +26,13 @@ func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
 			pluginName := strings.ToLower(args[0])
 
 			output, err := plugin.Configure(pluginName, homeDir, m, runtimeOS, c.registry, network, networkType, protocol, subtype, skipUpgradeCheck, c.debug)
+
+			fmt.Println(output)
+
 			if err != nil {
 				return err
 			}
 
-			fmt.Println(output)
 			return nil
 		}),
 	}

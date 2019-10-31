@@ -32,6 +32,7 @@ func New(os, version string) *cobra.Command {
 		newTestCmd(c),
 		newSearchCmd(c, os),
 		newInfoCmd(c, os),
+		newRemoveCmd(c),
 	)
 
 	return rootCmd

@@ -10,8 +10,6 @@ import (
 )
 
 func newStopCmd(c *command) *cobra.Command {
-	var purge bool
-
 	cmd := &cobra.Command{
 		Use:   "stop <id>",
 		Short: "Stops a running blockchain node",
@@ -32,7 +30,7 @@ func newStopCmd(c *command) *cobra.Command {
 			}
 
 			// Remove plugin
-			if err := plugin.Stop(homeDir, pluginName, id, purge, c.debug); err != nil {
+			if err := plugin.Stop(homeDir, pluginName, id, c.debug); err != nil {
 				return err
 			}
 
@@ -41,8 +39,6 @@ func newStopCmd(c *command) *cobra.Command {
 			return nil
 		}),
 	}
-
-	cmd.Flags().BoolVar(&purge, "purge", false, "Purge all data and configuration files. Secrets (e.g. private keys) will not be removed because they may protect sensitive information/funds.")
 
 	return cmd
 }
