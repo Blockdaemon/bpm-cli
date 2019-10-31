@@ -10,11 +10,13 @@ import (
 )
 
 func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
-	var skipUpgradeCheck bool
-	var network string
-	var networkType string
-	var protocol string
-	var subtype string
+	var (
+		skipUpgradeCheck bool
+		network          string
+		networkType      string
+		protocol         string
+		subtype          string
+	)
 
 	cmd := &cobra.Command{
 		Use:   "configure <package>",
