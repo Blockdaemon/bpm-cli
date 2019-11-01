@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -13,7 +12,6 @@ import (
 	"gitlab.com/Blockdaemon/bpm/pkg/manager"
 	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
 	"gitlab.com/Blockdaemon/bpm/pkg/version"
-	"golang.org/x/xerrors"
 	"gopkg.in/yaml.v2"
 )
 
@@ -84,38 +82,25 @@ func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS s
 	}
 
 	// Create node config
-	n, err := node.Load(config.NodesDir(homeDir), id)
-	if err != nil {
-		var pathError *os.PathError
-		switch {
-		case xerrors.As(err, &pathError):
-			// Write node json if it was the first run
-			n.Environment = network
-			n.Protocol = protocol
-			n.Subtype = subtype
-			n.Version = p.Version
-			n.NetworkType = networkType
+	n := node.New(config.NodesDir(homeDir), id)
+	n.Environment = network
+	n.Protocol = protocol
+	n.Subtype = subtype
+	n.Version = p.Version
+	n.NetworkType = networkType
 
-			// Only temporary until we find a better solution to distribute the certs
-			if config.FileExists(homeDir, "beats") {
-				n.Collection.Host = "dev-1.logstash.blockdaemon.com:5044"
-				n.Collection.Cert = "~/.bpm/beats/beat.crt"
-				n.Collection.CA = "~/.bpm/beats/ca.crt"
-				n.Collection.Key = "~/.bpm/beats/beat.key"
-			} else {
-				fmt.Printf("No credentials found in %q, skipping configuration of Blockdaemon monitoring. Please configure your own monitoring in the node configuration files.\n\n", filepath.Join(homeDir, "beats"))
-			}
+	// Only temporary until we find a better solution to distribute the certs
+	if config.FileExists(homeDir, "beats") {
+		n.Collection.Host = "dev-1.logstash.blockdaemon.com:5044"
+		n.Collection.Cert = "~/.bpm/beats/beat.crt"
+		n.Collection.CA = "~/.bpm/beats/ca.crt"
+		n.Collection.Key = "~/.bpm/beats/beat.key"
+	} else {
+		fmt.Printf("No credentials found in %q, skipping configuration of Blockdaemon monitoring. Please configure your own monitoring in the node configuration files.\n\n", filepath.Join(homeDir, "beats"))
+	}
 
-			if err := config.WriteFile(
-				n.NodeDirectory(),
-				"node.json",
-				n,
-			); err != nil {
-				return "", err
-			}
-		default:
-			return "", err
-		}
+	if err := n.Save(); err != nil {
+		return "", err
 	}
 
 	// Secrets
