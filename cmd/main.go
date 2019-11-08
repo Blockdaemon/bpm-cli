@@ -4,7 +4,7 @@ import (
 	"os"
 	"runtime"
 
-	"gitlab.com/Blockdaemon/bpm/pkg/cli"
+	"github.com/Blockdaemon/bpm/pkg/cli"
 )
 
 // Set on compile: -ldflags "-X main.version=dev"

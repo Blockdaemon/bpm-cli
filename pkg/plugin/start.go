@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/manager"
+	"github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/manager"
 )
 
 func Start(homeDir, name, id string, debug bool) error {

@@ -4,8 +4,8 @@ import (
 	"bytes"
 
 	"github.com/kataras/tablewriter"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
+	"github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
 func Search(registry string, query string, os string, m config.Manifest) (string, error) {

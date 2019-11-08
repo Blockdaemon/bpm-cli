@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
-	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/pbr"
+	"github.com/Blockdaemon/bpm/pkg/plugin"
 )
 
 // newInstallCmd downloads and install a plugin from the PBR to the plugins directory

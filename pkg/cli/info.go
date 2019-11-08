@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/plugin"
 )
 
 func newInfoCmd(c *command, os string) *cobra.Command {

@@ -5,8 +5,8 @@ import (
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/plugin"
 )
 
 func newTestCmd(c *command) *cobra.Command {

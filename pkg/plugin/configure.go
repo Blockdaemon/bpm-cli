@@ -8,10 +8,10 @@ import (
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
 	"github.com/rs/xid"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/manager"
-	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
-	"gitlab.com/Blockdaemon/bpm/pkg/version"
+	"github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/manager"
+	"github.com/Blockdaemon/bpm/pkg/pbr"
+	"github.com/Blockdaemon/bpm/pkg/version"
 	"gopkg.in/yaml.v2"
 )
 

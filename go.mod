@@ -1,4 +1,4 @@
-module gitlab.com/Blockdaemon/bpm
+module github.com/Blockdaemon/bpm
 
 go 1.13
 

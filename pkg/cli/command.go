@@ -5,7 +5,7 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/config"
 	"golang.org/x/xerrors"
 )
 

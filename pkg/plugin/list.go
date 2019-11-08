@@ -4,8 +4,8 @@ import (
 	"bytes"
 
 	"github.com/kataras/tablewriter"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/pbr"
+	"github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
 func List(registry string, m config.Manifest, os string) (string, error) {

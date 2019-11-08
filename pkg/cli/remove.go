@@ -5,8 +5,8 @@ import (
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/spf13/cobra"
-	bpmconfig "gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
+	bpmconfig "github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/plugin"
 )
 
 func newRemoveCmd(c *command) *cobra.Command {

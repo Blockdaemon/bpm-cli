@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	bpmconfig "gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/manager"
+	bpmconfig "github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/manager"
 )
 
 func Remove(homeDir, name, id string, debug bool, all bool, data bool, config bool) error {
