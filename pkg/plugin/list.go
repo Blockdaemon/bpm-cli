@@ -4,11 +4,10 @@ import (
 	"bytes"
 
 	"github.com/kataras/tablewriter"
-	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
-func List(registry string, m config.Manifest, os string) (string, error) {
+func (p *PluginCmdContext) List() (string, error) {
 	var buf bytes.Buffer
 
 	table := tablewriter.NewWriter(&buf)
@@ -19,13 +18,13 @@ func List(registry string, m config.Manifest, os string) (string, error) {
 		"AVAILABLE VERSION",
 	})
 
-	client := pbr.New(registry)
+	client := pbr.New(p.RegistryURL)
 
 	// Get name and version from the manifest
-	for name, p := range m.Plugins {
+	for name, plugin := range p.Manifest.Plugins {
 		// This is not exactly performant if there are lots of plugins installed but it works well enough for now
 		// Plenty of room for improvement by doing just one request total instead of one request per plugin
-		packageVersion, err := client.GetLatestPackageVersion(name, os)
+		packageVersion, err := client.GetLatestPackageVersion(name, p.RuntimeOS)
 		if err != nil {
 			return "", err
 		}
@@ -33,7 +32,7 @@ func List(registry string, m config.Manifest, os string) (string, error) {
 
 		table.Append([]string{
 			name,
-			p.Version,
+			plugin.Version,
 			latestVersion,
 		})
 	}

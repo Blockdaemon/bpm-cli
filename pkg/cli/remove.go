@@ -3,13 +3,12 @@ package cli
 import (
 	"fmt"
 
-	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/spf13/cobra"
 	bpmconfig "github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 )
 
-func newRemoveCmd(c *command) *cobra.Command {
+func newRemoveCmd(c *command, runtimeOS string) *cobra.Command {
 	var (
 		all    bool
 		data   bool
@@ -27,23 +26,18 @@ func newRemoveCmd(c *command) *cobra.Command {
 				return fmt.Errorf("flag missing to specify what to remove. Use `--help` for details!")
 			}
 
-			n, err := node.Load(bpmconfig.NodesDir(homeDir), id)
-			if err != nil {
-				return err
-			}
-			pluginName := n.Protocol
-
-			// Check if plugin is installed
-			if _, ok := m.Plugins[pluginName]; !ok {
-				fmt.Printf("The package %q is currently not installed.\n", pluginName)
-				return nil
+			// TODO: Why do we have three ways of passing down variables?
+			cmdContext := plugin.PluginCmdContext{
+				HomeDir: homeDir,
+				Manifest: m,
+				RuntimeOS: runtimeOS,
+				RegistryURL: c.registry,
+				Debug: c.debug,
 			}
 
-			if err := plugin.Remove(homeDir, pluginName, id, c.debug, all, data, config); err != nil {
-				return err
-			}
-
-			return nil
+			output, err := cmdContext.Remove(id, all, data, config)
+			fmt.Println(output)
+			return err
 		}),
 	}
 

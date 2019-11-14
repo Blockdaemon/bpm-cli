@@ -2,16 +2,16 @@ package plugin
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/kataras/tablewriter"
-	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
-func Search(registry string, query string, os string, m config.Manifest) (string, error) {
-	client := pbr.New(registry)
+func (p *PluginCmdContext) Search(query string) (string, error) {
+	client := pbr.New(p.RegistryURL)
 
-	packages, err := client.SearchPackages(query, os)
+	packages, err := client.SearchPackages(strings.ToLower(query), p.RuntimeOS)
 	if err != nil {
 		return "", err
 	}

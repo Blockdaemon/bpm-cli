@@ -3,13 +3,12 @@ package cli
 import (
 	"fmt"
 
-	"github.com/Blockdaemon/bpm-sdk/pkg/node"
+	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/Blockdaemon/bpm/pkg/plugin"
 )
 
-func newTestCmd(c *command) *cobra.Command {
+func newTestCmd(c *command, runtimeOS string) *cobra.Command {
 	return &cobra.Command{
 		Use:   "test <id>",
 		Short: "Tests a running blockchain node",
@@ -17,23 +16,19 @@ func newTestCmd(c *command) *cobra.Command {
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
 			id := args[0]
 
-			n, err := node.Load(config.NodesDir(homeDir), id)
-			if err != nil {
-				return err
-			}
-			pluginName := n.Protocol
-
-			// Check if plugin is installed
-			if _, ok := m.Plugins[pluginName]; !ok {
-				fmt.Printf("The package %q is currently not installed.\n", pluginName)
-				return nil
+			// TODO: Why do we have three ways of passing down variables?
+			cmdContext := plugin.PluginCmdContext{
+				HomeDir: homeDir,
+				Manifest: m,
+				RuntimeOS: runtimeOS,
+				RegistryURL: c.registry,
+				Debug: c.debug,
 			}
 
-			if err := plugin.Test(homeDir, pluginName, id, c.debug); err != nil {
-				return err
-			}
 
-			return nil
+			output, err := cmdContext.Test(id)
+			fmt.Println(output)
+			return err
 		}),
 	}
 }

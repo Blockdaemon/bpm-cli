@@ -2,26 +2,21 @@ package plugin
 
 import (
 	"fmt"
-	"path/filepath"
 
+	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/Blockdaemon/bpm/pkg/manager"
 )
 
-func Stop(homeDir, name, id string, debug bool) error {
-	// Run plugin commands
-	pluginFilename := filepath.Join(config.PluginsDir(homeDir), name)
-	baseDirArgs := []string{"--base-dir", config.NodesDir(homeDir)}
-
-	// Secrets
-	stopArgs := append([]string{"stop", id}, baseDirArgs...)
-
-	output, err := manager.ExecCmd(debug, pluginFilename, stopArgs...)
+func (p *PluginCmdContext) Stop(nodeID string) (string, error) {
+	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	fmt.Println(output)
+	output, err := p.execNodeCommand(n, "stop")
+	if err != nil {
+		return output, err
+	}
 
-	return nil
+	return fmt.Sprintf("%s\nThe node %q has been stopped.\n", output, nodeID), nil
 }

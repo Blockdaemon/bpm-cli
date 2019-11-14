@@ -1,28 +1,46 @@
 package plugin
 
 import (
+	"fmt"
+
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/manager"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
-func Install(homeDir, registry, name, version, opSys string) (pbr.Version, error) {
-	client := pbr.New(registry)
-
-	// Get the specified version from the registry
-	ver, err := client.GetPackageVersion(name, version, opSys)
+func (p *PluginCmdContext) InstallLatest(pluginName string) (string, error) {
+	latestVersion, err := p.getLatestVersion(pluginName)
 	if err != nil {
-		return ver, err
+		return "", err
+	}
+
+	return p.Install(pluginName, latestVersion)
+}
+
+func (p *PluginCmdContext) Install(pluginName, versionToInstall string) (string, error) {
+	// Check if this version is already installed
+	if p.getInstalledVersion(pluginName) == versionToInstall {
+		return fmt.Sprintf("%q version %q has already been installed.\n", pluginName, versionToInstall), nil
 	}
 
 	// Download the plugin file
-	if err := manager.DownloadToFile(
-		config.PluginsDir(homeDir),
-		ver.Package.Name,
-		ver.RegistryURL,
-	); err != nil {
-		return ver, err
+	client := pbr.New(p.RegistryURL)
+	ver, err := client.GetPackageVersion(pluginName, versionToInstall, p.RuntimeOS)
+	if err != nil {
+		return "", err
+	}
+	if err := manager.DownloadToFile(config.PluginsDir(p.HomeDir), pluginName, ver.RegistryURL); err != nil {
+		return "", err
 	}
 
-	return ver, nil
+	// Add plugin to manifest
+	p.Manifest.Plugins[pluginName] = config.Plugin{
+		Version: versionToInstall,
+	}
+
+	if err := config.WriteFile(p.HomeDir, config.ManifestFilename, p.Manifest); err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("The package %q has been installed.\n", versionToInstall), nil
 }

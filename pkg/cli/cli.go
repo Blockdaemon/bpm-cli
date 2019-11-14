@@ -23,16 +23,16 @@ func New(os, version string) *cobra.Command {
 		newConfigureCmd(c, os),
 		newInstallCmd(c, os),
 		newListCmd(c, os),
-		newShowCmd(c),
-		newStartCmd(c),
-		newStatusCmd(c),
-		newStopCmd(c),
-		newUninstallCmd(c),
+		newShowCmd(c, os),
+		newStartCmd(c, os),
+		newStatusCmd(c, os),
+		newStopCmd(c, os),
+		newUninstallCmd(c, os),
 		newVersionCmd(version),
-		newTestCmd(c),
+		newTestCmd(c, os),
 		newSearchCmd(c, os),
 		newInfoCmd(c, os),
-		newRemoveCmd(c),
+		newRemoveCmd(c, os),
 	)
 
 	return rootCmd

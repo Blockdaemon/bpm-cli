@@ -13,14 +13,18 @@ func newListCmd(c *command, os string) *cobra.Command {
 		Use:   "list",
 		Short: "List installed packages",
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			output, err := plugin.List(c.registry, m, os)
-			if err != nil {
-				return err
+			// TODO: Why do we have three ways of passing down variables?
+			cmdContext := plugin.PluginCmdContext{
+				HomeDir: homeDir,
+				Manifest: m,
+				RuntimeOS: os,
+				RegistryURL: c.registry,
+				Debug: c.debug,
 			}
 
+			output, err := cmdContext.List()
 			fmt.Println(output)
-
-			return nil
+			return err
 		}),
 	}
 }

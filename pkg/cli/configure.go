@@ -2,11 +2,10 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 
-	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/spf13/cobra"
 )
 
 func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
@@ -23,17 +22,20 @@ func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
 		Short: "Configure a new blockchain node",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			pluginName := strings.ToLower(args[0])
+			pluginName := args[0]
 
-			output, err := plugin.Configure(pluginName, homeDir, m, runtimeOS, c.registry, network, networkType, protocol, subtype, skipUpgradeCheck, c.debug)
-
-			fmt.Println(output)
-
-			if err != nil {
-				return err
+			// TODO: Why do we have three ways of passing down variables?
+			cmdContext := plugin.PluginCmdContext{
+				HomeDir: homeDir,
+				Manifest: m,
+				RuntimeOS: runtimeOS,
+				RegistryURL: c.registry,
+				Debug: c.debug,
 			}
 
-			return nil
+			output, err := cmdContext.Configure(pluginName, network, networkType, protocol, subtype, skipUpgradeCheck)
+			fmt.Println(output)
+			return err
 		}),
 	}
 

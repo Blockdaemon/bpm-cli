@@ -33,7 +33,7 @@ type DockerPlugin struct {
 }
 
 const (
-	filebeatContainerImage = "docker.elastic.co/beats/filebeat:7.3.1"
+	filebeatContainerImage = "docker.elastic.co/beats/filebeat:7.4.1"
 	filebeatContainerName  = "filebeat"
 	filebeatConfigFile     = "filebeat.yml"
 )
@@ -51,6 +51,11 @@ func NewDockerPlugin(name, description, version string, containers []docker.Cont
 				Type: "bind",
 				From: filebeatConfigFile,
 				To:   "/usr/share/filebeat/filebeat.yml",
+			},
+			{
+				Type: "bind",
+				From: "/var/lib/docker/containers",
+				To:   "/var/lib/docker/containers",
 			},
 		},
 		User: "root",

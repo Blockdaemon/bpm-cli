@@ -4,38 +4,26 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+	"bytes"
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
-	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
-	"github.com/rs/xid"
 	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/Blockdaemon/bpm/pkg/manager"
-	"github.com/Blockdaemon/bpm/pkg/pbr"
-	"github.com/Blockdaemon/bpm/pkg/version"
-	"gopkg.in/yaml.v2"
+	"github.com/rs/xid"
 )
 
-// TODO: Too many parameters, need to clean this up
-func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS string, registry string, networkParam string, networkTypeParam string, protocolParam string, subtypeParam string, skipUpgradeCheck bool, debug bool) (string, error) {
+
+func (p *PluginCmdContext) Configure(pluginName string, networkParam string, networkTypeParam string, protocolParam string, subtypeParam string, skipUpgradeCheck bool) (string, error) {
 	// Generate instance id
 	id := xid.New().String()
 
-	// Check if plugin is installed
-	p, ok := m.Plugins[pluginName]
-	if !ok {
+	if !p.isInstalled(pluginName) {
 		return fmt.Sprintf("The package %q is currently not installed.\n", pluginName), nil
 	}
 
 	// Check if plugin is using the latest version
 	if !skipUpgradeCheck {
-		client := pbr.New(registry)
-		packageVersion, err := client.GetLatestPackageVersion(pluginName, runtimeOS)
-		if err != nil {
-			return "", err
-		}
-		latestVersion := packageVersion.Version
+		needsUpgrade, latestVersion, err := p.needsUpgrade(pluginName)
 
-		needsUpgrade, err := version.NeedsUpgrade(p.Version, latestVersion)
 		if err != nil {
 			return "", err
 		}
@@ -45,20 +33,9 @@ func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS s
 		}
 	}
 
-	// TODO: Duplicated code in info.go - remove when we simplify the plugin cli interface
-	// Prepare running the plugin
-	pluginFilename := filepath.Join(config.PluginsDir(homeDir), pluginName)
-	baseDirArgs := []string{"--base-dir", config.NodesDir(homeDir)}
+	fullOutput := bytes.NewBufferString("")
 
-	// Get parameter options
-	configArgs := append([]string{"parameters", id}, baseDirArgs...)
-	output, err := manager.ExecCmd(debug, pluginFilename, configArgs...)
-	if err != nil {
-		return "", err
-	}
-
-	parameterOptions := plugin.Parameters{}
-	err = yaml.Unmarshal([]byte(output), &parameterOptions)
+	parameterOptions, err := p.getParameterOptions(pluginName)
 	if err != nil {
 		return "", err
 	}
@@ -82,21 +59,21 @@ func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS s
 	}
 
 	// Create node config
-	n := node.New(config.NodesDir(homeDir), id)
+	n := node.New(config.NodesDir(p.HomeDir), id)
 	n.Environment = network
 	n.Protocol = protocol
 	n.Subtype = subtype
-	n.Version = p.Version
+	n.Version = p.getInstalledVersion(pluginName)
 	n.NetworkType = networkType
 
 	// Only temporary until we find a better solution to distribute the certs
-	if config.FileExists(homeDir, "beats") {
+	if config.FileExists(p.HomeDir, "beats") {
 		n.Collection.Host = "dev-1.logstash.blockdaemon.com:5044"
 		n.Collection.Cert = "~/.bpm/beats/beat.crt"
 		n.Collection.CA = "~/.bpm/beats/ca.crt"
 		n.Collection.Key = "~/.bpm/beats/beat.key"
 	} else {
-		fmt.Printf("No credentials found in %q, skipping configuration of Blockdaemon monitoring. Please configure your own monitoring in the node configuration files.\n\n", filepath.Join(homeDir, "beats"))
+		fullOutput.WriteString(fmt.Sprintf("\nNo credentials found in %q, skipping configuration of Blockdaemon monitoring. Please configure your own monitoring in the node configuration files.\n\n", filepath.Join(p.HomeDir, "beats")))
 	}
 
 	if err := n.Save(); err != nil {
@@ -104,24 +81,22 @@ func Configure(pluginName string, homeDir string, m config.Manifest, runtimeOS s
 	}
 
 	// Secrets
-	secretArgs := append([]string{"create-secrets", id}, baseDirArgs...)
-	output, err = manager.ExecCmd(debug, pluginFilename, secretArgs...)
+	output, err := p.execNodeCommand(n, "create-secrets")
+	fullOutput.WriteString("\n" + output)
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Println(output)
 
 	// Config
-	configArgs = append([]string{"create-configurations", id}, baseDirArgs...)
-	output, err = manager.ExecCmd(debug, pluginFilename, configArgs...)
+	output, err = p.execNodeCommand(n, "create-configurations")
+	fullOutput.WriteString("\n" + output)
 	if err != nil {
 		return "", err
 	}
 
-	fmt.Println(output)
+	fullOutput.WriteString(fmt.Sprintf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm start %s\nTo see the status of configured nodes, run:\n    bpm status\n", id, n.ConfigsDirectory(), id))
 
-	return fmt.Sprintf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm start %s\nTo see the status of configured nodes, run:\n    bpm status\n", id, n.ConfigsDirectory(), id), nil
+	return fullOutput.String(), nil
 }
 
 func validateParameter(name string, value string, options []string) (string, error) {

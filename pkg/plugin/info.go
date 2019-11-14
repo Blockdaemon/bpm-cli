@@ -3,38 +3,20 @@ package plugin
 import (
 	"bytes"
 	"fmt"
-	"path/filepath"
 	"strings"
 
-	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
-	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/Blockdaemon/bpm/pkg/manager"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
-	"gopkg.in/yaml.v2"
 )
 
-func Info(registry string, packageName string, os string, m config.Manifest, homeDir string, debug bool) (string, error) {
-	client := pbr.New(registry)
+func (p *PluginCmdContext) Info(pluginName string) (string, error) {
+	client := pbr.New(p.RegistryURL)
 
-	versions, err := client.ListVersions(os, packageName)
+	versions, err := client.ListVersions(p.RuntimeOS, pluginName)
 	if err != nil {
 		return "", err
 	}
 
-	// TODO: Duplicated code in configure.go - remove when we simplify the plugin cli interface
-	// Prepare running the plugin
-	pluginFilename := filepath.Join(config.PluginsDir(homeDir), packageName)
-	baseDirArgs := []string{"--base-dir", config.NodesDir(homeDir)}
-
-	// Get parameter options
-	configArgs := append([]string{"parameters"}, baseDirArgs...)
-	output, err := manager.ExecCmd(debug, pluginFilename, configArgs...)
-	if err != nil {
-		return "", err
-	}
-
-	parameterOptions := plugin.Parameters{}
-	err = yaml.Unmarshal([]byte(output), &parameterOptions)
+	parameterOptions, err := p.getParameterOptions(pluginName)
 	if err != nil {
 		return "", err
 	}

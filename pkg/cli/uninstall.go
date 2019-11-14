@@ -2,48 +2,31 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/Blockdaemon/bpm/pkg/plugin"
 )
 
-func newUninstallCmd(c *command) *cobra.Command {
+func newUninstallCmd(c *command, runtimeOS string) *cobra.Command {
 	return &cobra.Command{
 		Use:   "uninstall <package>",
 		Short: "Uninstall a package. Data and configuration will not be removed.",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			pluginName := strings.ToLower(args[0])
+			pluginName := args[0]
 
-			// Check if plugin is installed
-			if _, ok := m.Plugins[pluginName]; !ok {
-				fmt.Printf("The package %q is currently not installed.\n", pluginName)
-				return nil
+			cmdContext := plugin.PluginCmdContext{
+				HomeDir: homeDir,
+				Manifest: m,
+				RuntimeOS: runtimeOS,
+				RegistryURL: c.registry,
+				Debug: c.debug,
 			}
 
-			// Delete the plugin
-			if err := config.DeleteFile(
-				config.PluginsDir(homeDir),
-				pluginName,
-			); err != nil {
-				return err
-			}
-
-			// Remove plugin from manifest
-			delete(m.Plugins, pluginName)
-
-			if err := config.WriteFile(
-				homeDir,
-				config.ManifestFilename,
-				m,
-			); err != nil {
-				return err
-			}
-
-			fmt.Printf("The package %q has been uninstalled.\n", pluginName)
-
-			return nil
+			output, err := cmdContext.Uninstall(pluginName)
+			fmt.Println(output)
+			return err
 		}),
 	}
 }

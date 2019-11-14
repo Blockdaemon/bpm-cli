@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
@@ -15,20 +14,20 @@ func newInfoCmd(c *command, os string) *cobra.Command {
 		Short: "Show information about a package",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
+			pluginName := args[0]
 
-			query := ""
-			if len(args) > 0 {
-				query = strings.ToLower(args[0])
+			// TODO: Why do we have three ways of passing down variables?
+			cmdContext := plugin.PluginCmdContext{
+				HomeDir: homeDir,
+				Manifest: m,
+				RuntimeOS: os,
+				RegistryURL: c.registry,
+				Debug: c.debug,
 			}
 
-			output, err := plugin.Info(c.registry, query, os, m, homeDir, c.debug)
-			if err != nil {
-				return err
-			}
-
+			output, err := cmdContext.Info(pluginName)
 			fmt.Println(output)
-
-			return nil
+			return err
 		}),
 	}
 }
