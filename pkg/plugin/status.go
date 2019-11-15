@@ -17,7 +17,7 @@ func (p *PluginCmdContext) Status() (string, error) {
 	table.SetBorder(false)
 	table.SetHeader([]string{
 		"NODE ID",
-		"PLUGIN",
+		"PACKAGE",
 		"STATUS",
 		"SECRETS",
 	})
