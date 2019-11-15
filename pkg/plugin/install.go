@@ -34,11 +34,7 @@ func (p *PluginCmdContext) Install(pluginName, versionToInstall string) (string,
 	}
 
 	// Add plugin to manifest
-	p.Manifest.Plugins[pluginName] = config.Plugin{
-		Version: versionToInstall,
-	}
-
-	if err := config.WriteFile(p.HomeDir, config.ManifestFilename, p.Manifest); err != nil {
+	if err := p.Manifest.UpdatePlugin(pluginName, versionToInstall); err != nil {
 		return "", err
 	}
 

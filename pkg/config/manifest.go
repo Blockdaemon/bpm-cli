@@ -3,14 +3,38 @@ package config
 const ManifestFilename = "manifest.json"
 
 type Plugin struct {
-	Environment string `json:"environment"`
-	NetworkType string `json:"networkType"`
-	Protocol    string `json:"protocol"`
-	Subtype     string `json:"subtype"`
 	Version     string `json:"version"`
 }
 
 type Manifest struct {
 	// Plugins are a map of package name -> version
 	Plugins map[string]Plugin `json:"plugins"`
+	path string `json:"-"`
+}
+
+func LoadManifest(path string) (Manifest, error) {
+	m := Manifest{
+		Plugins: map[string]Plugin{}, // initialize with empty map to avoid `assignment to entry in nil map`
+		path: path,
+	}
+
+	var err error
+	if FileExists(path, ManifestFilename) {
+		err = ReadFile(path, ManifestFilename, &m)
+	}
+	return m, err
+}
+
+func (m *Manifest) Write() error {
+	return WriteFile(m.path, ManifestFilename, m)
+}
+
+func (m *Manifest) UpdatePlugin(pluginName, version string) error {
+	m.Plugins[pluginName] = Plugin{ Version: version }
+	return m.Write()
+}
+
+func (m *Manifest) RemovePlugin(pluginName string) error {
+	delete(m.Plugins, pluginName)
+	return m.Write()
 }

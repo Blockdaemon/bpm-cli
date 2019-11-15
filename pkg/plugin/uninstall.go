@@ -17,9 +17,7 @@ func (p *PluginCmdContext) Uninstall(pluginName string) (string, error) {
 	}
 
 	// Remove plugin from manifest
-	delete(p.Manifest.Plugins, pluginName)
-
-	if err := config.WriteFile(p.HomeDir, config.ManifestFilename, p.Manifest); err != nil {
+	if err := p.Manifest.RemovePlugin(pluginName); err != nil {
 		return "", err
 	}
 
