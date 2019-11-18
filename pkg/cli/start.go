@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
 )

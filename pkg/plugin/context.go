@@ -63,8 +63,7 @@ func (p *PluginCmdContext) needsUpgrade(pluginName string) (bool, string, error)
 	return needsUpgrade, latestVersion, nil
 }
 
-// TODO: Once everything is reefactored to write to stdout instead of returing strings
-func (p *PluginCmdContext) execNodeCommand(n node.Node, cmd string) (string, error) {
+func (p *PluginCmdContext) execCmdCapture(n node.Node, cmd string) (string, error) {
 	pluginName := n.Protocol // TODO: Wrong variable, should be pluginName
 
 	// Check if plugin is installed
@@ -75,12 +74,10 @@ func (p *PluginCmdContext) execNodeCommand(n node.Node, cmd string) (string, err
 	// Run plugin commands
 	baseDir := config.NodesDir(p.HomeDir)
 	pluginFilename := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
-	output, err := manager.ExecCmd(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
-
-	return output, err
+	return manager.ExecCmdCapture(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
 }
 
-func (p *PluginCmdContext) execPrintNodeCommand(n node.Node, cmd string) error {
+func (p *PluginCmdContext) execCmd(n node.Node, cmd string) error {
 	pluginName := n.Protocol // TODO: Wrong variable, should be pluginName
 
 	// Check if plugin is installed
@@ -91,10 +88,7 @@ func (p *PluginCmdContext) execPrintNodeCommand(n node.Node, cmd string) error {
 	// Run plugin commands
 	baseDir := config.NodesDir(p.HomeDir)
 	pluginFilename := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
-	output, err := manager.ExecCmd(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
-	fmt.Println(output)
-
-	return err
+	return manager.ExecCmd(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
 }
 
 func (p *PluginCmdContext) getParameterOptions(pluginName string) (plugin.Parameters, error) {
@@ -104,7 +98,7 @@ func (p *PluginCmdContext) getParameterOptions(pluginName string) (plugin.Parame
 
 	// Get parameter options
 	configArgs := append([]string{"parameters"}, baseDirArgs...)
-	output, err := manager.ExecCmd(false, pluginFilename, configArgs...)
+	output, err := manager.ExecCmdCapture(false, pluginFilename, configArgs...)
 	if err != nil {
 		return parameterOptions, err
 	}

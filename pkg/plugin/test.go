@@ -11,5 +11,5 @@ func (p *PluginCmdContext) Test(nodeID string) error {
 		return err
 	}
 
-	return p.execPrintNodeCommand(n, "test")
+	return p.execCmd(n, "test")
 }

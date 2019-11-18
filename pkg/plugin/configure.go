@@ -77,13 +77,13 @@ func (p *PluginCmdContext) Configure(pluginName string, networkParam string, net
 	}
 
 	// Secrets
-	err = p.execPrintNodeCommand(n, "create-secrets")
+	err = p.execCmd(n, "create-secrets")
 	if err != nil {
 		return err
 	}
 
 	// Config
-	err = p.execPrintNodeCommand(n, "create-configurations")
+	err = p.execCmd(n, "create-configurations")
 	if err != nil {
 		return err
 	}

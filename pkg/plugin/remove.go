@@ -16,23 +16,23 @@ func (p *PluginCmdContext) Remove(nodeID string, all bool, data bool, config boo
 	}
 
 	if config || all {
-		if err := p.execPrintNodeCommand(n, "remove-config"); err != nil {
+		if err := p.execCmd(n, "remove-config"); err != nil {
 			return err
 		}
 	}
 
 	if data || all {
-		if err := p.execPrintNodeCommand(n, "stop"); err != nil {
+		if err := p.execCmd(n, "stop"); err != nil {
 			return err
 		}
 
-		if err := p.execPrintNodeCommand(n, "remove-data"); err != nil {
+		if err := p.execCmd(n, "remove-data"); err != nil {
 			return err
 		}
 	}
 
 	if all {
-		if err := p.execPrintNodeCommand(n, "remove-node"); err != nil {
+		if err := p.execCmd(n, "remove-node"); err != nil {
 			return err
 		}
 

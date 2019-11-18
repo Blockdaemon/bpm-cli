@@ -34,7 +34,7 @@ func (p *PluginCmdContext) Status() error {
 			return err
 		}
 
-		status, err := p.execNodeCommand(n, "status")
+		status, err := p.execCmdCapture(n, "status")
 		if err != nil {
 			return err
 		}

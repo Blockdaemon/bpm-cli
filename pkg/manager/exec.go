@@ -3,28 +3,36 @@ package manager
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 )
 
 // ExecCmd runs a particular command with this plugin
-func ExecCmd(debug bool, pluginFilename string, args ...string) (string, error) {
+func ExecCmd(debug bool, pluginFilename string, args ...string) error {
 	if debug {
 		fmt.Printf("Running: %s %s\n", pluginFilename, strings.Join(args, " "))
 	}
 
 	cmd := exec.Command(pluginFilename, args...)
-	output, err := cmd.CombinedOutput()
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	cleanOutput := string(bytes.TrimSpace(output))
+	return cmd.Run()
+}
 
-	if err != nil {
-		if debug {
-			fmt.Printf("Error: %s\n", err)
-			fmt.Println(cleanOutput)
-		}
-		return cleanOutput, err
+// ExecCmdCapture runs a particular command with this plugin and returns it's output if succefull
+func ExecCmdCapture(debug bool, pluginFilename string, args ...string) (string, error) {
+	if debug {
+		fmt.Printf("Running: %s %s\n", pluginFilename, strings.Join(args, " "))
 	}
 
+	cmd := exec.Command(pluginFilename, args...)
+	output, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+
+	cleanOutput := string(bytes.TrimSpace(output))
 	return cleanOutput, nil
 }

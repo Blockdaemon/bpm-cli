@@ -49,7 +49,7 @@ func (p *PluginCmdContext) Start(nodeID string) error {
 		return err
 	}
 
-	err = p.execPrintNodeCommand(n, "start")
+	err = p.execCmd(n, "start")
 
 	fmt.Printf("The node %q has been started.\n", nodeID)
 

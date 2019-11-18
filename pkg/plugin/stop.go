@@ -13,7 +13,7 @@ func (p *PluginCmdContext) Stop(nodeID string) error {
 		return err
 	}
 
-	if err := p.execPrintNodeCommand(n, "stop"); err != nil {
+	if err := p.execCmd(n, "stop"); err != nil {
 		return err
 	}
 
