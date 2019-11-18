@@ -1,9 +1,9 @@
 package cli
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/spf13/cobra"
 )
 
 func newUninstallCmd(c *command, runtimeOS string) *cobra.Command {
@@ -15,11 +15,11 @@ func newUninstallCmd(c *command, runtimeOS string) *cobra.Command {
 			pluginName := args[0]
 
 			cmdContext := plugin.PluginCmdContext{
-				HomeDir: homeDir,
-				Manifest: m,
-				RuntimeOS: runtimeOS,
+				HomeDir:     homeDir,
+				Manifest:    m,
+				RuntimeOS:   runtimeOS,
 				RegistryURL: c.registry,
-				Debug: c.debug,
+				Debug:       c.debug,
 			}
 
 			return cmdContext.Uninstall(pluginName)

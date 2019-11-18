@@ -3,19 +3,19 @@ package config
 const ManifestFilename = "manifest.json"
 
 type Plugin struct {
-	Version     string `json:"version"`
+	Version string `json:"version"`
 }
 
 type Manifest struct {
 	// Plugins are a map of package name -> version
 	Plugins map[string]Plugin `json:"plugins"`
-	path string `json:"-"`
+	path    string            `json:"-"`
 }
 
 func LoadManifest(path string) (Manifest, error) {
 	m := Manifest{
 		Plugins: map[string]Plugin{}, // initialize with empty map to avoid `assignment to entry in nil map`
-		path: path,
+		path:    path,
 	}
 
 	var err error
@@ -30,7 +30,7 @@ func (m *Manifest) Write() error {
 }
 
 func (m *Manifest) UpdatePlugin(pluginName, version string) error {
-	m.Plugins[pluginName] = Plugin{ Version: version }
+	m.Plugins[pluginName] = Plugin{Version: version}
 	return m.Write()
 }
 

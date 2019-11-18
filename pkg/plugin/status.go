@@ -4,9 +4,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/kataras/tablewriter"
-	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
+	"github.com/Blockdaemon/bpm/pkg/config"
+	"github.com/kataras/tablewriter"
 )
 
 // Status returns the status of a particular node

@@ -10,7 +10,6 @@ import (
 	"github.com/rs/xid"
 )
 
-
 func (p *PluginCmdContext) Configure(pluginName string, networkParam string, networkTypeParam string, protocolParam string, subtypeParam string, skipUpgradeCheck bool) error {
 	// Generate instance id
 	id := xid.New().String()

@@ -3,8 +3,8 @@ package plugin
 import (
 	"os"
 
-	"github.com/kataras/tablewriter"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
+	"github.com/kataras/tablewriter"
 )
 
 func (p *PluginCmdContext) List() error {

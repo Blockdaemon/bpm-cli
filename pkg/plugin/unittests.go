@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"testing"
 	"strings"
+	"testing"
 )
 
 const (
@@ -40,7 +40,7 @@ const (
 
 type TestContext struct {
 	BaseDir string
-	Server *httptest.Server
+	Server  *httptest.Server
 }
 
 func setupHTTPServer(t *testing.T) *httptest.Server {
@@ -80,15 +80,15 @@ func setupUnittest(t *testing.T) (PluginCmdContext, TestContext) {
 	}
 
 	return PluginCmdContext{
-		HomeDir: testBaseDir,
-		Manifest: manifest,
-		RuntimeOS: "linux", // pretend to be linux during testing, this works on osx too!
-		RegistryURL: server.URL,
-		Debug: false,
-	}, TestContext{
-		BaseDir: testBaseDir,
-		Server: server,
-	} 
+			HomeDir:     testBaseDir,
+			Manifest:    manifest,
+			RuntimeOS:   "linux", // pretend to be linux during testing, this works on osx too!
+			RegistryURL: server.URL,
+			Debug:       false,
+		}, TestContext{
+			BaseDir: testBaseDir,
+			Server:  server,
+		}
 }
 
 func teardownUnittest(testContext TestContext, t *testing.T) {
@@ -104,7 +104,7 @@ func teardownUnittest(testContext TestContext, t *testing.T) {
 }
 
 func assertEqual(actual string, expected string, t *testing.T) {
-	// trim whitespace: yes this makes the assert a bit weaker because 
+	// trim whitespace: yes this makes the assert a bit weaker because
 	// it doesn't test whitespace but writing tests becomes so much more convenient
 	if strings.TrimSpace(actual) != strings.TrimSpace(expected) {
 		t.Errorf("expected '%s' but got '%s'", expected, actual)

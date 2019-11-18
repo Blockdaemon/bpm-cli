@@ -1,9 +1,9 @@
 package cli
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/spf13/cobra"
 )
 
 func newSearchCmd(c *command, os string) *cobra.Command {
@@ -12,11 +12,11 @@ func newSearchCmd(c *command, os string) *cobra.Command {
 		Short: "Search available packages",
 		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
 			cmdContext := plugin.PluginCmdContext{
-				HomeDir: homeDir,
-				Manifest: m,
-				RuntimeOS: os,
+				HomeDir:     homeDir,
+				Manifest:    m,
+				RuntimeOS:   os,
 				RegistryURL: c.registry,
-				Debug: c.debug,
+				Debug:       c.debug,
 			}
 
 			query := ""

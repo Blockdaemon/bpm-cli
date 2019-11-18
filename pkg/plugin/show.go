@@ -10,7 +10,7 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func  (p *PluginCmdContext) ShowConfig(nodeID string) error {
+func (p *PluginCmdContext) ShowConfig(nodeID string) error {
 	// Check if node exists
 	if !config.FileExists(
 		filepath.Join(config.NodesDir(p.HomeDir), nodeID),

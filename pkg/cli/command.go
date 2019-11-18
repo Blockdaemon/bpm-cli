@@ -1,10 +1,10 @@
 package cli
 
 import (
-	"path/filepath"
+	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
-	"github.com/Blockdaemon/bpm/pkg/config"
+	"path/filepath"
 )
 
 type cmdFunc func(string, config.Manifest, []string) error

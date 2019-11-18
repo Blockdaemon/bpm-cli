@@ -3,7 +3,6 @@ package cli
 import (
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
-	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
 func newStartCmd(c *command, runtimeOS string) *cobra.Command {
@@ -16,11 +15,11 @@ func newStartCmd(c *command, runtimeOS string) *cobra.Command {
 
 			// TODO: Why do we have three ways of passing down variables?
 			cmdContext := plugin.PluginCmdContext{
-				HomeDir: homeDir,
-				Manifest: m,
-				RuntimeOS: runtimeOS,
+				HomeDir:     homeDir,
+				Manifest:    m,
+				RuntimeOS:   runtimeOS,
 				RegistryURL: c.registry,
-				Debug: c.debug,
+				Debug:       c.debug,
 			}
 
 			return cmdContext.Start(id)

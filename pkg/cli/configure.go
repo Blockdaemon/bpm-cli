@@ -24,11 +24,11 @@ func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
 
 			// TODO: Why do we have three ways of passing down variables?
 			cmdContext := plugin.PluginCmdContext{
-				HomeDir: homeDir,
-				Manifest: m,
-				RuntimeOS: runtimeOS,
+				HomeDir:     homeDir,
+				Manifest:    m,
+				RuntimeOS:   runtimeOS,
 				RegistryURL: c.registry,
-				Debug: c.debug,
+				Debug:       c.debug,
 			}
 
 			return cmdContext.Configure(pluginName, network, networkType, protocol, subtype, skipUpgradeCheck)

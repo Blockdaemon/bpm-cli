@@ -17,11 +17,11 @@ func newInstallCmd(c *command, os string) *cobra.Command {
 
 			// TODO: Why do we have three ways of passing down variables?
 			cmdContext := plugin.PluginCmdContext{
-				HomeDir: homeDir,
-				Manifest: m,
-				RuntimeOS: os,
+				HomeDir:     homeDir,
+				Manifest:    m,
+				RuntimeOS:   os,
 				RegistryURL: c.registry,
-				Debug: c.debug,
+				Debug:       c.debug,
 			}
 
 			if len(args) > 1 {

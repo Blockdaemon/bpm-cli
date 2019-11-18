@@ -13,12 +13,11 @@ const (
 +------+-------------------+-------------------+
 `
 
-    expected2 = `     NAME    | INSTALLED VERSION | AVAILABLE VERSION  
+	expected2 = `     NAME    | INSTALLED VERSION | AVAILABLE VERSION  
 +------------+-------------------+-------------------+
   testplugin | 1.0.0             | 1.0.0              
 `
 )
-
 
 func TestList(t *testing.T) {
 	cmdContext, testContext := setupUnittest(t)
@@ -42,4 +41,3 @@ func TestList(t *testing.T) {
 	})
 	assertEqual(out2, expected2, t)
 }
-

@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kataras/tablewriter"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
+	"github.com/kataras/tablewriter"
 )
 
 func (p *PluginCmdContext) Search(query string) error {
