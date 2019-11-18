@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"testing"
-	"fmt"
 
 	"github.com/kami-zh/go-capturer"
 )
@@ -26,26 +25,20 @@ func TestList(t *testing.T) {
 	defer teardownUnittest(testContext, t)
 
 	out := capturer.CaptureOutput(func() {
-		output, err := cmdContext.List()
-		if err != nil {
+		if err := cmdContext.List(); err != nil {
 			t.Error(err)
 		}
-		fmt.Print(output)
 	})
-
 	assertEqual(out, expected, t)
 
-	_, err := cmdContext.Install("testplugin", "1.0.0")
-	if err != nil {
+	if err := cmdContext.Install("testplugin", "1.0.0"); err != nil {
 		t.Error(err)
 	}
 
 	out2 := capturer.CaptureOutput(func() {
-		output, err := cmdContext.List()
-		if err != nil {
+		if err := cmdContext.List(); err != nil {
 			t.Error(err)
 		}
-		fmt.Print(output)
 	})
 	assertEqual(out2, expected2, t)
 }

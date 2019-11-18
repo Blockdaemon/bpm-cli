@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
@@ -26,9 +24,7 @@ func newTestCmd(c *command, runtimeOS string) *cobra.Command {
 			}
 
 
-			output, err := cmdContext.Test(id)
-			fmt.Println(output)
-			return err
+			return cmdContext.Test(id)
 		}),
 	}
 }

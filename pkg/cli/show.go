@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
@@ -30,9 +28,7 @@ func newShowCmd(c *command, runtimeOS string) *cobra.Command {
 				Debug: c.debug,
 			}
 
-			output, err := cmdContext.ShowConfig(id)
-			fmt.Println(output)
-			return err
+			return cmdContext.ShowConfig(id)
 		}),
 	}
 
@@ -52,9 +48,7 @@ func newShowCmd(c *command, runtimeOS string) *cobra.Command {
 				Debug: c.debug,
 			}
 
-			output, err := cmdContext.ShowNode(id)
-			fmt.Println(output)
-			return err
+			return cmdContext.ShowNode(id)
 		}),
 	}
 

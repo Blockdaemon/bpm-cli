@@ -5,11 +5,11 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *PluginCmdContext) Test(nodeID string) (string, error) {
+func (p *PluginCmdContext) Test(nodeID string) error {
 	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return p.execNodeCommand(n, "test")
+	return p.execPrintNodeCommand(n, "test")
 }

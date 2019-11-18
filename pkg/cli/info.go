@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
@@ -25,9 +23,7 @@ func newInfoCmd(c *command, os string) *cobra.Command {
 				Debug: c.debug,
 			}
 
-			output, err := cmdContext.Info(pluginName)
-			fmt.Println(output)
-			return err
+			return cmdContext.Info(pluginName)
 		}),
 	}
 }

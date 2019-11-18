@@ -11,7 +11,7 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *PluginCmdContext) Start(nodeID string) (string, error) {
+func (p *PluginCmdContext) Start(nodeID string) error {
 	// Check if manual intervention is necessary in the configs
 	// This is the case if a string like, e.g. {% ADD NODE KEY HERE %} is found in the files.
 	// Until we have a better way of getting this information via the CLI, the users can edit the files manually.
@@ -42,12 +42,16 @@ func (p *PluginCmdContext) Start(nodeID string) (string, error) {
 
 	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	if err := filepath.Walk(n.ConfigsDirectory(), ff); err != nil {
-		return "", err
+		return err
 	}
 
-	return p.execNodeCommand(n, "start")
+	err = p.execPrintNodeCommand(n, "start")
+
+	fmt.Printf("The node %q has been started.\n", nodeID)
+
+	return err
 }

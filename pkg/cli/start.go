@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
@@ -25,13 +23,7 @@ func newStartCmd(c *command, runtimeOS string) *cobra.Command {
 				Debug: c.debug,
 			}
 
-			output, err := cmdContext.Start(id)
-			fmt.Println(output)
-			if err != nil {
-				return err
-			}
-			fmt.Printf("The node %q has been started.\n", id)
-			return nil
+			return cmdContext.Start(id)
 		}),
 	}
 }

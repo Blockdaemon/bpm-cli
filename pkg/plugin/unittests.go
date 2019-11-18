@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"strings"
 )
 
 const (
@@ -103,7 +104,9 @@ func teardownUnittest(testContext TestContext, t *testing.T) {
 }
 
 func assertEqual(actual string, expected string, t *testing.T) {
-	if actual != expected {
+	// trim whitespace: yes this makes the assert a bit weaker because 
+	// it doesn't test whitespace but writing tests becomes so much more convenient
+	if strings.TrimSpace(actual) != strings.TrimSpace(expected) {
 		t.Errorf("expected '%s' but got '%s'", expected, actual)
 	}
 }

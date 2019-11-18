@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
@@ -26,18 +24,12 @@ func newInstallCmd(c *command, os string) *cobra.Command {
 				Debug: c.debug,
 			}
 
-			var output string
-			var err error
-
 			if len(args) > 1 {
 				versionToInstall := args[1]
-				output, err = cmdContext.Install(pluginName, versionToInstall)
-			} else {
-				output, err = cmdContext.InstallLatest(pluginName)
+				return cmdContext.Install(pluginName, versionToInstall)
 			}
 
-			fmt.Println(output)
-			return err
+			return cmdContext.InstallLatest(pluginName)
 		}),
 	}
 }

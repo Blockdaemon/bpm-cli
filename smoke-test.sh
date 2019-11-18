@@ -4,7 +4,7 @@
 basedir=./build/bpm
 
 function getStatusColumn() {
-	echo $(go run cmd/main.go --base-dir $basedir status | cut -d'|' -f$1 | tail -n2 | head -n1 | tr -d " ")
+	echo $(go run cmd/main.go --base-dir $basedir status | cut -d'|' -f$1 | tail -n1 | tr -d " ")
 }
 
 function checkStatus() {

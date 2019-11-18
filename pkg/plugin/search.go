@@ -1,24 +1,22 @@
 package plugin
 
 import (
-	"bytes"
+	"os"
 	"strings"
 
 	"github.com/kataras/tablewriter"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
-func (p *PluginCmdContext) Search(query string) (string, error) {
+func (p *PluginCmdContext) Search(query string) error {
 	client := pbr.New(p.RegistryURL)
 
 	packages, err := client.SearchPackages(strings.ToLower(query), p.RuntimeOS)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	var buf bytes.Buffer
-
-	table := tablewriter.NewWriter(&buf)
+	table := tablewriter.NewWriter(os.Stdout)
 	table.SetBorder(false)
 	table.SetHeader([]string{
 		"NAME",
@@ -36,6 +34,6 @@ func (p *PluginCmdContext) Search(query string) (string, error) {
 
 	table.Render()
 
-	return buf.String(), nil
+	return nil
 
 }

@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
@@ -25,13 +23,7 @@ func newStopCmd(c *command, runtimeOS string) *cobra.Command {
 				Debug: c.debug,
 			}
 
-			output, err := cmdContext.Stop(id)
-			fmt.Println(output)
-			if err != nil {
-				return err
-			}
-
-			return nil
+			return cmdContext.Stop(id)
 		}),
 	}
 

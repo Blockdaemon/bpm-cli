@@ -35,9 +35,7 @@ func newRemoveCmd(c *command, runtimeOS string) *cobra.Command {
 				Debug: c.debug,
 			}
 
-			output, err := cmdContext.Remove(id, all, data, config)
-			fmt.Println(output)
-			return err
+			return cmdContext.Remove(id, all, data, config)
 		}),
 	}
 

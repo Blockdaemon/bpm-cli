@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
@@ -33,9 +31,7 @@ func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
 				Debug: c.debug,
 			}
 
-			output, err := cmdContext.Configure(pluginName, network, networkType, protocol, subtype, skipUpgradeCheck)
-			fmt.Println(output)
-			return err
+			return cmdContext.Configure(pluginName, network, networkType, protocol, subtype, skipUpgradeCheck)
 		}),
 	}
 

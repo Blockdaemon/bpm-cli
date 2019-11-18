@@ -10,19 +10,19 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func  (p *PluginCmdContext) ShowConfig(nodeID string) (string, error) {
+func  (p *PluginCmdContext) ShowConfig(nodeID string) error {
 	// Check if node exists
 	if !config.FileExists(
 		filepath.Join(config.NodesDir(p.HomeDir), nodeID),
 		"node.json",
 	) {
-		return "", fmt.Errorf("Node %q does not exist\n", nodeID)
+		return fmt.Errorf("Node %q does not exist\n", nodeID)
 	}
 
 	// Get the node
 	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	var buf bytes.Buffer
@@ -47,25 +47,27 @@ func  (p *PluginCmdContext) ShowConfig(nodeID string) (string, error) {
 
 		return nil
 	}); err != nil {
-		return "", err
+		return err
 	}
 
-	return buf.String(), nil
+	fmt.Println(buf.String())
+
+	return nil
 }
 
-func (p *PluginCmdContext) ShowNode(nodeID string) (string, error) {
+func (p *PluginCmdContext) ShowNode(nodeID string) error {
 	// Check if node exists
 	if !config.FileExists(
 		filepath.Join(config.NodesDir(p.HomeDir), nodeID),
 		"node.json",
 	) {
-		return "", fmt.Errorf("Node %q does not exist\n", nodeID)
+		return fmt.Errorf("Node %q does not exist\n", nodeID)
 	}
 
 	// Get the node
 	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	var buf bytes.Buffer
@@ -73,12 +75,13 @@ func (p *PluginCmdContext) ShowNode(nodeID string) (string, error) {
 
 	data, err := config.Read(n.NodeFile(), "")
 	if err != nil {
-		return "", nil
+		return err
 	}
 
 	buf.Write(data)
+	fmt.Println(buf.String())
 
-	return buf.String(), nil
+	return nil
 }
 
 func writeHeader(path string, buf *bytes.Buffer) {

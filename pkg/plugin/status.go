@@ -1,7 +1,7 @@
 package plugin
 
 import (
-	"bytes"
+	"os"
 	"strconv"
 
 	"github.com/kataras/tablewriter"
@@ -10,10 +10,8 @@ import (
 )
 
 // Status returns the status of a particular node
-func (p *PluginCmdContext) Status() (string, error) {
-	var buf bytes.Buffer
-
-	table := tablewriter.NewWriter(&buf)
+func (p *PluginCmdContext) Status() error {
+	table := tablewriter.NewWriter(os.Stdout)
 	table.SetBorder(false)
 	table.SetHeader([]string{
 		"NODE ID",
@@ -25,7 +23,7 @@ func (p *PluginCmdContext) Status() (string, error) {
 	// List files in config directory
 	nodeDirs, err := config.ReadDirs(config.NodesDir(p.HomeDir))
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	for _, nodeDir := range nodeDirs {
@@ -33,12 +31,12 @@ func (p *PluginCmdContext) Status() (string, error) {
 
 		n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
 		if err != nil {
-			return "", err
+			return err
 		}
 
 		status, err := p.execNodeCommand(n, "status")
 		if err != nil {
-			return "", err
+			return err
 		}
 
 		secrets := strconv.Itoa(len(n.Secrets))
@@ -52,5 +50,5 @@ func (p *PluginCmdContext) Status() (string, error) {
 	}
 
 	table.Render()
-	return buf.String(), nil
+	return nil
 }

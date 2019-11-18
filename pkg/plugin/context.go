@@ -63,6 +63,7 @@ func (p *PluginCmdContext) needsUpgrade(pluginName string) (bool, string, error)
 	return needsUpgrade, latestVersion, nil
 }
 
+// TODO: Once everything is reefactored to write to stdout instead of returing strings
 func (p *PluginCmdContext) execNodeCommand(n node.Node, cmd string) (string, error) {
 	pluginName := n.Protocol // TODO: Wrong variable, should be pluginName
 
@@ -77,6 +78,23 @@ func (p *PluginCmdContext) execNodeCommand(n node.Node, cmd string) (string, err
 	output, err := manager.ExecCmd(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
 
 	return output, err
+}
+
+func (p *PluginCmdContext) execPrintNodeCommand(n node.Node, cmd string) error {
+	pluginName := n.Protocol // TODO: Wrong variable, should be pluginName
+
+	// Check if plugin is installed
+	if !p.isInstalled(pluginName) {
+		return fmt.Errorf("The package %q is currently not installed.\n", pluginName)
+	}
+
+	// Run plugin commands
+	baseDir := config.NodesDir(p.HomeDir)
+	pluginFilename := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
+	output, err := manager.ExecCmd(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
+	fmt.Println(output)
+
+	return err
 }
 
 func (p *PluginCmdContext) getParameterOptions(pluginName string) (plugin.Parameters, error) {

@@ -1,16 +1,14 @@
 package plugin
 
 import (
-	"bytes"
+	"os"
 
 	"github.com/kataras/tablewriter"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
-func (p *PluginCmdContext) List() (string, error) {
-	var buf bytes.Buffer
-
-	table := tablewriter.NewWriter(&buf)
+func (p *PluginCmdContext) List() error {
+	table := tablewriter.NewWriter(os.Stdout)
 	table.SetBorder(false)
 	table.SetHeader([]string{
 		"NAME",
@@ -26,7 +24,7 @@ func (p *PluginCmdContext) List() (string, error) {
 		// Plenty of room for improvement by doing just one request total instead of one request per plugin
 		packageVersion, err := client.GetLatestPackageVersion(name, p.RuntimeOS)
 		if err != nil {
-			return "", err
+			return err
 		}
 		latestVersion := packageVersion.Version
 
@@ -38,7 +36,6 @@ func (p *PluginCmdContext) List() (string, error) {
 	}
 
 	table.Render()
-
-	return buf.String(), nil
+	return nil
 
 }
