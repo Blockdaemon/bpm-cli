@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"path/filepath"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/Blockdaemon/bpm/pkg/config"
@@ -22,6 +23,11 @@ func (c *command) Wrap(f cmdFunc) runEFunc {
 		if err != nil {
 			return err
 		}
+		absHomeDir, err := filepath.Abs(homeDir)
+		if err != nil {
+			return err
+		}
+
 		if err := config.Init(homeDir); err != nil {
 			return err
 		}
@@ -32,6 +38,6 @@ func (c *command) Wrap(f cmdFunc) runEFunc {
 			return err
 		}
 
-		return f(homeDir, m, args)
+		return f(absHomeDir, m, args)
 	}
 }
