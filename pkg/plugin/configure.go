@@ -69,7 +69,7 @@ func (p *PluginCmdContext) Configure(pluginName string, networkParam string, net
 		n.Collection.CA = "~/.bpm/beats/ca.crt"
 		n.Collection.Key = "~/.bpm/beats/beat.key"
 	} else {
-		fmt.Sprintf("\nNo credentials found in %q, skipping configuration of Blockdaemon monitoring. Please configure your own monitoring in the node configuration files.\n\n", filepath.Join(p.HomeDir, "beats"))
+		fmt.Printf("\nNo credentials found in %q, skipping configuration of Blockdaemon monitoring. Please configure your own monitoring in the node configuration files.\n\n", filepath.Join(p.HomeDir, "beats"))
 	}
 
 	if err := n.Save(); err != nil {

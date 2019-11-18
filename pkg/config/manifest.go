@@ -9,13 +9,15 @@ type Plugin struct {
 type Manifest struct {
 	// Plugins are a map of package name -> version
 	Plugins map[string]Plugin `json:"plugins"`
-	path    string            `json:"-"`
+
+	// this could be internal (lower case) but golanglint-ci will complain
+	Path string `json:"-"`
 }
 
 func LoadManifest(path string) (Manifest, error) {
 	m := Manifest{
 		Plugins: map[string]Plugin{}, // initialize with empty map to avoid `assignment to entry in nil map`
-		path:    path,
+		Path:    path,
 	}
 
 	var err error
@@ -26,7 +28,7 @@ func LoadManifest(path string) (Manifest, error) {
 }
 
 func (m *Manifest) Write() error {
-	return WriteFile(m.path, ManifestFilename, m)
+	return WriteFile(m.Path, ManifestFilename, m)
 }
 
 func (m *Manifest) UpdatePlugin(pluginName, version string) error {
