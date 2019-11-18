@@ -8,7 +8,7 @@ import (
 
 func (p *PluginCmdContext) Uninstall(pluginName string) (string, error) {
 	if !p.isInstalled(pluginName) {
-		return "", fmt.Errorf("The package %q is currently not installed.\n", pluginName)
+		return "", fmt.Errorf("The package %q is currently not installed.", pluginName)
 	}
 
 	// Delete the plugin
@@ -21,5 +21,5 @@ func (p *PluginCmdContext) Uninstall(pluginName string) (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("The package %q has been uninstalled.\n", pluginName), nil
+	return fmt.Sprintf("The package %q has been uninstalled.", pluginName), nil
 }

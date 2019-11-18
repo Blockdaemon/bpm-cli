@@ -20,7 +20,7 @@ func (p *PluginCmdContext) InstallLatest(pluginName string) (string, error) {
 func (p *PluginCmdContext) Install(pluginName, versionToInstall string) (string, error) {
 	// Check if this version is already installed
 	if p.getInstalledVersion(pluginName) == versionToInstall {
-		return fmt.Sprintf("%q version %q has already been installed.\n", pluginName, versionToInstall), nil
+		return "", fmt.Errorf("%q version %q has already been installed.", pluginName, versionToInstall)
 	}
 
 	// Download the plugin file
@@ -38,5 +38,5 @@ func (p *PluginCmdContext) Install(pluginName, versionToInstall string) (string,
 		return "", err
 	}
 
-	return fmt.Sprintf("The package %q has been installed.\n", versionToInstall), nil
+	return fmt.Sprintf("The package %q has been installed.", pluginName), nil
 }

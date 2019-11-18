@@ -37,6 +37,8 @@ github.com/docker/go-connections/tlsconfig
 github.com/docker/go-units
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
+# github.com/kami-zh/go-capturer v0.0.0-20171211120116-e492ea43421d
+github.com/kami-zh/go-capturer
 # github.com/kataras/tablewriter v0.0.0-20180708051242-e063d29b7c23
 github.com/kataras/tablewriter
 # github.com/mattn/go-runewidth v0.0.4
@@ -60,8 +62,5 @@ golang.org/x/net/internal/socks
 golang.org/x/net/proxy
 # golang.org/x/sys v0.0.0-20190507160741-ecd444e8653b
 golang.org/x/sys/windows
-# golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7
-golang.org/x/xerrors
-golang.org/x/xerrors/internal
 # gopkg.in/yaml.v2 v2.2.2
 gopkg.in/yaml.v2
