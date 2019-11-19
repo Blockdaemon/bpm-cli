@@ -20,14 +20,14 @@ func (p *PluginCmdContext) Configure(pluginName string, networkParam string, net
 
 	// Check if plugin is using the latest version
 	if !skipUpgradeCheck {
-		needsUpgrade, latestVersion, err := p.needsUpgrade(pluginName)
+		needsUpgrade, err := p.needsUpgrade(pluginName)
 
 		if err != nil {
 			return err
 		}
 
 		if needsUpgrade {
-			return fmt.Errorf("A new version of package %q is available. Please install using \"bpm install %s %s\".\n", pluginName, pluginName, latestVersion)
+			return fmt.Errorf("A new version of package %q is available. Please install using \"bpm install %s\" or skip this check using \"--skip-upgrade-check\".\n", pluginName, pluginName)
 		}
 	}
 

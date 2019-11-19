@@ -49,18 +49,18 @@ func (p *PluginCmdContext) isInstalled(pluginName string) bool {
 	return ok
 }
 
-func (p *PluginCmdContext) needsUpgrade(pluginName string) (bool, string, error) {
+func (p *PluginCmdContext) needsUpgrade(pluginName string) (bool, error) {
 	latestVersion, err := p.getLatestVersion(pluginName)
 	if err != nil {
-		return false, "", err
+		return false, err
 	}
 
 	needsUpgrade, err := version.NeedsUpgrade(p.getInstalledVersion(pluginName), latestVersion)
 	if err != nil {
-		return false, "", err
+		return false, err
 	}
 
-	return needsUpgrade, latestVersion, nil
+	return needsUpgrade, nil
 }
 
 func (p *PluginCmdContext) execCmdCapture(n node.Node, cmd string) (string, error) {
