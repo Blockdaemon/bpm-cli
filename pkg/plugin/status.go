@@ -44,7 +44,7 @@ func (p *PluginCmdContext) Status() error {
 		table.Append([]string{
 			nodeID,
 			status,
-			n.Protocol, // TODO: Wrong name
+			n.PluginName,
 			secrets,
 		})
 	}

@@ -56,7 +56,8 @@ func (p *PluginCmdContext) Configure(pluginName string, networkParam string, net
 
 	// Create node config
 	n := node.New(config.NodesDir(p.HomeDir), id)
-	n.Environment = network
+	n.PluginName = pluginName
+	n.Network = network
 	n.Protocol = protocol
 	n.Subtype = subtype
 	n.Version = p.getInstalledVersion(pluginName)

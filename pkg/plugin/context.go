@@ -64,7 +64,7 @@ func (p *PluginCmdContext) needsUpgrade(pluginName string) (bool, string, error)
 }
 
 func (p *PluginCmdContext) execCmdCapture(n node.Node, cmd string) (string, error) {
-	pluginName := n.Protocol // TODO: Wrong variable, should be pluginName
+	pluginName := n.PluginName
 
 	// Check if plugin is installed
 	if !p.isInstalled(pluginName) {
@@ -78,7 +78,7 @@ func (p *PluginCmdContext) execCmdCapture(n node.Node, cmd string) (string, erro
 }
 
 func (p *PluginCmdContext) execCmd(n node.Node, cmd string) error {
-	pluginName := n.Protocol // TODO: Wrong variable, should be pluginName
+	pluginName := n.PluginName
 
 	// Check if plugin is installed
 	if !p.isInstalled(pluginName) {
