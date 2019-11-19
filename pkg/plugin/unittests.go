@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"regexp"
 )
 
 const (
@@ -32,7 +33,25 @@ const (
 	testPluginInstallResponse = `#!/bin/bash
 		case "$1" in
 		version)
-		    1.0.0
+		    echo "1.0.0"
+		    ;;
+		create-secrets)
+		    echo "Pretending to create secrets"
+		    ;;
+		create-configurations)
+		    echo "Pretending to create configurations"
+		    ;;
+		parameters)
+			echo "network:"
+			echo "- testnetwork"
+			echo "protocol:"
+			echo "- testprotocol"
+			echo "subtype:"
+			echo "- watcher"
+			echo "- validator"
+			echo "networktype:"
+			echo "- public"
+			echo "- private"
 		    ;;
 		esac
 		`
@@ -109,6 +128,14 @@ func assertEqual(actual string, expected string, t *testing.T) {
 	if strings.TrimSpace(actual) != strings.TrimSpace(expected) {
 		t.Errorf("expected '%s' but got '%s'", expected, actual)
 	}
+}
+
+func assertRegEx(actual string, expectedRegEx string, t *testing.T) {
+    match, _ := regexp.MatchString(expectedRegEx, actual)
+
+    if !match {
+		t.Errorf("expected a string that matches '%s' but got '%s'", expectedRegEx, actual)
+    }
 }
 
 func assertError(err error, text string, t *testing.T) {
