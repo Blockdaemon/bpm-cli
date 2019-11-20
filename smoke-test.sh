@@ -42,7 +42,7 @@ setup
 go run cmd/main.go --base-dir $basedir version
 go run cmd/main.go --base-dir $basedir list
 go run cmd/main.go --base-dir $basedir search polkadot
-go run cmd/main.go --base-dir $basedir install polkadot
+go run cmd/main.go --base-dir $basedir install polkadot 1.1.0
 go run cmd/main.go --base-dir $basedir info polkadot
 go run cmd/main.go --base-dir $basedir configure polkadot
 go run cmd/main.go --base-dir $basedir status
