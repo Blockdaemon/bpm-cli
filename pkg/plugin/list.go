@@ -13,7 +13,7 @@ func (p *PluginCmdContext) List() error {
 	table.SetHeader([]string{
 		"NAME",
 		"INSTALLED VERSION",
-		"AVAILABLE VERSION",
+		"RECOMMENDED VERSION",
 	})
 
 	client := pbr.New(p.RegistryURL)

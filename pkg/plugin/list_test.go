@@ -9,12 +9,12 @@ import (
 // Note: There is important whitespace in these strings!
 
 const (
-	expected = `  NAME | INSTALLED VERSION | AVAILABLE VERSION  
-+------+-------------------+-------------------+
+	expected = `  NAME | INSTALLED VERSION | RECOMMENDED VERSION  
++------+-------------------+---------------------+
 `
 
-	expected2 = `     NAME    | INSTALLED VERSION | AVAILABLE VERSION  
-+------------+-------------------+-------------------+
+	expected2 = `     NAME    | INSTALLED VERSION | RECOMMENDED VERSION  
++------------+-------------------+---------------------+
   testplugin | 1.0.0             | 1.0.0              
 `
 )
