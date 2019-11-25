@@ -45,7 +45,3 @@ func NodesDir(homeDir string) string {
 func PluginsDir(homeDir string) string {
 	return filepath.Join(homeDir, "plugins")
 }
-
-func Init(homeDir string) error {
-	return MakeDir(homeDir, NodesDir(homeDir), PluginsDir(homeDir))
-}

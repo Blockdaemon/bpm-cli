@@ -28,10 +28,6 @@ func (c *command) Wrap(f cmdFunc) runEFunc {
 			return err
 		}
 
-		if err := config.Init(homeDir); err != nil {
-			return err
-		}
-
 		// Get manifest
 		m, err := config.LoadManifest(homeDir)
 		if err != nil {

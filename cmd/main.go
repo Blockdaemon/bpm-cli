@@ -10,7 +10,7 @@ import (
 // Set on compile: -ldflags "-X main.version=dev"
 var version string
 
-const versionDev = "0.0.0-dev"
+const versionDev = "0.0.0"
 
 func main() {
 	if version == "" {
