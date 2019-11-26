@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
-	"regexp"
 )
 
 const (
@@ -129,11 +129,11 @@ func assertEqual(actual string, expected string, t *testing.T) {
 }
 
 func assertRegEx(actual string, expectedRegEx string, t *testing.T) {
-    match, _ := regexp.MatchString(expectedRegEx, actual)
+	match, _ := regexp.MatchString(expectedRegEx, actual)
 
-    if !match {
+	if !match {
 		t.Errorf("expected a string that matches '%s' but got '%s'", expectedRegEx, actual)
-    }
+	}
 }
 
 func assertError(err error, text string, t *testing.T) {

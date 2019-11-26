@@ -22,4 +22,3 @@ func TestConfigure(t *testing.T) {
 
 	assertRegEx(out, `Node with id "(.*)" has been initialized\.`, t)
 }
-

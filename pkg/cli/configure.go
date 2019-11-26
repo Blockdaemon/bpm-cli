@@ -3,8 +3,8 @@ package cli
 import (
 	"fmt"
 
-	"github.com/Blockdaemon/bpm/pkg/plugin"
 	sdkplugin "github.com/Blockdaemon/bpm-sdk/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
 )
 
@@ -56,12 +56,8 @@ func newConfigureCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
 			}
 		}
 
-
-
-		cmd.AddCommand(pluginCmd)	
+		cmd.AddCommand(pluginCmd)
 	}
-
-
 
 	// For simplicty sake the parameters are hardcoded here. In the future we may want to add them dynamically. This would allow plugins to specify
 	// arbitrary parameters.

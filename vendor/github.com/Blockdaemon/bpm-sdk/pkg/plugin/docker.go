@@ -27,7 +27,7 @@ type DockerPlugin struct {
 	// Plugin meta information
 	meta MetaInfo
 
-	name        string
+	name string
 }
 
 const (

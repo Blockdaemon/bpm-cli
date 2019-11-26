@@ -31,9 +31,9 @@ type Version struct {
 }
 
 type CLIVersion struct {
-	OS          OS       `json:"os"`
-	RegistryURL string   `json:"registryUrl"`
-	Version     string   `json:"version"`
+	OS          OS     `json:"os"`
+	RegistryURL string `json:"registryUrl"`
+	Version     string `json:"version"`
 }
 
 // response is a non-discernible response format from secrets api

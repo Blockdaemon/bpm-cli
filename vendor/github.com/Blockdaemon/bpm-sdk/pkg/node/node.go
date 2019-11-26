@@ -9,8 +9,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"path"
 	"os"
+	"path"
 
 	"github.com/Blockdaemon/bpm-sdk/internal/util"
 	homedir "github.com/mitchellh/go-homedir"
@@ -148,4 +148,3 @@ func Load(baseDir, id string) (Node, error) {
 
 	return node, nil
 }
-

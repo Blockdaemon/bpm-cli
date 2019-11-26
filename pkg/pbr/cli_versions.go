@@ -29,4 +29,3 @@ func (c *Client) GetCLIVersion(os string) (CLIVersion, error) {
 	return ver, nil
 
 }
-

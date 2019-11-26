@@ -1,17 +1,17 @@
 package cli
 
 import (
-	stdos "os"
 	"fmt"
+	stdos "os"
 	"time"
 
-	"path/filepath"
 	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
+	"github.com/Blockdaemon/bpm/pkg/plugin"
 	pkgversion "github.com/Blockdaemon/bpm/pkg/version"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"path/filepath"
 )
 
 func New(os, version string) *cobra.Command {
@@ -56,7 +56,7 @@ func New(os, version string) *cobra.Command {
 	}
 
 	// Check if version is up to date
-	if time.Now().Sub(m.LatestCLIVersionUpdatedAt) > 12 * time.Hour {
+	if time.Now().Sub(m.LatestCLIVersionUpdatedAt) > 12*time.Hour {
 		client := pbr.New(c.registry)
 		ver, err := client.GetCLIVersion(os)
 		if err != nil {

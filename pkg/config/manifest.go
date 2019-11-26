@@ -11,8 +11,8 @@ const ManifestFilename = "manifest.json"
 type Manifest struct {
 	// Plugins are a map of package name -> version
 	Plugins                   map[string]plugin.MetaInfo `json:"plugins"`
-	LatestCLIVersion          string            `json:"latest_cli_version"`
-	LatestCLIVersionUpdatedAt time.Time         `json:"latest_cli_version_updated_at"`
+	LatestCLIVersion          string                     `json:"latest_cli_version"`
+	LatestCLIVersionUpdatedAt time.Time                  `json:"latest_cli_version_updated_at"`
 
 	// this could be internal (lower case) but golanglint-ci will complain
 	Path string `json:"-"`
@@ -36,7 +36,7 @@ func Init(path string) error {
 	}
 	m := Manifest{
 		Plugins:          map[string]plugin.MetaInfo{}, // initialize with empty map to avoid `assignment to entry in nil map`
-		LatestCLIVersion: "0.0.0",             // avoid "is not in dotted-tri format" errors
+		LatestCLIVersion: "0.0.0",                      // avoid "is not in dotted-tri format" errors
 		Path:             path,
 	}
 	fmt.Println(m)
