@@ -1,27 +1,16 @@
 package cli
 
 import (
-	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
 )
 
-func newStatusCmd(c *command, runtimeOS string) *cobra.Command {
+func newStatusCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "status",
 		Short: "Display statuses of configured nodes",
-		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-
-			// TODO: Why do we have three ways of passing down variables?
-			cmdContext := plugin.PluginCmdContext{
-				HomeDir:     homeDir,
-				Manifest:    m,
-				RuntimeOS:   runtimeOS,
-				RegistryURL: c.registry,
-				Debug:       c.debug,
-			}
-
+		RunE: func(cmd *cobra.Command, args []string) error {
 			return cmdContext.Status()
-		}),
+		},
 	}
 }

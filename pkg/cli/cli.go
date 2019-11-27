@@ -14,8 +14,15 @@ import (
 	"path/filepath"
 )
 
+type params struct {
+	baseDir  string
+	registry string
+	debug    bool
+	yes      bool
+}
+
 func New(os, version string) *cobra.Command {
-	c := &command{}
+	c := &params{}
 
 	rootCmd := &cobra.Command{
 		Use:          "bpm",
@@ -93,17 +100,17 @@ func New(os, version string) *cobra.Command {
 	// Commands
 	rootCmd.AddCommand(
 		newConfigureCmd(cmdContext),
-		newInstallCmd(c, os),
-		newListCmd(c, os),
-		newShowCmd(c, os),
-		newStartCmd(c, os),
-		newStatusCmd(c, os),
-		newStopCmd(c, os),
-		newUninstallCmd(c, os),
-		newTestCmd(c, os),
-		newSearchCmd(c, os),
-		newInfoCmd(c, os),
-		newRemoveCmd(c, os),
+		newInstallCmd(cmdContext),
+		newListCmd(cmdContext),
+		newShowCmd(cmdContext),
+		newStartCmd(cmdContext),
+		newStatusCmd(cmdContext),
+		newStopCmd(cmdContext),
+		newUninstallCmd(cmdContext),
+		newTestCmd(cmdContext),
+		newSearchCmd(cmdContext),
+		newInfoCmd(cmdContext),
+		newRemoveCmd(cmdContext),
 		newVersionCmd(version),
 	)
 

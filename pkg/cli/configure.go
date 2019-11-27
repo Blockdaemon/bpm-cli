@@ -21,8 +21,6 @@ func newConfigureCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
 			Use:   name,
 			Short: fmt.Sprintf("Configure a new blockchain node using the %q package", name),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				// TODO: Why do we have three ways of passing down variables?
-
 				// Read dynamic parameters
 				strParameters := map[string]string{}
 				boolParameters := map[string]bool{}
@@ -58,9 +56,6 @@ func newConfigureCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
 
 		cmd.AddCommand(pluginCmd)
 	}
-
-	// For simplicty sake the parameters are hardcoded here. In the future we may want to add them dynamically. This would allow plugins to specify
-	// arbitrary parameters.
 
 	return cmd
 }

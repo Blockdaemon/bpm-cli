@@ -1,26 +1,16 @@
 package cli
 
 import (
-	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/plugin"
 	"github.com/spf13/cobra"
 )
 
-func newListCmd(c *command, os string) *cobra.Command {
+func newListCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
 		Short: "List installed packages",
-		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			// TODO: Why do we have three ways of passing down variables?
-			cmdContext := plugin.PluginCmdContext{
-				HomeDir:     homeDir,
-				Manifest:    m,
-				RuntimeOS:   os,
-				RegistryURL: c.registry,
-				Debug:       c.debug,
-			}
-
+		RunE: func(cmd *cobra.Command, args []string) error {
 			return cmdContext.List()
-		}),
+		},
 	}
 }
