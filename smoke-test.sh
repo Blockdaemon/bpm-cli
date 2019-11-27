@@ -39,26 +39,26 @@ function setup {
 
 setup
 
-go run cmd/main.go --base-dir $basedir version
-go run cmd/main.go --base-dir $basedir list
-go run cmd/main.go --base-dir $basedir search polkadot
-go run cmd/main.go --base-dir $basedir install polkadot 1.1.0
-go run cmd/main.go --base-dir $basedir info polkadot
-go run cmd/main.go --base-dir $basedir configure polkadot
-go run cmd/main.go --base-dir $basedir status
+go run cmd/main.go --yes --base-dir $basedir version
+go run cmd/main.go --yes --base-dir $basedir list
+go run cmd/main.go --yes --base-dir $basedir search polkadot
+go run cmd/main.go --yes --base-dir $basedir install polkadot 1.1.0
+go run cmd/main.go --yes --base-dir $basedir info polkadot
+go run cmd/main.go --yes --base-dir $basedir configure polkadot
+go run cmd/main.go --yes --base-dir $basedir status
 checkStatus "stopped"
 nodeID=$(getStatusColumn 1) 
-go run cmd/main.go --base-dir $basedir status
-go run cmd/main.go --base-dir $basedir start $nodeID
+go run cmd/main.go --yes --base-dir $basedir status
+go run cmd/main.go --yes --base-dir $basedir start $nodeID
 checkStatus "running"
-go run cmd/main.go --base-dir $basedir show node $nodeID
-go run cmd/main.go --base-dir $basedir show config $nodeID
+go run cmd/main.go --yes --base-dir $basedir show node $nodeID
+go run cmd/main.go --yes --base-dir $basedir show config $nodeID
 # Commented out because it doesn't work in the CI due to networking issues
-# go run cmd/main.go --base-dir $basedir test $nodeID
-go run cmd/main.go --base-dir $basedir stop $nodeID
-go run cmd/main.go --base-dir $basedir remove --config $nodeID
-go run cmd/main.go --base-dir $basedir remove --data $nodeID
-go run cmd/main.go --base-dir $basedir remove --all $nodeID
-go run cmd/main.go --base-dir $basedir uninstall polkadot
+# go run cmd/main.go --yes --base-dir $basedir test $nodeID
+go run cmd/main.go --yes --base-dir $basedir stop $nodeID
+go run cmd/main.go --yes --base-dir $basedir remove --config $nodeID
+go run cmd/main.go --yes --base-dir $basedir remove --data $nodeID
+go run cmd/main.go --yes --base-dir $basedir remove --all $nodeID
+go run cmd/main.go --yes --base-dir $basedir uninstall polkadot
 
 echo ">>> DONE, ALL TESTS RAN SUCCESSFUL"

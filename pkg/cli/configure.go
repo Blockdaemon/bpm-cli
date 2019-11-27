@@ -1,48 +1,70 @@
 package cli
 
 import (
-	"github.com/Blockdaemon/bpm/pkg/config"
+	"fmt"
+
 	"github.com/Blockdaemon/bpm/pkg/plugin"
+	sdkplugin "github.com/Blockdaemon/bpm-sdk/pkg/plugin"
 	"github.com/spf13/cobra"
 )
 
-func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
-	var (
-		skipUpgradeCheck bool
-		network          string
-		networkType      string
-		protocol         string
-		subtype          string
-	)
+func newConfigureCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
+	var skipUpgradeCheck bool
 
 	cmd := &cobra.Command{
-		Use:   "configure <package>",
+		Use:   "configure",
 		Short: "Configure a new blockchain node",
-		Args:  cobra.MinimumNArgs(1),
-		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			pluginName := args[0]
-
-			// TODO: Why do we have three ways of passing down variables?
-			cmdContext := plugin.PluginCmdContext{
-				HomeDir:     homeDir,
-				Manifest:    m,
-				RuntimeOS:   runtimeOS,
-				RegistryURL: c.registry,
-				Debug:       c.debug,
-			}
-
-			return cmdContext.Configure(pluginName, network, networkType, protocol, subtype, skipUpgradeCheck)
-		}),
 	}
 
-	cmd.Flags().BoolVar(&skipUpgradeCheck, "skip-upgrade-check", false, "Skip checking whether a new version of the package is available")
+	for name, meta := range cmdContext.Manifest.Plugins {
+		pluginCmd := &cobra.Command{
+			Use:   name,
+			Short: fmt.Sprintf("Configure a new blockchain node using the %q package", name),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				// TODO: Why do we have three ways of passing down variables?
+
+				// Read dynamic parameters
+				strParameters := map[string]string{}
+				boolParameters := map[string]bool{}
+
+				for _, parameter := range meta.Parameters {
+					if parameter.Type == sdkplugin.ParameterTypeString {
+						value, err := cmd.Flags().GetString(parameter.Name)
+						if err != nil {
+							return err
+						}
+						strParameters[parameter.Name] = value
+					} else {
+						value, err := cmd.Flags().GetBool(parameter.Name)
+						if err != nil {
+							return err
+						}
+						boolParameters[parameter.Name] = value
+					}
+				}
+
+				return cmdContext.Configure(name, strParameters, boolParameters, skipUpgradeCheck)
+			},
+		}
+		pluginCmd.Flags().BoolVar(&skipUpgradeCheck, "skip-upgrade-check", false, "Skip checking whether a new version of the package is available")
+
+		// Add dynamic configuration parameters
+		for _, parameter := range meta.Parameters {
+			pluginCmd.Flags().String(parameter.Name, parameter.Default, parameter.Description)
+			if parameter.Mandatory {
+				pluginCmd.MarkFlagRequired(parameter.Name)
+			}
+		}
+
+
+
+		cmd.AddCommand(pluginCmd)	
+	}
+
+
 
 	// For simplicty sake the parameters are hardcoded here. In the future we may want to add them dynamically. This would allow plugins to specify
 	// arbitrary parameters.
-	cmd.Flags().StringVar(&network, "network", "", "The network this node should connect to (Examples: 'mainnet', 'testnet', 'goerli', ...")
-	cmd.Flags().StringVar(&networkType, "network-type", "", "The network-type specifies whether this is a public or private network")
-	cmd.Flags().StringVar(&protocol, "protocol", "", "The protocol this node should use (Examples: 'ethereum', 'polkadot', ...")
-	cmd.Flags().StringVar(&subtype, "subtype", "", "The subtype specifies how this node should be configured (Examples: 'validator', 'watcher', 'archive', ...")
 
 	return cmd
 }

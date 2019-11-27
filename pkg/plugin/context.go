@@ -91,18 +91,18 @@ func (p *PluginCmdContext) execCmd(n node.Node, cmd string) error {
 	return manager.ExecCmd(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
 }
 
-func (p *PluginCmdContext) getParameterOptions(pluginName string) (plugin.Parameters, error) {
-	parameterOptions := plugin.Parameters{}
+func (p *PluginCmdContext) getMeta(pluginName string) (plugin.MetaInfo, error) {
+	meta := plugin.MetaInfo{}
 	pluginFilename := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
 	baseDirArgs := []string{"--base-dir", config.NodesDir(p.HomeDir)}
 
 	// Get parameter options
-	configArgs := append([]string{"parameters"}, baseDirArgs...)
-	output, err := manager.ExecCmdCapture(false, pluginFilename, configArgs...)
+	configArgs := append([]string{"meta"}, baseDirArgs...)
+	output, err := manager.ExecCmdCapture(p.Debug, pluginFilename, configArgs...)
 	if err != nil {
-		return parameterOptions, err
+		return meta, err
 	}
 
-	err = yaml.Unmarshal([]byte(output), &parameterOptions)
-	return parameterOptions, err
+	err = yaml.Unmarshal([]byte(output), &meta)
+	return meta, err
 }

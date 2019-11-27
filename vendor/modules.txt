@@ -55,6 +55,8 @@ github.com/rs/xid
 github.com/spf13/cobra
 # github.com/spf13/pflag v1.0.3
 github.com/spf13/pflag
+# github.com/thoas/go-funk v0.4.0
+github.com/thoas/go-funk
 # golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp

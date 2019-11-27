@@ -26,18 +26,11 @@ type Node struct {
 	// The plugin name
 	PluginName string `json:"plugin"`
 
-	// Which blockchain network to connect to (Example: mainnet, ropsten, ...)
-	Network string `json:"network"`
+	// Dynamic (i.e. defined by the plugin) string parameters
+	StrParameters map[string]string `json:"str_parameters"`
 
-	// Describes the type of this blockchain network (Examples: public, private)
-	NetworkType string `json:"networkType"`
-
-	// Describes the protocol of this node (Examples: bitcoin, ethereum, polkadot, ...)
-	Protocol string `json:"protocol"`
-
-	// Describes the specific type of this node (Examples: validator, watcher, ...)
-	Subtype string `json:"subtype"`
-	// Describes the protocol of this node (Examples: bitcoin, ethereum, polkadot, ...)
+	// Dynamic bool parameters
+	BoolParameters map[string]bool `json:"bool_parameters"`
 
 	// Describes the collection configuration
 	Collection Collection `json:"collection"`

@@ -32,26 +32,24 @@ const (
 
 	testPluginInstallResponse = `#!/bin/bash
 		case "$1" in
-		version)
-		    echo "1.0.0"
-		    ;;
 		create-secrets)
 		    echo "Pretending to create secrets"
 		    ;;
 		create-configurations)
 		    echo "Pretending to create configurations"
 		    ;;
-		parameters)
-			echo "network:"
-			echo "- testnetwork"
-			echo "protocol:"
-			echo "- testprotocol"
-			echo "subtype:"
-			echo "- watcher"
-			echo "- validator"
-			echo "networktype:"
-			echo "- public"
-			echo "- private"
+		meta)
+			echo "version: 1.0.0"
+			echo "description: A test plugin"
+			echo "protocol_version: 1.0.0"
+			echo "parameters:"
+			echo "- type: string"
+			echo "  name: subtype"
+			echo "  description: The type of node, must be either watcher or validator"
+			echo "  mandatory: false"
+			echo "  default: watcher"
+			echo "supported:"
+			echo "- test"
 		    ;;
 		esac
 		`

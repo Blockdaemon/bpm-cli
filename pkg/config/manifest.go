@@ -1,17 +1,16 @@
 package config
 
-import "time"
-import "fmt"
+import (
+	"fmt"
+	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
+	"time"
+)
 
 const ManifestFilename = "manifest.json"
 
-type Plugin struct {
-	Version string `json:"version"`
-}
-
 type Manifest struct {
 	// Plugins are a map of package name -> version
-	Plugins                   map[string]Plugin `json:"plugins"`
+	Plugins                   map[string]plugin.MetaInfo `json:"plugins"`
 	LatestCLIVersion          string            `json:"latest_cli_version"`
 	LatestCLIVersionUpdatedAt time.Time         `json:"latest_cli_version_updated_at"`
 
@@ -24,7 +23,7 @@ func ManifestExists(path string) bool {
 }
 
 func LoadManifest(path string) (Manifest, error) {
-	m := Manifest{ Path: path }
+	m := Manifest{Path: path}
 
 	err := ReadFile(path, ManifestFilename, &m)
 	return m, err
@@ -36,10 +35,10 @@ func Init(path string) error {
 		return err
 	}
 	m := Manifest{
-		Plugins: map[string]Plugin{}, // initialize with empty map to avoid `assignment to entry in nil map`
-		LatestCLIVersion: "0.0.0", // avoid "is not in dotted-tri format" errors
-		Path:    path,
-	}	
+		Plugins:          map[string]plugin.MetaInfo{}, // initialize with empty map to avoid `assignment to entry in nil map`
+		LatestCLIVersion: "0.0.0",             // avoid "is not in dotted-tri format" errors
+		Path:             path,
+	}
 	fmt.Println(m)
 	return m.Write()
 }
@@ -48,8 +47,8 @@ func (m *Manifest) Write() error {
 	return WriteFile(m.Path, ManifestFilename, m)
 }
 
-func (m *Manifest) UpdatePlugin(pluginName, version string) error {
-	m.Plugins[pluginName] = Plugin{Version: version}
+func (m *Manifest) UpdatePlugin(pluginName string, meta plugin.MetaInfo) error {
+	m.Plugins[pluginName] = meta
 	return m.Write()
 }
 

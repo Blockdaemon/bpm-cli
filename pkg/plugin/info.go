@@ -18,40 +18,28 @@ func (p *PluginCmdContext) Info(pluginName string) error {
 	fmt.Printf("Description:  %s\n", versions[0].Package.Description)
 
 	if p.isInstalled(pluginName) {
-		parameterOptions, err := p.getParameterOptions(pluginName)
+		meta, err := p.getMeta(pluginName)
 		if err != nil {
 			return err
 		}
 
-		for ix, protocol := range parameterOptions.Protocol {
-			if ix == 0 {
-				fmt.Printf("Protocol:     %s (default)\n", protocol)
-			} else {
-				fmt.Printf("              %s\n", protocol)
+		for ix, parameter := range meta.Parameters {
+			separator := ""
+			appendStr := ""
+			if parameter.Mandatory {
+				appendStr = "mandatory"
+				separator = ", "
 			}
-		}
-
-		for ix, network := range parameterOptions.Network {
-			if ix == 0 {
-				fmt.Printf("Network:      %s (default)\n", network)
-			} else {
-				fmt.Printf("              %s\n", network)
+			if parameter.Default != "" {
+				appendStr = fmt.Sprintf("%s%sdefault: %q", appendStr, separator, parameter.Default)
+				separator = ", "
 			}
-		}
+			appendStr = fmt.Sprintf("%s%stype: %q", appendStr, separator, parameter.Type)
 
-		for ix, networkType := range parameterOptions.NetworkType {
 			if ix == 0 {
-				fmt.Printf("Network Type: %s (default)\n", networkType)
+				fmt.Printf("Parameters:   %s - %s (%s)\n", parameter.Name, parameter.Description, appendStr)
 			} else {
-				fmt.Printf("              %s\n", networkType)
-			}
-		}
-
-		for ix, subType := range parameterOptions.Subtype {
-			if ix == 0 {
-				fmt.Printf("Subtype:      %s (default)\n", subType)
-			} else {
-				fmt.Printf("              %s\n", subType)
+				fmt.Printf("              %s - %s (%s)\n", parameter.Name, parameter.Description, appendStr)
 			}
 		}
 	}

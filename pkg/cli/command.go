@@ -14,6 +14,7 @@ type command struct {
 	baseDir  string
 	registry string
 	debug    bool
+	yes		 bool
 }
 
 func (c *command) Wrap(f cmdFunc) runEFunc {

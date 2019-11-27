@@ -34,7 +34,11 @@ func (p *PluginCmdContext) Install(pluginName, versionToInstall string) error {
 	}
 
 	// Add plugin to manifest
-	if err := p.Manifest.UpdatePlugin(pluginName, versionToInstall); err != nil {
+	meta, err := p.getMeta(pluginName)
+	if err != nil {
+		return err
+	}
+	if err := p.Manifest.UpdatePlugin(pluginName, meta); err != nil {
 		return err
 	}
 

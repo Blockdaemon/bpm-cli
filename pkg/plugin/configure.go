@@ -10,7 +10,7 @@ import (
 	"github.com/rs/xid"
 )
 
-func (p *PluginCmdContext) Configure(pluginName string, networkParam string, networkTypeParam string, protocolParam string, subtypeParam string, skipUpgradeCheck bool) error {
+func (p *PluginCmdContext) Configure(pluginName string, strParameters map[string]string, boolParameters map[string]bool, skipUpgradeCheck bool) error {
 	// Generate instance id
 	id := xid.New().String()
 
@@ -31,37 +31,12 @@ func (p *PluginCmdContext) Configure(pluginName string, networkParam string, net
 		}
 	}
 
-	parameterOptions, err := p.getParameterOptions(pluginName)
-	if err != nil {
-		return err
-	}
-
-	// Validate parameters
-	network, err := validateParameter("network", networkParam, parameterOptions.Network)
-	if err != nil {
-		return err
-	}
-	protocol, err := validateParameter("protocol", protocolParam, parameterOptions.Protocol)
-	if err != nil {
-		return err
-	}
-	networkType, err := validateParameter("network-type", networkTypeParam, parameterOptions.NetworkType)
-	if err != nil {
-		return err
-	}
-	subtype, err := validateParameter("subtype", subtypeParam, parameterOptions.Subtype)
-	if err != nil {
-		return err
-	}
-
 	// Create node config
 	n := node.New(config.NodesDir(p.HomeDir), id)
 	n.PluginName = pluginName
-	n.Network = network
-	n.Protocol = protocol
-	n.Subtype = subtype
+	n.StrParameters = strParameters
+	n.BoolParameters = boolParameters
 	n.Version = p.getInstalledVersion(pluginName)
-	n.NetworkType = networkType
 
 	// Only temporary until we find a better solution to distribute the certs
 	if config.FileExists(p.HomeDir, "beats") {
@@ -78,7 +53,7 @@ func (p *PluginCmdContext) Configure(pluginName string, networkParam string, net
 	}
 
 	// Secrets
-	err = p.execCmd(n, "create-secrets")
+	err := p.execCmd(n, "create-secrets")
 	if err != nil {
 		return err
 	}
