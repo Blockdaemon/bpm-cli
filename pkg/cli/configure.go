@@ -50,7 +50,9 @@ func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
 		for _, parameter := range meta.Parameters {
 			pluginCmd.Flags().String(parameter.Name, parameter.Default, parameter.Description)
 			if parameter.Mandatory {
-				pluginCmd.MarkFlagRequired(parameter.Name)
+				if err := pluginCmd.MarkFlagRequired(parameter.Name); err != nil {
+					exitWithError(err, pluginCmd)
+				}
 			}
 		}
 

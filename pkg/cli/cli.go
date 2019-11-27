@@ -5,9 +5,9 @@ import (
 	stdos "os"
 	"time"
 
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
-	"github.com/Blockdaemon/bpm/pkg/command"
 	pkgversion "github.com/Blockdaemon/bpm/pkg/version"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -63,7 +63,7 @@ func New(os, version string) *cobra.Command {
 	}
 
 	// Check if version is up to date
-	if time.Now().Sub(m.LatestCLIVersionUpdatedAt) > 12*time.Hour {
+	if time.Since(m.LatestCLIVersionUpdatedAt) > 12*time.Hour {
 		client := pbr.New(c.registry)
 		ver, err := client.GetCLIVersion(os)
 		if err != nil {
@@ -72,7 +72,9 @@ func New(os, version string) *cobra.Command {
 		} else {
 			m.LatestCLIVersion = ver.Version
 			m.LatestCLIVersionUpdatedAt = time.Now()
-			m.Write()
+			if err := m.Write(); err != nil {
+				exitWithError(err, rootCmd)
+			}
 		}
 	}
 

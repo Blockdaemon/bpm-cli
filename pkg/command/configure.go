@@ -3,7 +3,6 @@ package command
 import (
 	"fmt"
 	"path/filepath"
-	"strings"
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/Blockdaemon/bpm/pkg/config"
@@ -67,25 +66,4 @@ func (p *CmdContext) Configure(pluginName string, strParameters map[string]strin
 	fmt.Printf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm start %s\nTo see the status of configured nodes, run:\n    bpm status\n", id, n.ConfigsDirectory(), id)
 
 	return nil
-}
-
-func validateParameter(name string, value string, options []string) (string, error) {
-	if len(value) == 0 {
-		return options[0], nil // default to first option
-	}
-
-	if !stringInSlice(value, options) {
-		return "", fmt.Errorf("%s must be one of: %s", name, strings.Join(options, ", "))
-	}
-
-	return value, nil
-}
-
-func stringInSlice(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
 }

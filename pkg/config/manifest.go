@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
 	"time"
 )
@@ -39,7 +38,6 @@ func Init(path string) error {
 		LatestCLIVersion: "0.0.0",                      // avoid "is not in dotted-tri format" errors
 		Path:             path,
 	}
-	fmt.Println(m)
 	return m.Write()
 }
 
