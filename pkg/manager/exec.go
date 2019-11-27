@@ -28,11 +28,15 @@ func ExecCmdCapture(debug bool, pluginFilename string, args ...string) (string, 
 	}
 
 	cmd := exec.Command(pluginFilename, args...)
-	output, err := cmd.Output()
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	err := cmd.Run()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%s: %s", err, stderr.String())
 	}
 
-	cleanOutput := string(bytes.TrimSpace(output))
+	cleanOutput := string(bytes.TrimSpace(stdout.Bytes()))
 	return cleanOutput, nil
 }
