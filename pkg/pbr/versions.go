@@ -5,7 +5,6 @@ import (
 	"net/url"
 )
 
-// TODO: Add to cli in search command
 func (c *Client) ListVersions(os string, packageNames ...string) ([]Version, error) {
 	v := url.Values{}
 	v.Set("expand", "package")
