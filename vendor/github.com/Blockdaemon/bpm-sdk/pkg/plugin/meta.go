@@ -5,11 +5,10 @@ import (
 )
 
 const (
-	ParameterTypeList   = "list"
+	ParameterTypeBool   = "bool"
 	ParameterTypeString = "string"
-	ParameterTypeJSON   = "json"
 
-	SupportedTest = "test"
+	SupportsTest = "test"
 )
 
 type Parameter struct {
@@ -18,7 +17,6 @@ type Parameter struct {
 	Description string
 	Mandatory   bool
 	Default     string
-	ListOptions []string `yaml:"list_options"`
 }
 
 type MetaInfo struct {

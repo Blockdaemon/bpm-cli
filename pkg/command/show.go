@@ -20,7 +20,7 @@ func (p *CmdContext) ShowConfig(nodeID string) error {
 	}
 
 	// Get the node
-	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
 	if err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func (p *CmdContext) ShowNode(nodeID string) error {
 	}
 
 	// Get the node
-	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
 	if err != nil {
 		return err
 	}

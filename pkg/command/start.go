@@ -40,7 +40,7 @@ func (p *CmdContext) Start(nodeID string) error {
 		return nil
 	}
 
-	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
 	if err != nil {
 		return err
 	}

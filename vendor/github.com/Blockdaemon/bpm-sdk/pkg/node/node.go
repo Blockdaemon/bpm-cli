@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/Blockdaemon/bpm-sdk/internal/util"
 	homedir "github.com/mitchellh/go-homedir"
@@ -18,7 +19,7 @@ import (
 
 // Node represents a blockchain node, it's configuration and related information
 type Node struct {
-	baseDir string
+	nodeFile string
 
 	// The global ID of this node
 	ID string `json:"id"`
@@ -58,17 +59,24 @@ func (c Node) NamePrefix() string {
 
 // NodeDirectory returns the base directory under which all configuration, secrets and meta-data for this node is stored
 func (c Node) NodeDirectory() string {
-	expandedBaseDir, err := homedir.Expand(c.baseDir)
+	dir := filepath.Dir(c.nodeFile)
+
+	absDir, err := filepath.Abs(dir)
 	if err != nil {
-		panic(err) // Should never happen because, at this stage, the directory should already be created
+		panic(err) // Should never happen
 	}
 
-	return path.Join(expandedBaseDir, c.ID)
+	expandedBaseDir, err := homedir.Expand(absDir)
+	if err != nil {
+		panic(err) // Should never happen
+	}
+
+	return expandedBaseDir
 }
 
 // NodeFile returns the filepath in which the base configuration as well as meta-data from the PBG is stored
 func (c Node) NodeFile() string {
-	return path.Join(c.NodeDirectory(), "node.json")
+	return c.nodeFile
 }
 
 // ConfigsDirectorys returns the directory under which all configuration for the blockchain client is stored
@@ -106,19 +114,16 @@ func (c Node) Save() error {
 	)
 }
 
-func New(baseDir, id string) Node {
-	return Node{
-		baseDir: baseDir,
-		ID:      id,
-	}
+func New(nodeFile string) Node {
+	return Node{nodeFile: nodeFile}
 }
 
 // Load all the data for a particular node and creates all required directories
-func Load(baseDir, id string) (Node, error) {
-	node := New(baseDir, id)
+func Load(nodeFile string) (Node, error) {
+	node := New(nodeFile)
 
 	// Load node data
-	nodeData, err := ioutil.ReadFile(node.NodeFile())
+	nodeData, err := ioutil.ReadFile(nodeFile)
 	if err != nil {
 		return node, err
 	}

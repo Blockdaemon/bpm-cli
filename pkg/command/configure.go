@@ -31,7 +31,8 @@ func (p *CmdContext) Configure(pluginName string, strParameters map[string]strin
 	}
 
 	// Create node config
-	n := node.New(config.NodesDir(p.HomeDir), id)
+	n := node.New(config.NodeFile(p.HomeDir, id))
+	n.ID = id
 	n.PluginName = pluginName
 	n.StrParameters = strParameters
 	n.BoolParameters = boolParameters

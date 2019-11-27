@@ -72,9 +72,8 @@ func (p *CmdContext) execCmdCapture(n node.Node, cmd string) (string, error) {
 	}
 
 	// Run plugin commands
-	baseDir := config.NodesDir(p.HomeDir)
 	pluginFilename := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
-	return manager.ExecCmdCapture(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
+	return manager.ExecCmdCapture(p.Debug, pluginFilename, cmd, n.NodeFile())
 }
 
 func (p *CmdContext) execCmd(n node.Node, cmd string) error {
@@ -86,19 +85,16 @@ func (p *CmdContext) execCmd(n node.Node, cmd string) error {
 	}
 
 	// Run plugin commands
-	baseDir := config.NodesDir(p.HomeDir)
 	pluginFilename := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
-	return manager.ExecCmd(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
+	return manager.ExecCmd(p.Debug, pluginFilename, cmd, n.NodeFile())
 }
 
 func (p *CmdContext) getMeta(pluginName string) (plugin.MetaInfo, error) {
 	meta := plugin.MetaInfo{}
 	pluginFilename := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
-	baseDirArgs := []string{"--base-dir", config.NodesDir(p.HomeDir)}
 
 	// Get parameter options
-	configArgs := append([]string{"meta"}, baseDirArgs...)
-	output, err := manager.ExecCmdCapture(p.Debug, pluginFilename, configArgs...)
+	output, err := manager.ExecCmdCapture(p.Debug, pluginFilename, "meta")
 	if err != nil {
 		return meta, err
 	}

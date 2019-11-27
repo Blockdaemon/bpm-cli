@@ -10,7 +10,7 @@ import (
 )
 
 func (p *CmdContext) Remove(nodeID string, all bool, data bool, config bool) error {
-	n, err := node.Load(bpmconfig.NodesDir(p.HomeDir), nodeID)
+	n, err := node.Load(bpmconfig.NodeFile(p.HomeDir, nodeID))
 	if err != nil {
 		return err
 	}

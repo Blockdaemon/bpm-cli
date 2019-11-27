@@ -29,7 +29,7 @@ func (p *CmdContext) Status() error {
 	for _, nodeDir := range nodeDirs {
 		nodeID := nodeDir.Name()
 
-		n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
+		n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
 		if err != nil {
 			return err
 		}

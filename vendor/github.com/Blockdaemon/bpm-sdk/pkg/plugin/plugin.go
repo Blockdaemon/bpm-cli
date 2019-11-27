@@ -74,8 +74,6 @@ type Plugin interface {
 
 // Initialize creates the CLI for a plugin
 func Initialize(plugin Plugin) {
-	var baseDir string
-
 	// Initialize root command
 	var rootCmd = &cobra.Command{
 		Use:          plugin.Name(),
@@ -83,16 +81,13 @@ func Initialize(plugin Plugin) {
 		SilenceUsage: true,
 	}
 
-	pf := rootCmd.PersistentFlags()
-	pf.StringVar(&baseDir, "base-dir", "~/.bpm/nodes", "The directory in which the node secrets and configuration are stored")
-
 	// Create the commands
 	var createSecretsCmd = &cobra.Command{
-		Use:   "create-secrets <node-id>",
+		Use:   "create-secrets <node-file>",
 		Short: "Creates the secrets for a blockchain node and stores them on disk",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentNode, err := node.Load(baseDir, args[0])
+			currentNode, err := node.Load(args[0])
 
 			if err != nil {
 				return err
@@ -103,11 +98,11 @@ func Initialize(plugin Plugin) {
 	}
 
 	var createConfigurationsCmd = &cobra.Command{
-		Use:   "create-configurations <node-id>",
+		Use:   "create-configurations <node-file>",
 		Short: "Creates the configurations for a blockchain node and stores them on disk",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentNode, err := node.Load(baseDir, args[0])
+			currentNode, err := node.Load(args[0])
 			if err != nil {
 				return err
 			}
@@ -117,11 +112,11 @@ func Initialize(plugin Plugin) {
 	}
 
 	var startCmd = &cobra.Command{
-		Use:   "start <node-id>",
+		Use:   "start <node-file>",
 		Short: "Starts the docker containers",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentNode, err := node.Load(baseDir, args[0])
+			currentNode, err := node.Load(args[0])
 			if err != nil {
 				return err
 			}
@@ -131,11 +126,11 @@ func Initialize(plugin Plugin) {
 	}
 
 	var stopCmd = &cobra.Command{
-		Use:   "stop <node-id>",
+		Use:   "stop <node-file>",
 		Short: "Stops the docker containers",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentNode, err := node.Load(baseDir, args[0])
+			currentNode, err := node.Load(args[0])
 			if err != nil {
 				return err
 			}
@@ -145,11 +140,11 @@ func Initialize(plugin Plugin) {
 	}
 
 	var upgradeCmd = &cobra.Command{
-		Use:   "upgrade <node-id>",
+		Use:   "upgrade <node-file>",
 		Short: "Removes the docker containers",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentNode, err := node.Load(baseDir, args[0])
+			currentNode, err := node.Load(args[0])
 			if err != nil {
 				return err
 			}
@@ -159,11 +154,11 @@ func Initialize(plugin Plugin) {
 	}
 
 	var statusCmd = &cobra.Command{
-		Use:   "status <node-id>",
+		Use:   "status <node-file>",
 		Short: "Gives information about the current status",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentNode, err := node.Load(baseDir, args[0])
+			currentNode, err := node.Load(args[0])
 			if err != nil {
 				return err
 			}
@@ -187,11 +182,11 @@ func Initialize(plugin Plugin) {
 	}
 
 	var removeConfigCmd = &cobra.Command{
-		Use:   "remove-config <node-id>",
+		Use:   "remove-config <node-file>",
 		Short: "Remove the node configuration files",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentNode, err := node.Load(baseDir, args[0])
+			currentNode, err := node.Load(args[0])
 			if err != nil {
 				return err
 			}
@@ -201,11 +196,11 @@ func Initialize(plugin Plugin) {
 	}
 
 	var removeDataCmd = &cobra.Command{
-		Use:   "remove-data <node-id>",
+		Use:   "remove-data <node-file>",
 		Short: "Remove the node data",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentNode, err := node.Load(baseDir, args[0])
+			currentNode, err := node.Load(args[0])
 			if err != nil {
 				return err
 			}
@@ -215,11 +210,11 @@ func Initialize(plugin Plugin) {
 	}
 
 	var removeNodeCmd = &cobra.Command{
-		Use:   "remove-node <node-id>",
+		Use:   "remove-node <node-file>",
 		Short: "Remove everything related to the node itself but no data or configs",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentNode, err := node.Load(baseDir, args[0])
+			currentNode, err := node.Load(args[0])
 			if err != nil {
 				return err
 			}
@@ -241,13 +236,13 @@ func Initialize(plugin Plugin) {
 		removeNodeCmd,
 	)
 
-	if funk.Contains(plugin.Meta().Supported, SupportedTest) {
+	if funk.Contains(plugin.Meta().Supported, SupportsTest) {
 		var testCmd = &cobra.Command{
-			Use:   "test <node-id>",
+			Use:   "test <node-file>",
 			Short: "Runs a test suite against the running node",
 			Args:  cobra.MinimumNArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				currentNode, err := node.Load(baseDir, args[0])
+				currentNode, err := node.Load(args[0])
 				if err != nil {
 					return err
 				}

@@ -6,7 +6,7 @@ import (
 )
 
 func (p *CmdContext) Test(nodeID string) error {
-	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
 	if err != nil {
 		return err
 	}
