@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"os"
@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/tablewriter"
 )
 
-func (p *PluginCmdContext) List() error {
+func (p *CmdContext) List() error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetBorder(false)
 	table.SetHeader([]string{

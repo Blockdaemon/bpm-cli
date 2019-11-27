@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *PluginCmdContext) Stop(nodeID string) error {
+func (p *CmdContext) Stop(nodeID string) error {
 	n, err := node.Load(config.NodesDir(p.HomeDir), nodeID)
 	if err != nil {
 		return err

@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *PluginCmdContext) ShowConfig(nodeID string) error {
+func (p *CmdContext) ShowConfig(nodeID string) error {
 	// Check if node exists
 	if !config.FileExists(
 		filepath.Join(config.NodesDir(p.HomeDir), nodeID),
@@ -55,7 +55,7 @@ func (p *PluginCmdContext) ShowConfig(nodeID string) error {
 	return nil
 }
 
-func (p *PluginCmdContext) ShowNode(nodeID string) error {
+func (p *CmdContext) ShowNode(nodeID string) error {
 	// Check if node exists
 	if !config.FileExists(
 		filepath.Join(config.NodesDir(p.HomeDir), nodeID),

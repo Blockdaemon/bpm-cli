@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
 )
 
-func newStopCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
+func newStopCmd(cmdContext command.CmdContext) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "stop <id>",
 		Short: "Stops a running blockchain node",

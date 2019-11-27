@@ -4,7 +4,7 @@
 basedir=./build/bpm
 
 function getStatusColumn() {
-	echo $(go run cmd/main.go --base-dir $basedir status | cut -d'|' -f$1 | tail -n1 | tr -d " ")
+	echo $(go run cmd/main.go --base-dir $basedir nodes status | cut -d'|' -f$1 | tail -n1 | tr -d " ")
 }
 
 function checkStatus() {
@@ -21,7 +21,7 @@ function cleanup {
 	set +x # Make output a bit nicer
 
 	# Stop node if it is still running
-	go run cmd/main.go --base-dir $basedir stop $(getStatusColumn 1) &> /dev/null
+	go run cmd/main.go --base-dir $basedir nodes stop $(getStatusColumn 1) &> /dev/null
 }
 
 function setup {
@@ -40,25 +40,25 @@ function setup {
 setup
 
 go run cmd/main.go --yes --base-dir $basedir version
-go run cmd/main.go --yes --base-dir $basedir list
-go run cmd/main.go --yes --base-dir $basedir search polkadot
-go run cmd/main.go --yes --base-dir $basedir install polkadot 1.1.0
-go run cmd/main.go --yes --base-dir $basedir info polkadot
-go run cmd/main.go --yes --base-dir $basedir configure polkadot
-go run cmd/main.go --yes --base-dir $basedir status
+go run cmd/main.go --yes --base-dir $basedir packages list
+go run cmd/main.go --yes --base-dir $basedir packages search polkadot
+go run cmd/main.go --yes --base-dir $basedir packages install polkadot 1.1.0
+go run cmd/main.go --yes --base-dir $basedir packages info polkadot
+go run cmd/main.go --yes --base-dir $basedir nodes configure polkadot
+go run cmd/main.go --yes --base-dir $basedir nodes status
 checkStatus "stopped"
 nodeID=$(getStatusColumn 1) 
-go run cmd/main.go --yes --base-dir $basedir status
-go run cmd/main.go --yes --base-dir $basedir start $nodeID
+go run cmd/main.go --yes --base-dir $basedir nodes status
+go run cmd/main.go --yes --base-dir $basedir nodes start $nodeID
 checkStatus "running"
-go run cmd/main.go --yes --base-dir $basedir show node $nodeID
-go run cmd/main.go --yes --base-dir $basedir show config $nodeID
+go run cmd/main.go --yes --base-dir $basedir nodes show node $nodeID
+go run cmd/main.go --yes --base-dir $basedir nodes show config $nodeID
 # Commented out because it doesn't work in the CI due to networking issues
 # go run cmd/main.go --yes --base-dir $basedir test $nodeID
-go run cmd/main.go --yes --base-dir $basedir stop $nodeID
-go run cmd/main.go --yes --base-dir $basedir remove --config $nodeID
-go run cmd/main.go --yes --base-dir $basedir remove --data $nodeID
-go run cmd/main.go --yes --base-dir $basedir remove --all $nodeID
-go run cmd/main.go --yes --base-dir $basedir uninstall polkadot
+go run cmd/main.go --yes --base-dir $basedir nodes stop $nodeID
+go run cmd/main.go --yes --base-dir $basedir nodes remove --config $nodeID
+go run cmd/main.go --yes --base-dir $basedir nodes remove --data $nodeID
+go run cmd/main.go --yes --base-dir $basedir nodes remove --all $nodeID
+go run cmd/main.go --yes --base-dir $basedir packages uninstall polkadot
 
 echo ">>> DONE, ALL TESTS RAN SUCCESSFUL"

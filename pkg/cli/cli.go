@@ -7,7 +7,7 @@ import (
 
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
-	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	pkgversion "github.com/Blockdaemon/bpm/pkg/version"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -89,7 +89,7 @@ func New(os, version string) *cobra.Command {
 	if err != nil {
 		exitWithError(err, rootCmd)
 	}
-	cmdContext := plugin.PluginCmdContext{
+	cmdContext := command.CmdContext{
 		HomeDir:     absHomeDir,
 		Manifest:    m,
 		RuntimeOS:   os,
@@ -98,19 +98,35 @@ func New(os, version string) *cobra.Command {
 	}
 
 	// Commands
-	rootCmd.AddCommand(
+	nodesCmd := &cobra.Command{
+		Use:   "nodes",
+		Short: "Manage blockchain nodes",
+	}
+	nodesCmd.AddCommand(
 		newConfigureCmd(cmdContext),
-		newInstallCmd(cmdContext),
-		newListCmd(cmdContext),
 		newShowCmd(cmdContext),
 		newStartCmd(cmdContext),
 		newStatusCmd(cmdContext),
 		newStopCmd(cmdContext),
-		newUninstallCmd(cmdContext),
 		newTestCmd(cmdContext),
+		newRemoveCmd(cmdContext),
+	)
+
+	packagesCmd := &cobra.Command{
+		Use:   "packages",
+		Short: "Manage packages",
+	}
+	packagesCmd.AddCommand(
+		newInstallCmd(cmdContext),
+		newListCmd(cmdContext),
+		newUninstallCmd(cmdContext),
 		newSearchCmd(cmdContext),
 		newInfoCmd(cmdContext),
-		newRemoveCmd(cmdContext),
+	)
+
+	rootCmd.AddCommand(
+		nodesCmd,
+		packagesCmd,
 		newVersionCmd(version),
 	)
 

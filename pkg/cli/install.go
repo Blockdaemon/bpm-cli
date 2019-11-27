@@ -1,12 +1,12 @@
 package cli
 
 import (
-	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
 )
 
 // newInstallCmd downloads and install a plugin from the PBR to the plugins directory
-func newInstallCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
+func newInstallCmd(cmdContext command.CmdContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "install <package> [version]",
 		Short: "Installs or upgrades a package to a specific version or latest if no version is specified",

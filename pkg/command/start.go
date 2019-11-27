@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *PluginCmdContext) Start(nodeID string) error {
+func (p *CmdContext) Start(nodeID string) error {
 	// Check if manual intervention is necessary in the configs
 	// This is the case if a string like, e.g. {% ADD NODE KEY HERE %} is found in the files.
 	// Until we have a better way of getting this information via the CLI, the users can edit the files manually.

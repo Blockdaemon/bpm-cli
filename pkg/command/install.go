@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
-func (p *PluginCmdContext) InstallLatest(pluginName string) error {
+func (p *CmdContext) InstallLatest(pluginName string) error {
 	latestVersion, err := p.getLatestVersion(pluginName)
 	if err != nil {
 		return err
@@ -17,7 +17,7 @@ func (p *PluginCmdContext) InstallLatest(pluginName string) error {
 	return p.Install(pluginName, latestVersion)
 }
 
-func (p *PluginCmdContext) Install(pluginName, versionToInstall string) error {
+func (p *CmdContext) Install(pluginName, versionToInstall string) error {
 	// Check if this version is already installed
 	if p.getInstalledVersion(pluginName) == versionToInstall {
 		return fmt.Errorf("%q version %q has already been installed.", pluginName, versionToInstall)

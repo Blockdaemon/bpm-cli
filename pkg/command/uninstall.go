@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *PluginCmdContext) Uninstall(pluginName string) error {
+func (p *CmdContext) Uninstall(pluginName string) error {
 	if !p.isInstalled(pluginName) {
 		return fmt.Errorf("The package %q is currently not installed.", pluginName)
 	}

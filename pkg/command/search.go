@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"os"
@@ -8,7 +8,7 @@ import (
 	"github.com/kataras/tablewriter"
 )
 
-func (p *PluginCmdContext) Search(query string) error {
+func (p *CmdContext) Search(query string) error {
 	client := pbr.New(p.RegistryURL)
 
 	packages, err := client.SearchPackages(strings.ToLower(query), p.RuntimeOS)

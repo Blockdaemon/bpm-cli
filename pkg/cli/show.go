@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
 )
 
-func newShowCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
+func newShowCmd(cmdContext command.CmdContext) *cobra.Command {
 	showCmd := &cobra.Command{
 		Use:   "show <resource>",
 		Short: "Print a resource to stdout",

@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
-func (p *PluginCmdContext) Info(pluginName string) error {
+func (p *CmdContext) Info(pluginName string) error {
 	client := pbr.New(p.RegistryURL)
 
 	versions, err := client.ListVersions(p.RuntimeOS, pluginName)

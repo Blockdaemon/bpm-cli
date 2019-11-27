@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/rs/xid"
 )
 
-func (p *PluginCmdContext) Configure(pluginName string, strParameters map[string]string, boolParameters map[string]bool, skipUpgradeCheck bool) error {
+func (p *CmdContext) Configure(pluginName string, strParameters map[string]string, boolParameters map[string]bool, skipUpgradeCheck bool) error {
 	// Generate instance id
 	id := xid.New().String()
 

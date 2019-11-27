@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"fmt"
@@ -85,7 +85,7 @@ func setupHTTPServer(t *testing.T) *httptest.Server {
 	return testServer
 }
 
-func setupUnittest(t *testing.T) (PluginCmdContext, TestContext) {
+func setupUnittest(t *testing.T) (CmdContext, TestContext) {
 	server := setupHTTPServer(t)
 	if err := config.Init(testBaseDir); err != nil {
 		t.Error(err)
@@ -96,7 +96,7 @@ func setupUnittest(t *testing.T) (PluginCmdContext, TestContext) {
 		t.Error(err)
 	}
 
-	return PluginCmdContext{
+	return CmdContext{
 			HomeDir:     testBaseDir,
 			Manifest:    manifest,
 			RuntimeOS:   "linux", // pretend to be linux during testing, this works on osx too!

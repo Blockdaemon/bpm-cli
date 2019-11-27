@@ -2,11 +2,11 @@ package cli
 
 import (
 	"fmt"
-	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
 )
 
-func newUninstallCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
+func newUninstallCmd(cmdContext command.CmdContext) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "uninstall",
 		Short: "Uninstall a package. Data and configuration will not be removed.",

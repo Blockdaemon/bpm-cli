@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	sdkplugin "github.com/Blockdaemon/bpm-sdk/pkg/plugin"
-	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
 )
 
-func newConfigureCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
+func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
 	var skipUpgradeCheck bool
 
 	cmd := &cobra.Command{

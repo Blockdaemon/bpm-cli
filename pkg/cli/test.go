@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
 )
 
-func newTestCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
+func newTestCmd(cmdContext command.CmdContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "test <id>",
 		Short: "Tests a running blockchain node",

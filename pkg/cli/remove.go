@@ -3,11 +3,11 @@ package cli
 import (
 	"fmt"
 
-	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
 )
 
-func newRemoveCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
+func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {
 	var (
 		all    bool
 		data   bool

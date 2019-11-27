@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"github.com/Blockdaemon/bpm/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
 )
 
-func newStartCmd(cmdContext plugin.PluginCmdContext) *cobra.Command {
+func newStartCmd(cmdContext command.CmdContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "start <id>",
 		Short: "Start a blockchain node",

@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"os"
@@ -10,7 +10,7 @@ import (
 )
 
 // Status returns the status of a particular node
-func (p *PluginCmdContext) Status() error {
+func (p *CmdContext) Status() error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetBorder(false)
 	table.SetHeader([]string{

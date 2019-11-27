@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"fmt"
@@ -14,8 +14,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// PlguinCmdContext encapsulates data used by commands related to plugins
-type PluginCmdContext struct {
+// CmdContext encapsulates data used by commands
+type CmdContext struct {
 	HomeDir     string
 	Manifest    config.Manifest
 	RuntimeOS   string
@@ -24,7 +24,7 @@ type PluginCmdContext struct {
 }
 
 // The following functions contain common functionality used by various commands
-func (p *PluginCmdContext) getInstalledVersion(pluginName string) string {
+func (p *CmdContext) getInstalledVersion(pluginName string) string {
 	if !p.isInstalled(pluginName) {
 		return ""
 	}
@@ -32,7 +32,7 @@ func (p *PluginCmdContext) getInstalledVersion(pluginName string) string {
 	return p.Manifest.Plugins[pluginName].Version
 }
 
-func (p *PluginCmdContext) getLatestVersion(pluginName string) (string, error) {
+func (p *CmdContext) getLatestVersion(pluginName string) (string, error) {
 	client := pbr.New(p.RegistryURL)
 
 	packageVersion, err := client.GetLatestPackageVersion(pluginName, p.RuntimeOS)
@@ -43,13 +43,13 @@ func (p *PluginCmdContext) getLatestVersion(pluginName string) (string, error) {
 	return packageVersion.Version, nil
 }
 
-func (p *PluginCmdContext) isInstalled(pluginName string) bool {
+func (p *CmdContext) isInstalled(pluginName string) bool {
 	_, ok := p.Manifest.Plugins[pluginName]
 
 	return ok
 }
 
-func (p *PluginCmdContext) needsUpgrade(pluginName string) (bool, error) {
+func (p *CmdContext) needsUpgrade(pluginName string) (bool, error) {
 	latestVersion, err := p.getLatestVersion(pluginName)
 	if err != nil {
 		return false, err
@@ -63,7 +63,7 @@ func (p *PluginCmdContext) needsUpgrade(pluginName string) (bool, error) {
 	return needsUpgrade, nil
 }
 
-func (p *PluginCmdContext) execCmdCapture(n node.Node, cmd string) (string, error) {
+func (p *CmdContext) execCmdCapture(n node.Node, cmd string) (string, error) {
 	pluginName := n.PluginName
 
 	// Check if plugin is installed
@@ -77,7 +77,7 @@ func (p *PluginCmdContext) execCmdCapture(n node.Node, cmd string) (string, erro
 	return manager.ExecCmdCapture(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
 }
 
-func (p *PluginCmdContext) execCmd(n node.Node, cmd string) error {
+func (p *CmdContext) execCmd(n node.Node, cmd string) error {
 	pluginName := n.PluginName
 
 	// Check if plugin is installed
@@ -91,7 +91,7 @@ func (p *PluginCmdContext) execCmd(n node.Node, cmd string) error {
 	return manager.ExecCmd(p.Debug, pluginFilename, "--base-dir", baseDir, cmd, n.ID)
 }
 
-func (p *PluginCmdContext) getMeta(pluginName string) (plugin.MetaInfo, error) {
+func (p *CmdContext) getMeta(pluginName string) (plugin.MetaInfo, error) {
 	meta := plugin.MetaInfo{}
 	pluginFilename := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
 	baseDirArgs := []string{"--base-dir", config.NodesDir(p.HomeDir)}

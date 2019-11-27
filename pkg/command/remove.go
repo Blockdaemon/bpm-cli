@@ -1,4 +1,4 @@
-package plugin
+package command
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	bpmconfig "github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *PluginCmdContext) Remove(nodeID string, all bool, data bool, config bool) error {
+func (p *CmdContext) Remove(nodeID string, all bool, data bool, config bool) error {
 	n, err := node.Load(bpmconfig.NodesDir(p.HomeDir), nodeID)
 	if err != nil {
 		return err
