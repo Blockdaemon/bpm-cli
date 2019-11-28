@@ -9,7 +9,7 @@ import (
 	bpmconfig "github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *CmdContext) Remove(nodeID string, all bool, data bool, config bool) error {
+func (p *CmdContext) Remove(nodeID string, all bool, data bool, config bool, runtime bool) error {
 	n, err := node.Load(bpmconfig.NodeFile(p.HomeDir, nodeID))
 	if err != nil {
 		return err
@@ -21,21 +21,19 @@ func (p *CmdContext) Remove(nodeID string, all bool, data bool, config bool) err
 		}
 	}
 
-	if data || all {
-		if err := p.execCmd(n, "stop"); err != nil {
+	if runtime || data || all {
+		if err := p.execCmd(n, "remove-runtime"); err != nil {
 			return err
 		}
+	}
 
+	if data || all {
 		if err := p.execCmd(n, "remove-data"); err != nil {
 			return err
 		}
 	}
 
 	if all {
-		if err := p.execCmd(n, "remove-node"); err != nil {
-			return err
-		}
-
 		baseDir := bpmconfig.NodesDir(p.HomeDir)
 		nodeDir := filepath.Join(baseDir, nodeID)
 		fmt.Printf("\nRemoving directory %q\n", nodeDir)

@@ -3,7 +3,9 @@ module github.com/Blockdaemon/bpm
 go 1.13
 
 require (
-	github.com/Blockdaemon/bpm-sdk v0.0.0-20190923132945-53b6830dfb4d
+	github.com/Blockdaemon/bpm-parity v0.0.0-20191128173322-7db06b480d1e // indirect
+	github.com/Blockdaemon/bpm-sdk v0.0.0-20191106185628-27e1a0b25d4d
+	github.com/Blockdaemon/bpm-skel v0.0.0-20190802122829-858d96666a53 // indirect
 	github.com/DATA-DOG/go-sqlmock v1.3.3 // indirect
 	github.com/Microsoft/go-winio v0.4.14 // indirect
 	github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883 // indirect

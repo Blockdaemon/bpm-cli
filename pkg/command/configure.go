@@ -64,7 +64,7 @@ func (p *CmdContext) Configure(pluginName string, strParameters map[string]strin
 		return err
 	}
 
-	fmt.Printf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm start %s\nTo see the status of configured nodes, run:\n    bpm status\n", id, n.ConfigsDirectory(), id)
+	fmt.Printf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm nodes start %s\nTo see the status of configured nodes, run:\n    bpm nodes status\n", id, n.ConfigsDirectory(), id)
 
 	return nil
 }
