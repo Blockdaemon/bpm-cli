@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	stdos "os"
+	"strings"
 	"time"
 
 	"github.com/Blockdaemon/bpm/pkg/command"
@@ -11,19 +12,18 @@ import (
 	pkgversion "github.com/Blockdaemon/bpm/pkg/version"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"path/filepath"
 )
 
-type params struct {
-	baseDir  string
-	registry string
-	debug    bool
-	yes      bool
-}
+const (
+	baseDirFlag  = "base-dir"
+	registryFlag = "package-registry"
+	debugFlag    = "debug"
+	yesFlag      = "yes"
+)
 
 func New(os, version string) *cobra.Command {
-	c := &params{}
-
 	rootCmd := &cobra.Command{
 		Use:          "bpm",
 		Short:        "Blockchain Package Manager (BPM) manages blockchain nodes on your own infrastructure.",
@@ -31,23 +31,34 @@ func New(os, version string) *cobra.Command {
 	}
 
 	pf := rootCmd.PersistentFlags()
-	pf.StringVar(&c.baseDir, "base-dir", "~/.bpm/", "The directory plugins and configuration are stored")
-	pf.StringVar(&c.registry, "package-registry", "https://dev.registry.blockdaemon.com", "The package registry provides packages to install")
-	pf.BoolVar(&c.debug, "debug", false, "Enable debug output")
-	pf.BoolVarP(&c.yes, "yes", "y", false, `Automatic yes to prompts; assume "yes" as answer to all prompts and run non-interactively`)
+	pf.String(baseDirFlag, "~/.bpm/", "The directory plugins and configuration are stored")
+	pf.String(registryFlag, "https://dev.registry.blockdaemon.com", "The package registry provides packages to install")
+	pf.Bool(debugFlag, false, "Enable debug output")
+	pf.BoolP(yesFlag, "y", false, `Automatic yes to prompts; assume "yes" as answer to all prompts and run non-interactively`)
+	if err := viper.BindPFlags(pf); err != nil {
+		exitWithError(err, rootCmd)
+	}
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+	viper.SetEnvPrefix("bpm")
+	viper.AutomaticEnv()
 
 	// Cobra parses all parameters after the commands are added but we need the base-dir before that to load the manifest.
 	// Intentionally ignoring the error here. At this stage there is no way of knowing if the user tried to pass --base-dir
 	// but made a typo or if it's a legitimate flag for one of the subcommands.
 	_ = rootCmd.PersistentFlags().Parse(stdos.Args)
 
+	baseDir := viper.GetString(baseDirFlag)
+	registry := viper.GetString(registryFlag)
+	debug := viper.GetBool(debugFlag)
+	yes := viper.GetBool(yesFlag)
+
 	// Initialize
-	homeDir, err := homedir.Expand(c.baseDir)
+	homeDir, err := homedir.Expand(baseDir)
 	if err != nil {
 		exitWithError(err, rootCmd)
 	}
 	if !config.ManifestExists(homeDir) {
-		if c.yes || ask4confirm(fmt.Sprintf("Looks like bpm isn't initialized correctly in %q, do you want to do that now?", homeDir)) {
+		if yes || ask4confirm(fmt.Sprintf("Looks like bpm isn't initialized correctly in %q, do you want to do that now?", homeDir)) {
 			if err := config.Init(homeDir); err != nil {
 				exitWithError(err, rootCmd)
 			}
@@ -64,11 +75,11 @@ func New(os, version string) *cobra.Command {
 
 	// Check if version is up to date
 	if time.Since(m.LatestCLIVersionUpdatedAt) > 12*time.Hour {
-		client := pbr.New(c.registry)
+		client := pbr.New(registry)
 		ver, err := client.GetCLIVersion(os)
 		if err != nil {
 			// Could be an intermittant connectivity issue - Do not exit
-			fmt.Printf("Cannot get latest bpm cli version from %q: %s\n", c.registry, err)
+			fmt.Printf("Cannot get latest bpm cli version from %q: %s\n", registry, err)
 		} else {
 			m.LatestCLIVersion = ver.Version
 			m.LatestCLIVersionUpdatedAt = time.Now()
@@ -95,8 +106,8 @@ func New(os, version string) *cobra.Command {
 		HomeDir:     absHomeDir,
 		Manifest:    m,
 		RuntimeOS:   os,
-		RegistryURL: c.registry,
-		Debug:       c.debug,
+		RegistryURL: registry,
+		Debug:       debug,
 	}
 
 	// Commands

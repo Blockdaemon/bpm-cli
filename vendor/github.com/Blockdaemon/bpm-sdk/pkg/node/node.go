@@ -9,8 +9,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path"
+	"os"
 	"path/filepath"
 
 	"github.com/Blockdaemon/bpm-sdk/internal/util"
@@ -115,7 +115,7 @@ func (c Node) Save() error {
 }
 
 func New(nodeFile string) Node {
-	return Node{nodeFile: nodeFile}
+	return Node{ nodeFile: nodeFile }
 }
 
 // Load all the data for a particular node and creates all required directories
@@ -153,3 +153,4 @@ func Load(nodeFile string) (Node, error) {
 
 	return node, nil
 }
+
