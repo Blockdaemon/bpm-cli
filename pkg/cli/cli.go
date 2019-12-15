@@ -119,6 +119,7 @@ func New(os, version string) *cobra.Command {
 		newConfigureCmd(cmdContext),
 		newShowCmd(cmdContext),
 		newStartCmd(cmdContext),
+		newUpgradeCmd(cmdContext),
 		newStatusCmd(cmdContext),
 		newStopCmd(cmdContext),
 		newTestCmd(cmdContext),
