@@ -22,13 +22,17 @@ func (p *CmdContext) Configure(pluginName string, strParameters map[string]strin
 		needsUpgrade, err := p.needsUpgrade(pluginName)
 
 		if err != nil {
-			return err
-		}
-
-		if needsUpgrade {
-			return fmt.Errorf("A new version of package %q is available. Please install using \"bpm install %s\" or skip this check using \"--skip-upgrade-check\".\n", pluginName, pluginName)
+			// During development it often happens that a plugin is being used that hasn't been uploaded
+			// to the registry. Ergo, the upgrade check will fail. In order to speed up development we 
+			// we just tell the user about it but don't stop here
+			fmt.Printf("Upgrade check failed: %s\n", err)
+		} else {
+			if needsUpgrade {
+				return fmt.Errorf("A new version of package %q is available. Please install using \"bpm install %s\" or skip this check using \"--skip-upgrade-check\".\n", pluginName, pluginName)
+			}
 		}
 	}
+
 
 	// Create node config
 	n := node.New(config.NodeFile(p.HomeDir, id))
