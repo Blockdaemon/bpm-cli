@@ -2,11 +2,35 @@ package command
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/manager"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
+
+func (p *CmdContext) addPluginToManifest(pluginName string) error {
+	// Add plugin to manifest
+	meta, err := p.getMeta(pluginName)
+	if err != nil {
+		return err
+	}
+	return p.Manifest.UpdatePlugin(pluginName, meta)
+}
+
+func (p *CmdContext) InstallFile(pluginName string, filePath string) error {
+	if err := config.CopyFile(filePath, filepath.Join(config.PluginsDir(p.HomeDir), pluginName)); err != nil {
+		return err
+	}
+
+	if err := p.addPluginToManifest(pluginName); err != nil {
+		return err
+	}
+
+	fmt.Printf("The package %q has been installed.\n", pluginName)
+	return nil
+}
+
 
 func (p *CmdContext) InstallLatest(pluginName string) error {
 	latestVersion, err := p.getLatestVersion(pluginName)
@@ -33,12 +57,7 @@ func (p *CmdContext) Install(pluginName, versionToInstall string) error {
 		return err
 	}
 
-	// Add plugin to manifest
-	meta, err := p.getMeta(pluginName)
-	if err != nil {
-		return err
-	}
-	if err := p.Manifest.UpdatePlugin(pluginName, meta); err != nil {
+	if err := p.addPluginToManifest(pluginName); err != nil {
 		return err
 	}
 
