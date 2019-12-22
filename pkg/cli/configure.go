@@ -17,38 +17,51 @@ func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
 	}
 
 	for name, meta := range cmdContext.Manifest.Plugins {
+		// copy to break closure
+		nameCopy := name
+		metaCopy := meta
+
 		pluginCmd := &cobra.Command{
-			Use:   name,
-			Short: fmt.Sprintf("Configure a new blockchain node using the %q package", name),
+			Use:   nameCopy,
+			Short: fmt.Sprintf("Configure a new blockchain node using the %q package", nameCopy),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				// Read dynamic parameters
 				strParameters := map[string]string{}
 				boolParameters := map[string]bool{}
 
-				for _, parameter := range meta.Parameters {
+				for _, parameter := range metaCopy.Parameters {
 					if parameter.Type == sdkplugin.ParameterTypeString {
 						value, err := cmd.Flags().GetString(parameter.Name)
 						if err != nil {
-							return err
+							return fmt.Errorf("Cannot read parameter %q: ", err)
 						}
 						strParameters[parameter.Name] = value
 					} else {
 						value, err := cmd.Flags().GetBool(parameter.Name)
 						if err != nil {
-							return err
+							return fmt.Errorf("Cannot read parameter %q: %s", parameter.Name, err)
 						}
 						boolParameters[parameter.Name] = value
 					}
 				}
 
-				return cmdContext.Configure(name, strParameters, boolParameters, skipUpgradeCheck)
+				return cmdContext.Configure(nameCopy, strParameters, boolParameters, skipUpgradeCheck)
 			},
 		}
 		pluginCmd.Flags().BoolVar(&skipUpgradeCheck, "skip-upgrade-check", false, "Skip checking whether a new version of the package is available")
 
 		// Add dynamic configuration parameters
-		for _, parameter := range meta.Parameters {
-			pluginCmd.Flags().String(parameter.Name, parameter.Default, parameter.Description)
+		for _, parameter := range metaCopy.Parameters {
+			if parameter.Type == sdkplugin.ParameterTypeString {
+				pluginCmd.Flags().String(parameter.Name, parameter.Default, parameter.Description)
+			} else {
+				defaultValue := false
+				if parameter.Default == "true" || parameter.Default == "yes" || parameter.Default == "on" {
+					defaultValue = true
+				}
+				pluginCmd.Flags().Bool(parameter.Name, defaultValue, parameter.Description)
+			}
+
 			if parameter.Mandatory {
 				if err := pluginCmd.MarkFlagRequired(parameter.Name); err != nil {
 					exitWithError(err, pluginCmd)
