@@ -11,14 +11,6 @@ import (
 )
 
 func (p *CmdContext) ShowConfig(nodeID string) error {
-	// Check if node exists
-	if !config.FileExists(
-		filepath.Join(config.NodesDir(p.HomeDir), nodeID),
-		"node.json",
-	) {
-		return fmt.Errorf("Node %q does not exist\n", nodeID)
-	}
-
 	// Get the node
 	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
 	if err != nil {
