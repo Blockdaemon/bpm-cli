@@ -2,8 +2,8 @@ package config
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -57,21 +57,21 @@ func Walk(path string, f filepath.WalkFunc) error {
 }
 
 func CopyFile(src, dst string) error {
-    in, err := os.Open(src)
-    if err != nil {
-        return err
-    }
-    defer in.Close()
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
 
-    out, err := os.Create(dst)
-    if err != nil {
-        return err
-    }
-    defer out.Close()
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
 
-    _, err = io.Copy(out, in)
-    if err != nil {
-        return err
-    }
-    return out.Close()
+	_, err = io.Copy(out, in)
+	if err != nil {
+		return err
+	}
+	return out.Close()
 }

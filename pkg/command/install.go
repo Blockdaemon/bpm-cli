@@ -31,7 +31,6 @@ func (p *CmdContext) InstallFile(pluginName string, filePath string) error {
 	return nil
 }
 
-
 func (p *CmdContext) InstallLatest(pluginName string) error {
 	latestVersion, err := p.getLatestVersion(pluginName)
 	if err != nil {
