@@ -1,4 +1,4 @@
-# github.com/Blockdaemon/bpm-sdk v0.0.0-20191106185628-27e1a0b25d4d => ../bpm-sdk
+# github.com/Blockdaemon/bpm-sdk v0.0.0-20200107193815-fcf8c5457c7c
 github.com/Blockdaemon/bpm-sdk/internal/util
 github.com/Blockdaemon/bpm-sdk/pkg/docker
 github.com/Blockdaemon/bpm-sdk/pkg/node
@@ -83,7 +83,7 @@ github.com/spf13/jwalterweatherman
 github.com/spf13/pflag
 # github.com/spf13/viper v1.3.2
 github.com/spf13/viper
-# github.com/thoas/go-funk v0.4.0
+# github.com/thoas/go-funk v0.5.0
 github.com/thoas/go-funk
 # golang.org/x/net v0.0.0-20190912160710-24e19bdeb0f2
 golang.org/x/net/context

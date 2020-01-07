@@ -359,8 +359,9 @@ func (bm *BasicManager) createContainer(ctx context.Context, container Container
 	// Environment variables
 	var envs []string
 	var err error
+
 	if container.EnvFilename != "" {
-		envs, err = readLines(container.EnvFilename)
+		envs, err = readLines(bm.addBasePath(container.EnvFilename))
 		if err != nil {
 			return err
 		}
@@ -387,7 +388,7 @@ func (bm *BasicManager) createContainer(ctx context.Context, container Container
 	var mounts []mount.Mount
 	for _, mountParam := range container.Mounts {
 
-		from := mountParam.From
+		from := ""
 		if mountParam.Type == "bind" {
 			from = bm.addBasePath(mountParam.From)
 		} else { // volume

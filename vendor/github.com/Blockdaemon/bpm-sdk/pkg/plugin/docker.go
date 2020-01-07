@@ -36,7 +36,7 @@ const (
 	filebeatConfigFile     = "filebeat.yml"
 )
 
-func NewDockerPlugin(name string, containers []docker.Container, configFilesAndTemplates map[string]string, meta MetaInfo) Plugin {
+func NewDockerPlugin(name string, containers []docker.Container, configFilesAndTemplates map[string]string, meta MetaInfo) DockerPlugin {
 	// Add filebeat to the passed in containers
 	filebeatContainer := docker.Container{
 		Name:  filebeatContainerName,
@@ -78,15 +78,58 @@ func (d DockerPlugin) Meta() MetaInfo {
 	return d.meta
 }
 
+func (d DockerPlugin) ValidateParameters(currentNode node.Node) error {
+	for _, parameter := range d.Meta().Parameters {
+		ok := false
+
+		if parameter.Type == ParameterTypeBool {
+			_, ok = currentNode.BoolParameters[parameter.Name]
+		}
+
+		if parameter.Type == ParameterTypeString {
+			_, ok = currentNode.StrParameters[parameter.Name]
+
+		}
+
+		if !ok {
+			return fmt.Errorf(`%q missing`, parameter.Name)
+		}
+	}
+
+	return nil
+}
+
 // CreateSecrets does nothing except printing that it does nothing
 func (d DockerPlugin) CreateSecrets(currentNode node.Node) error {
+	if err := d.ValidateParameters(currentNode); err != nil {
+		return err
+	}
 	fmt.Println("Nothing to do here, skipping create-secrets")
 	return nil
 }
 
-// Upgrade does nothing except printing that it does nothing
+// The default upgrade strategy removes all containers. If they where running they get started again which will pull new container images.
+//
+// This works as long as only the container version changes. If the the upgrade needs changes to the configs or migrations tasks it is
+// recommended to overwrite this function
 func (d DockerPlugin) Upgrade(currentNode node.Node) error {
-	fmt.Println("Nothing to do here, skipping upgrade")
+	status, err := d.Status(currentNode)
+	if err != nil {
+		return err
+	}
+
+	// Remove old containers so that the next start will pull the new ones
+	if err := d.RemoveRuntime(currentNode); err != nil {
+		return err
+	}
+
+	// If node was running, start it again
+	if status == "running" {
+		if err := d.Start(currentNode); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -98,9 +141,12 @@ func (d DockerPlugin) Test(currentNode node.Node) (bool, error) {
 
 // CreateConfigs creates configuration files for the blockchain client
 func (d DockerPlugin) CreateConfigs(currentNode node.Node) error {
+	if err := d.ValidateParameters(currentNode); err != nil {
+		return err
+	}
 	return template.ConfigFilesRendered(d.configFilesAndTemplates, template.TemplateData{
 		Node: currentNode,
-		Data: map[string]interface{}{
+		PluginData: map[string]interface{}{
 			"Containers": d.containers,
 		},
 	})

@@ -6,13 +6,13 @@
 package node
 
 import (
-	"strings"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"path"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/Blockdaemon/bpm-sdk/internal/util"
 	homedir "github.com/mitchellh/go-homedir"
@@ -39,6 +39,9 @@ type Node struct {
 
 	// Secrets (Example: Private keys)
 	Secrets map[string]interface{} `json:"-"` // No json here, never serialize secrets!
+
+	// Holding place for data that is generated at runtime. E.g. can be used to store data parsed from the parameters
+	Data map[string]interface{} `json:"-"` // No json here, runtime data only
 
 	// The package version used to install this node (if installed yet)
 	// This is useful to know in order to run migrations on upgrades.
@@ -116,7 +119,7 @@ func (c Node) Save() error {
 }
 
 func New(nodeFile string) Node {
-	return Node{ nodeFile: nodeFile }
+	return Node{nodeFile: nodeFile}
 }
 
 // Load all the data for a particular node and creates all required directories
@@ -146,6 +149,9 @@ func Load(nodeFile string) (Node, error) {
 	if err != nil {
 		return node, err
 	}
+
+	// Initialize temporary data store
+	node.Data = make(map[string]interface{})
 
 	// Load secrets
 	node.Secrets = make(map[string]interface{})
@@ -179,4 +185,3 @@ func Load(nodeFile string) (Node, error) {
 
 	return node, nil
 }
-
