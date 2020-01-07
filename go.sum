@@ -1,5 +1,7 @@
 github.com/Blockdaemon/bpm-sdk v0.0.0-20200107193815-fcf8c5457c7c h1:VbUYqVasnzrQSfNoUuOTWuxmlTGsk8tDI+JKk7HeAmc=
 github.com/Blockdaemon/bpm-sdk v0.0.0-20200107193815-fcf8c5457c7c/go.mod h1:7zxUeXXIK7QrHWzGZyi2GpCXItFcg2q7PiCb2niigSY=
+github.com/Blockdaemon/bpm-sdk v0.9.0 h1:pNw6RyQCpBCqcd5LR7Rb3mviG+uw9lPM3tb2eDPTatU=
+github.com/Blockdaemon/bpm-sdk v0.9.0/go.mod h1:7zxUeXXIK7QrHWzGZyi2GpCXItFcg2q7PiCb2niigSY=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/Microsoft/go-winio v0.4.14 h1:+hMXMk01us9KgxGb7ftKQt2Xpf5hH/yky+TDA+qxleU=

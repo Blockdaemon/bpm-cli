@@ -3,7 +3,7 @@ module github.com/Blockdaemon/bpm
 go 1.13
 
 require (
-	github.com/Blockdaemon/bpm-sdk v0.0.0-20200107193815-fcf8c5457c7c
+	github.com/Blockdaemon/bpm-sdk v0.9.0
 	github.com/Microsoft/go-winio v0.4.14 // indirect
 	github.com/coreos/go-semver v0.2.0
 	github.com/kami-zh/go-capturer v0.0.0-20171211120116-e492ea43421d

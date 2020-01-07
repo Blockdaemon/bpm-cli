@@ -1,4 +1,4 @@
-# github.com/Blockdaemon/bpm-sdk v0.0.0-20200107193815-fcf8c5457c7c
+# github.com/Blockdaemon/bpm-sdk v0.9.0
 github.com/Blockdaemon/bpm-sdk/internal/util
 github.com/Blockdaemon/bpm-sdk/pkg/docker
 github.com/Blockdaemon/bpm-sdk/pkg/node
