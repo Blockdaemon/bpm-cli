@@ -52,6 +52,10 @@ func New(os, version string) *cobra.Command {
 	debug := viper.GetBool(debugFlag)
 	yes := viper.GetBool(yesFlag)
 
+	if debug {
+		fmt.Println("Debug mode enabled. Output will be more verbose")
+	}
+
 	// Initialize
 	homeDir, err := homedir.Expand(baseDir)
 	if err != nil {
@@ -74,6 +78,9 @@ func New(os, version string) *cobra.Command {
 	}
 
 	// Check if version is up to date
+	if debug {
+		fmt.Println("Getting latest bpm cli version")
+	}
 	if time.Since(m.LatestCLIVersionUpdatedAt) > 12*time.Hour {
 		client := pbr.New(registry)
 		ver, err := client.GetCLIVersion(os)

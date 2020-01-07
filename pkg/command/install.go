@@ -19,10 +19,16 @@ func (p *CmdContext) addPluginToManifest(pluginName string) error {
 }
 
 func (p *CmdContext) InstallFile(pluginName string, filePath string) error {
+	if p.Debug {
+		fmt.Printf("Installing package %q from file %q\n", pluginName, filePath)
+	}
 	if err := config.CopyFile(filePath, filepath.Join(config.PluginsDir(p.HomeDir), pluginName)); err != nil {
 		return err
 	}
 
+	if p.Debug {
+		fmt.Printf("Adding package %q to manifest\n", pluginName)
+	}
 	if err := p.addPluginToManifest(pluginName); err != nil {
 		return err
 	}
