@@ -1,8 +1,8 @@
 package command
 
 import (
-	"os"
 	"fmt"
+	"os"
 
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 	"github.com/kataras/tablewriter"
