@@ -1,58 +1,33 @@
 package cli
 
 import (
-	"fmt"
-	"strings"
-
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
 )
 
 // newInstallCmd downloads and install a plugin from the PBR to the plugins directory
-func newInstallCmd(c *command, os string) *cobra.Command {
-	return &cobra.Command{
-		Use:   "install <package> <version>",
-		Short: "Installs or upgrades a package",
-		Args:  cobra.MinimumNArgs(2),
-		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			pluginName := strings.ToLower(args[0])
-			version := args[1]
+func newInstallCmd(cmdContext command.CmdContext) *cobra.Command {
+	var fromFile string
 
-			// Check if plugin is already installed
-			if p, ok := m.Plugins[pluginName]; ok {
-				if version == p.Version {
-					fmt.Printf("%q has already been installed.\n", pluginName)
-					return nil
-				}
+	installCmd := &cobra.Command{
+		Use:   "install <package> [version]",
+		Short: "Installs or upgrades a package to a specific version or latest if no version is specified",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			pluginName := args[0]
+
+			if len(fromFile) > 0 {
+				return cmdContext.InstallFile(pluginName, fromFile)
 			}
 
-			// Download plugin from registry
-			installedVersion, err := plugin.Install(homeDir, pluginName, version, os)
-			if err != nil {
-				return err
+			if len(args) > 1 {
+				versionToInstall := args[1]
+				return cmdContext.Install(pluginName, versionToInstall)
 			}
 
-			// Add plugin to manifest
-			m.Plugins[installedVersion.Package.Name] = config.Plugin{
-				Environment: installedVersion.Package.Environment,
-				NetworkType: installedVersion.Package.NetworkType,
-				Protocol:    installedVersion.Package.Name,
-				Subtype:     installedVersion.Package.Subtype,
-				Version:     installedVersion.Version,
-			}
-
-			if err := config.WriteFile(
-				homeDir,
-				config.ManifestFilename,
-				m,
-			); err != nil {
-				return err
-			}
-
-			fmt.Printf("The package %q has been installed.\n", installedVersion.Package.Name)
-
-			return nil
-		}),
+			return cmdContext.InstallLatest(pluginName)
+		},
 	}
+	installCmd.Flags().StringVar(&fromFile, "from-file", "", "Install a package from a file instead of downloading it")
+	return installCmd
 }

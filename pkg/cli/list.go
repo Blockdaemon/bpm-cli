@@ -1,26 +1,16 @@
 package cli
 
 import (
-	"fmt"
-
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"gitlab.com/Blockdaemon/bpm/pkg/plugin"
 )
 
-func newListCmd(c *command) *cobra.Command {
+func newListCmd(cmdContext command.CmdContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
-		Short: "List available and installed blockchain protocols",
-		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			output, err := plugin.List(m)
-			if err != nil {
-				return err
-			}
-
-			fmt.Println(output)
-
-			return nil
-		}),
+		Short: "List installed packages",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return cmdContext.List()
+		},
 	}
 }

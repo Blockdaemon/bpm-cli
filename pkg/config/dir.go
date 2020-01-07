@@ -45,3 +45,7 @@ func NodesDir(homeDir string) string {
 func PluginsDir(homeDir string) string {
 	return filepath.Join(homeDir, "plugins")
 }
+
+func NodeFile(homeDir, nodeID string) string {
+	return filepath.Join(NodesDir(homeDir), nodeID, "node.json")
+}

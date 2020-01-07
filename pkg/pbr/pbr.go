@@ -18,6 +18,7 @@ type Package struct {
 	Environment string `json:"environment"`
 	Name        string `json:"name"`
 	NetworkType string `json:"networkType"`
+	Description string `json:"description"`
 	Protocol    string `json:"protocol"`
 	Subtype     string `json:"subtype"`
 }
@@ -27,6 +28,12 @@ type Version struct {
 	Package     *Package `json:"package,omitempty"`
 	RegistryURL string   `json:"registryUrl"`
 	Version     string   `json:"version"`
+}
+
+type CLIVersion struct {
+	OS          OS     `json:"os"`
+	RegistryURL string `json:"registryUrl"`
+	Version     string `json:"version"`
 }
 
 // response is a non-discernible response format from secrets api

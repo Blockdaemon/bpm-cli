@@ -2,75 +2,75 @@ package cli
 
 import (
 	"fmt"
-	"os"
-	"strings"
 
-	"github.com/Blockdaemon/bpm-sdk/pkg/node"
-	"github.com/rs/xid"
+	sdkplugin "github.com/Blockdaemon/bpm-sdk/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
-	"gitlab.com/Blockdaemon/bpm/pkg/config"
-	"golang.org/x/xerrors"
 )
 
-func newConfigureCmd(c *command) *cobra.Command {
-	var fields []string
+func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
+	var skipUpgradeCheck bool
 
 	cmd := &cobra.Command{
-		Use:   "configure <package>",
+		Use:   "configure",
 		Short: "Configure a new blockchain node",
-		Args:  cobra.MinimumNArgs(1),
-		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			pluginName := strings.ToLower(args[0])
-
-			// Generate instance id
-			id := xid.New().String()
-
-			// Check if plugin is installed
-			p, ok := m.Plugins[pluginName]
-			if !ok {
-				fmt.Printf("The package %q is currently not installed.\n", pluginName)
-				return nil
-			}
-
-			// Create node config
-			n, err := node.Load(config.NodesDir(homeDir), id)
-			if err != nil {
-				var pathError *os.PathError
-				switch {
-				case xerrors.As(err, &pathError):
-					// Write node json if it was the first run
-					n.Environment = p.Environment
-					n.Protocol = p.Protocol
-					n.NetworkType = p.NetworkType
-					n.Subtype = p.Subtype
-					n.Version = p.Version
-					n.Config = parseKeyPairs(fields)
-
-					// Only temporary until we find a better solution to distribute the certs
-					n.Collection.Host = "dev-1.logstash.blockdaemon.com:5044"
-					n.Collection.Cert = "~/.bpm/beats/beat.crt"
-					n.Collection.CA = "~/.bpm/beats/ca.crt"
-					n.Collection.Key = "~/.bpm/beats/beat.key"
-
-					if err := config.WriteFile(
-						n.NodeDirectory(),
-						"node.json",
-						n,
-					); err != nil {
-						return err
-					}
-				default:
-					return err
-				}
-			}
-
-			fmt.Printf("Node with id %q has been initialized, add your configuration (node.json) and secrets here:\n%s\n", id, n.NodeDirectory())
-
-			return nil
-		}),
 	}
 
-	cmd.Flags().StringSliceVar(&fields, "field", []string{}, "Custom fields to add to node.json")
+	for name, meta := range cmdContext.Manifest.Plugins {
+		// copy to break closure
+		nameCopy := name
+		metaCopy := meta
+
+		pluginCmd := &cobra.Command{
+			Use:   nameCopy,
+			Short: fmt.Sprintf("Configure a new blockchain node using the %q package", nameCopy),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				// Read dynamic parameters
+				strParameters := map[string]string{}
+				boolParameters := map[string]bool{}
+
+				for _, parameter := range metaCopy.Parameters {
+					if parameter.Type == sdkplugin.ParameterTypeString {
+						value, err := cmd.Flags().GetString(parameter.Name)
+						if err != nil {
+							return fmt.Errorf("Cannot read parameter %q: ", err)
+						}
+						strParameters[parameter.Name] = value
+					} else {
+						value, err := cmd.Flags().GetBool(parameter.Name)
+						if err != nil {
+							return fmt.Errorf("Cannot read parameter %q: %s", parameter.Name, err)
+						}
+						boolParameters[parameter.Name] = value
+					}
+				}
+
+				return cmdContext.Configure(nameCopy, strParameters, boolParameters, skipUpgradeCheck)
+			},
+		}
+		pluginCmd.Flags().BoolVar(&skipUpgradeCheck, "skip-upgrade-check", false, "Skip checking whether a new version of the package is available")
+
+		// Add dynamic configuration parameters
+		for _, parameter := range metaCopy.Parameters {
+			if parameter.Type == sdkplugin.ParameterTypeString {
+				pluginCmd.Flags().String(parameter.Name, parameter.Default, parameter.Description)
+			} else {
+				defaultValue := false
+				if parameter.Default == "true" || parameter.Default == "yes" || parameter.Default == "on" {
+					defaultValue = true
+				}
+				pluginCmd.Flags().Bool(parameter.Name, defaultValue, parameter.Description)
+			}
+
+			if parameter.Mandatory {
+				if err := pluginCmd.MarkFlagRequired(parameter.Name); err != nil {
+					exitWithError(err, pluginCmd)
+				}
+			}
+		}
+
+		cmd.AddCommand(pluginCmd)
+	}
 
 	return cmd
 }
