@@ -89,12 +89,19 @@ func New(os, version string) *cobra.Command {
 		}
 	}
 
-	needsUpgrade, err := pkgversion.NeedsUpgrade(version, m.LatestCLIVersion)
-	if err != nil {
-		exitWithError(err, rootCmd)
+	if debug {
+		fmt.Println("Checking if bpm cli needs to be upgraded")
 	}
-	if needsUpgrade {
-		fmt.Printf("bpm version %q is available. Please upgrade as soon as possible!\n", m.LatestCLIVersion)
+	if pkgversion.IsValidVersion(version) {
+		needsUpgrade, err := pkgversion.NeedsUpgrade(version, m.LatestCLIVersion)
+		if err != nil {
+			exitWithError(err, rootCmd)
+		}
+		if needsUpgrade {
+			fmt.Printf("bpm version %q is available. Please upgrade as soon as possible!\n", m.LatestCLIVersion)
+		}
+	} else {
+		fmt.Printf("bpm version %q is not a valid semantic version. Assuming this is a development release and skipping upgrade check\n", version)
 	}
 
 	// Create shared context that holds data common used by (nearly) all commands

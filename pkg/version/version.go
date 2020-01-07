@@ -4,6 +4,11 @@ import (
 	"github.com/coreos/go-semver/semver"
 )
 
+func IsValidVersion(versionStr string) bool {
+	_, err := semver.NewVersion(versionStr)
+	return err == nil
+}
+
 func NeedsUpgrade(currentVersionStr, availableVersionStr string) (bool, error) {
 	currentVersion, err := semver.NewVersion(currentVersionStr)
 	if err != nil {
