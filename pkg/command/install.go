@@ -1,6 +1,7 @@
 package command
 
 import (
+	"os"
 	"fmt"
 	"path/filepath"
 
@@ -18,11 +19,19 @@ func (p *CmdContext) addPluginToManifest(pluginName string) error {
 	return p.Manifest.UpdatePlugin(pluginName, meta)
 }
 
-func (p *CmdContext) InstallFile(pluginName string, filePath string) error {
+func (p *CmdContext) InstallFile(pluginName string, sourcePath string) error {
 	if p.Debug {
-		fmt.Printf("Installing package %q from file %q\n", pluginName, filePath)
+		fmt.Printf("Installing package %q from file %q\n", pluginName, sourcePath)
 	}
-	if err := config.CopyFile(filePath, filepath.Join(config.PluginsDir(p.HomeDir), pluginName)); err != nil {
+	targetPath := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
+	if err := config.CopyFile(sourcePath, targetPath); err != nil {
+		return err
+	}
+
+	if p.Debug {
+		fmt.Printf("Changing %q to be executable\n", targetPath)
+	}
+	if err := os.Chmod(targetPath, 0700); err != nil {
 		return err
 	}
 
