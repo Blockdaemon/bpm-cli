@@ -2,6 +2,7 @@ package command
 
 import (
 	"os"
+	"fmt"
 
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 	"github.com/kataras/tablewriter"
@@ -22,11 +23,13 @@ func (p *CmdContext) List() error {
 	for name, plugin := range p.Manifest.Plugins {
 		// This is not exactly performant if there are lots of plugins installed but it works well enough for now
 		// Plenty of room for improvement by doing just one request total instead of one request per plugin
+		latestVersion := "unknown"
 		packageVersion, err := client.GetLatestPackageVersion(name, p.RuntimeOS)
 		if err != nil {
-			return err
+			fmt.Printf("Cannot get latest version for package %q\n", name)
+		} else {
+			latestVersion = packageVersion.Version
 		}
-		latestVersion := packageVersion.Version
 
 		table.Append([]string{
 			name,
