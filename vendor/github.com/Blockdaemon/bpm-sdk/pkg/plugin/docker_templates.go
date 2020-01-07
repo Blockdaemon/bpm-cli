@@ -6,12 +6,9 @@ const (
   paths: 
   - '/var/lib/docker/containers/*/*.log'
 fields:
-    info:
+    node:
         launch_type: bpm
-        node_xid: {{ .Node.ID }}
-        protocol_type: {{ .Node.Protocol }}
-        network_type: {{ .Node.NetworkType }}
-        environment: {{ .Node.Environment }}
+        xid: {{ .Node.ID }}
 fields_under_root: true
 output:
 {{- if .Node.Collection.Host }}
@@ -27,16 +24,5 @@ output:
     console:
         pretty: true
 {{- end }}
-processors:
-- drop_event:
-        when:
-            not:
-                or:
-                    {{- range .Data.Containers }}
-                    {{- if .CollectLogs }}
-                    - equals.container.name: {{ $.Node.NamePrefix }}{{ .Name }}
-                    {{- end }}
-                    {{- end }}
-
 `
 )

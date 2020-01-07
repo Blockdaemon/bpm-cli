@@ -1,26 +1,16 @@
 package cli
 
 import (
-	"fmt"
-
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
-	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/Blockdaemon/bpm/pkg/plugin"
 )
 
-func newListCmd(c *command, os string) *cobra.Command {
+func newListCmd(cmdContext command.CmdContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
 		Short: "List installed packages",
-		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			output, err := plugin.List(c.registry, m, os)
-			if err != nil {
-				return err
-			}
-
-			fmt.Println(output)
-
-			return nil
-		}),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return cmdContext.List()
+		},
 	}
 }

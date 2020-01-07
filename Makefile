@@ -34,6 +34,7 @@ check: test lint
 .PHONY: test
 test:
 	go test -v ./...
+	./smoke-test.sh
 
 .PHONY: lint
 lint:

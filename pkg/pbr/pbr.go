@@ -30,6 +30,12 @@ type Version struct {
 	Version     string   `json:"version"`
 }
 
+type CLIVersion struct {
+	OS          OS     `json:"os"`
+	RegistryURL string `json:"registryUrl"`
+	Version     string `json:"version"`
+}
+
 // response is a non-discernible response format from secrets api
 type response struct {
 	Data  json.RawMessage   `json:"data,omitempty"`

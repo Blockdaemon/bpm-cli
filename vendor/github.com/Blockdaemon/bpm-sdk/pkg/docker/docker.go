@@ -111,9 +111,10 @@ func (bm *BasicManager) ListVolumeIDs(ctx context.Context) ([]string, error) {
 	return names, nil
 }
 
-// ContainerAbset stops and removes a container if it is running/exists
-func (bm *BasicManager) ContainerAbsent(ctx context.Context, containerName string) error {
+// ContainerStopped stops a container if it is running
+func (bm *BasicManager) ContainerStopped(ctx context.Context, containerName, networkID string) error {
 	prefixedName := bm.prefixedName(containerName)
+	prefixedNetwork := bm.prefixedName(networkID)
 
 	running, err := bm.IsContainerRunning(ctx, containerName)
 	if err != nil {
@@ -126,8 +127,24 @@ func (bm *BasicManager) ContainerAbsent(ctx context.Context, containerName strin
 		if err := bm.cli.ContainerStop(ctx, prefixedName, nil); err != nil {
 			return err
 		}
+
+		fmt.Printf("Disconnecting container '%s' from network\n", containerName)
+		if err := bm.cli.NetworkDisconnect(ctx, prefixedNetwork, prefixedName, false); err != nil {
+			return err
+		}
 	} else {
 		fmt.Printf("Container '%s' is not running, skipping stop\n", prefixedName)
+	}
+
+	return nil
+}
+
+// ContainerAbset stops and removes a container if it is running/exists
+func (bm *BasicManager) ContainerAbsent(ctx context.Context, containerName, networkID string) error {
+	prefixedName := bm.prefixedName(containerName)
+
+	if err := bm.ContainerStopped(ctx, containerName, networkID); err != nil {
+		return err
 	}
 
 	exists, err := bm.doesContainerExist(ctx, containerName)
@@ -342,8 +359,9 @@ func (bm *BasicManager) createContainer(ctx context.Context, container Container
 	// Environment variables
 	var envs []string
 	var err error
+
 	if container.EnvFilename != "" {
-		envs, err = readLines(container.EnvFilename)
+		envs, err = readLines(bm.addBasePath(container.EnvFilename))
 		if err != nil {
 			return err
 		}
@@ -370,7 +388,7 @@ func (bm *BasicManager) createContainer(ctx context.Context, container Container
 	var mounts []mount.Mount
 	for _, mountParam := range container.Mounts {
 
-		from := mountParam.From
+		from := ""
 		if mountParam.Type == "bind" {
 			from = bm.addBasePath(mountParam.From)
 		} else { // volume

@@ -2,49 +2,75 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 
+	sdkplugin "github.com/Blockdaemon/bpm-sdk/pkg/plugin"
+	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
-	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/Blockdaemon/bpm/pkg/plugin"
 )
 
-func newConfigureCmd(c *command, runtimeOS string) *cobra.Command {
-	var (
-		skipUpgradeCheck bool
-		network          string
-		networkType      string
-		protocol         string
-		subtype          string
-	)
+func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
+	var skipUpgradeCheck bool
 
 	cmd := &cobra.Command{
-		Use:   "configure <package>",
+		Use:   "configure",
 		Short: "Configure a new blockchain node",
-		Args:  cobra.MinimumNArgs(1),
-		RunE: c.Wrap(func(homeDir string, m config.Manifest, args []string) error {
-			pluginName := strings.ToLower(args[0])
-
-			output, err := plugin.Configure(pluginName, homeDir, m, runtimeOS, c.registry, network, networkType, protocol, subtype, skipUpgradeCheck, c.debug)
-
-			fmt.Println(output)
-
-			if err != nil {
-				return err
-			}
-
-			return nil
-		}),
 	}
 
-	cmd.Flags().BoolVar(&skipUpgradeCheck, "skip-upgrade-check", false, "Skip checking whether a new version of the package is available")
+	for name, meta := range cmdContext.Manifest.Plugins {
+		// copy to break closure
+		nameCopy := name
+		metaCopy := meta
 
-	// For simplicty sake the parameters are hardcoded here. In the future we may want to add them dynamically. This would allow plugins to specify
-	// arbitrary parameters.
-	cmd.Flags().StringVar(&network, "network", "", "The network this node should connect to (Examples: 'mainnet', 'testnet', 'goerli', ...")
-	cmd.Flags().StringVar(&networkType, "network-type", "", "The network-type specifies whether this is a public or private network")
-	cmd.Flags().StringVar(&protocol, "protocol", "", "The protocol this node should use (Examples: 'ethereum', 'polkadot', ...")
-	cmd.Flags().StringVar(&subtype, "subtype", "", "The subtype specifies how this node should be configured (Examples: 'validator', 'watcher', 'archive', ...")
+		pluginCmd := &cobra.Command{
+			Use:   nameCopy,
+			Short: fmt.Sprintf("Configure a new blockchain node using the %q package", nameCopy),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				// Read dynamic parameters
+				strParameters := map[string]string{}
+				boolParameters := map[string]bool{}
+
+				for _, parameter := range metaCopy.Parameters {
+					if parameter.Type == sdkplugin.ParameterTypeString {
+						value, err := cmd.Flags().GetString(parameter.Name)
+						if err != nil {
+							return fmt.Errorf("Cannot read parameter %q: ", err)
+						}
+						strParameters[parameter.Name] = value
+					} else {
+						value, err := cmd.Flags().GetBool(parameter.Name)
+						if err != nil {
+							return fmt.Errorf("Cannot read parameter %q: %s", parameter.Name, err)
+						}
+						boolParameters[parameter.Name] = value
+					}
+				}
+
+				return cmdContext.Configure(nameCopy, strParameters, boolParameters, skipUpgradeCheck)
+			},
+		}
+		pluginCmd.Flags().BoolVar(&skipUpgradeCheck, "skip-upgrade-check", false, "Skip checking whether a new version of the package is available")
+
+		// Add dynamic configuration parameters
+		for _, parameter := range metaCopy.Parameters {
+			if parameter.Type == sdkplugin.ParameterTypeString {
+				pluginCmd.Flags().String(parameter.Name, parameter.Default, parameter.Description)
+			} else {
+				defaultValue := false
+				if parameter.Default == "true" || parameter.Default == "yes" || parameter.Default == "on" {
+					defaultValue = true
+				}
+				pluginCmd.Flags().Bool(parameter.Name, defaultValue, parameter.Description)
+			}
+
+			if parameter.Mandatory {
+				if err := pluginCmd.MarkFlagRequired(parameter.Name); err != nil {
+					exitWithError(err, pluginCmd)
+				}
+			}
+		}
+
+		cmd.AddCommand(pluginCmd)
+	}
 
 	return cmd
 }

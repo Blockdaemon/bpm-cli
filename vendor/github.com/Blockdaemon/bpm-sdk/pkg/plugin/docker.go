@@ -24,21 +24,19 @@ type DockerPlugin struct {
 	// All containers that should be managed by this plugin
 	containers []docker.Container
 
-	// Holds all available options for parameters
-	parameters Parameters
+	// Plugin meta information
+	meta MetaInfo
 
-	name        string
-	version     string
-	description string
+	name string
 }
 
 const (
-	filebeatContainerImage = "docker.elastic.co/beats/filebeat:7.3.1"
+	filebeatContainerImage = "docker.elastic.co/beats/filebeat:7.4.1"
 	filebeatContainerName  = "filebeat"
 	filebeatConfigFile     = "filebeat.yml"
 )
 
-func NewDockerPlugin(name, description, version string, containers []docker.Container, configFilesAndTemplates map[string]string, parameters Parameters) Plugin {
+func NewDockerPlugin(name string, containers []docker.Container, configFilesAndTemplates map[string]string, meta MetaInfo) DockerPlugin {
 	// Add filebeat to the passed in containers
 	filebeatContainer := docker.Container{
 		Name:  filebeatContainerName,
@@ -52,6 +50,11 @@ func NewDockerPlugin(name, description, version string, containers []docker.Cont
 				From: filebeatConfigFile,
 				To:   "/usr/share/filebeat/filebeat.yml",
 			},
+			{
+				Type: "bind",
+				From: "/var/lib/docker/containers",
+				To:   "/var/lib/docker/containers",
+			},
 		},
 		User: "root",
 	}
@@ -63,9 +66,7 @@ func NewDockerPlugin(name, description, version string, containers []docker.Cont
 		configFilesAndTemplates: configFilesAndTemplates,
 		containers:              containers,
 		name:                    name,
-		description:             description,
-		version:                 version,
-		parameters:              parameters,
+		meta:                    meta,
 	}
 }
 
@@ -73,27 +74,62 @@ func (d DockerPlugin) Name() string {
 	return d.name
 }
 
-func (d DockerPlugin) Version() string {
-	return d.version
+func (d DockerPlugin) Meta() MetaInfo {
+	return d.meta
 }
 
-func (d DockerPlugin) Description() string {
-	return d.description
-}
+func (d DockerPlugin) ValidateParameters(currentNode node.Node) error {
+	for _, parameter := range d.Meta().Parameters {
+		ok := false
 
-func (d DockerPlugin) Parameters() string {
-	return d.parameters.String()
+		if parameter.Type == ParameterTypeBool {
+			_, ok = currentNode.BoolParameters[parameter.Name]
+		}
+
+		if parameter.Type == ParameterTypeString {
+			_, ok = currentNode.StrParameters[parameter.Name]
+
+		}
+
+		if !ok {
+			return fmt.Errorf(`%q missing`, parameter.Name)
+		}
+	}
+
+	return nil
 }
 
 // CreateSecrets does nothing except printing that it does nothing
 func (d DockerPlugin) CreateSecrets(currentNode node.Node) error {
+	if err := d.ValidateParameters(currentNode); err != nil {
+		return err
+	}
 	fmt.Println("Nothing to do here, skipping create-secrets")
 	return nil
 }
 
-// Upgrade does nothing except printing that it does nothing
+// The default upgrade strategy removes all containers. If they where running they get started again which will pull new container images.
+//
+// This works as long as only the container version changes. If the the upgrade needs changes to the configs or migrations tasks it is
+// recommended to overwrite this function
 func (d DockerPlugin) Upgrade(currentNode node.Node) error {
-	fmt.Println("Nothing to do here, skipping upgrade")
+	status, err := d.Status(currentNode)
+	if err != nil {
+		return err
+	}
+
+	// Remove old containers so that the next start will pull the new ones
+	if err := d.RemoveRuntime(currentNode); err != nil {
+		return err
+	}
+
+	// If node was running, start it again
+	if status == "running" {
+		if err := d.Start(currentNode); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -105,9 +141,12 @@ func (d DockerPlugin) Test(currentNode node.Node) (bool, error) {
 
 // CreateConfigs creates configuration files for the blockchain client
 func (d DockerPlugin) CreateConfigs(currentNode node.Node) error {
+	if err := d.ValidateParameters(currentNode); err != nil {
+		return err
+	}
 	return template.ConfigFilesRendered(d.configFilesAndTemplates, template.TemplateData{
 		Node: currentNode,
-		Data: map[string]interface{}{
+		PluginData: map[string]interface{}{
 			"Containers": d.containers,
 		},
 	})
@@ -227,7 +266,7 @@ func (d DockerPlugin) Stop(currentNode node.Node) error {
 	defer cancel()
 
 	for _, container := range d.containers {
-		if err = client.ContainerAbsent(ctx, container.Name); err != nil {
+		if err = client.ContainerStopped(ctx, container.Name, container.NetworkID); err != nil {
 			return err
 		}
 	}
@@ -270,15 +309,21 @@ func (d DockerPlugin) RemoveConfig(currentNode node.Node) error {
 	return nil
 }
 
-// Removes the docker network
-func (d DockerPlugin) RemoveNode(currentNode node.Node) error {
+// Removes the docker network and containers
+func (d DockerPlugin) RemoveRuntime(currentNode node.Node) error {
 	client, err := docker.NewBasicManager(currentNode.NamePrefix(), currentNode.ConfigsDirectory())
 	if err != nil {
 		return err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
 	defer cancel()
+
+	for _, container := range d.containers {
+		if err = client.ContainerAbsent(ctx, container.Name, container.NetworkID); err != nil {
+			return err
+		}
+	}
 
 	// Remove network(s)
 	for _, container := range d.containers {
