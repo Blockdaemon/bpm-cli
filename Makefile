@@ -1,17 +1,3 @@
-# Vendoring is a bit controversial. I'm doing it for these reasons:
-#
-# - Being able to build without internet
-# - Avoid dependencies dissapearing (https://www.theregister.co.uk/2016/03/23/npm_left_pad_chaos/)
-# - Avoid attacks by injecting malicious code in dependencies (https://www.theregister.co.uk/2018/11/26/npm_repo_bitcoin_stealer/)
-#
-# The last point is admittedly unlikely because collision attacks with sha1 are still very expensive
-# but with potentially lots of money at stake we shouldn't take changes.
-#
-# Linus Torvalds: There's a big difference between using a cryptographic hash for things like security signing,
-#                 and using one for generating a 'content identifier' for a content-addressable system like git.
-#
-# (https://www.theregister.co.uk/2017/02/26/git_fscked_by_sha1_collision_not_so_fast_says_linus_torvalds/)
-export GOFLAGS=-mod=vendor
 VERSION:=$(CI_COMMIT_REF_NAME)
 
 ifeq ($(VERSION),)
