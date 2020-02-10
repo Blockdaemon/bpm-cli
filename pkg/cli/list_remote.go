@@ -7,8 +7,9 @@ import (
 
 func newSearchCmd(cmdContext command.CmdContext) *cobra.Command {
 	return &cobra.Command{
-		Use:   "search [package]",
+		Use:   "list-remote [package]",
 		Short: "Search available packages",
+		Aliases: []string{ "search" },
 		RunE: func(cmd *cobra.Command, args []string) error {
 			query := ""
 			if len(args) > 0 {
