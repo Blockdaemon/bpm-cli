@@ -13,6 +13,7 @@ func (p *CmdContext) List() error {
 	table.SetBorder(false)
 	table.SetHeader([]string{
 		"NAME",
+		"DESCRIPTION",
 		"INSTALLED VERSION",
 		"RECOMMENDED VERSION",
 	})
@@ -33,6 +34,7 @@ func (p *CmdContext) List() error {
 
 		table.Append([]string{
 			name,
+			plugin.Description,
 			plugin.Version,
 			latestVersion,
 		})
