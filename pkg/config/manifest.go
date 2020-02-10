@@ -54,3 +54,7 @@ func (m *Manifest) RemovePlugin(pluginName string) error {
 	delete(m.Plugins, pluginName)
 	return m.Write()
 }
+
+func (m *Manifest) HasPluginsInstalled() bool {
+	return len(m.Plugins) > 0
+}

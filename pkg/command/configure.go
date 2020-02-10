@@ -9,6 +9,22 @@ import (
 	"github.com/rs/xid"
 )
 
+func (p *CmdContext) ConfigureHelp(pluginName string) error {
+	if pluginName == "" {
+		if !p.Manifest.HasPluginsInstalled() {
+			return fmt.Errorf("Cannot configure without an installed package.")
+		}
+
+		return fmt.Errorf("No package specified. See `--help` for details.")
+	}
+
+	if !p.isInstalled(pluginName) {
+		return fmt.Errorf("The package %q is currently not installed.", pluginName)
+	}
+
+	return nil
+}
+
 func (p *CmdContext) Configure(pluginName string, strParameters map[string]string, boolParameters map[string]bool, skipUpgradeCheck bool) error {
 	// Generate instance id
 	id := xid.New().String()
