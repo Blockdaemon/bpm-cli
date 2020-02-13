@@ -1,8 +1,8 @@
 package command
 
 import (
-	"os"
 	"strconv"
+	"os"
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/Blockdaemon/bpm/pkg/config"
@@ -34,9 +34,12 @@ func (p *CmdContext) Status() error {
 			return err
 		}
 
-		status, err := p.execCmdCapture(n, "status")
-		if err != nil {
-			return err
+		status := "unknown (package not installed)"
+		if p.isInstalled(n.PluginName) {
+			status, err = p.execCmdCapture(n, "status")
+			if err != nil {
+				return err
+			}
 		}
 
 		secrets := strconv.Itoa(len(n.Secrets))
