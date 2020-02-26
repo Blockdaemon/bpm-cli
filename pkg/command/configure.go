@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/Blockdaemon/bpm-sdk/pkg/fileutil"
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/rs/xid"
@@ -71,10 +72,21 @@ func (p *CmdContext) Configure(pluginName string, strParameters map[string]strin
 		return err
 	}
 
-	// Secrets
-	err := p.execCmd(n, "create-secrets")
+	// Secrets have been removed but for compatibility reasons we still need to create the secrets directory for older plugins
+	meta, err := p.getMeta(pluginName)
 	if err != nil {
 		return err
+	}
+	if meta.ProtocolVersion == "1.0.0" {
+		_, err = fileutil.MakeDirectory(filepath.Join(n.NodeDirectory(), "secrets"))
+		if err != nil {
+			return err
+		}
+
+		err := p.execCmd(n, "create-secrets")
+		if err != nil {
+			return err
+		}
 	}
 
 	// Config

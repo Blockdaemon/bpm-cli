@@ -1,7 +1,6 @@
 package command
 
 import (
-	"strconv"
 	"os"
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
@@ -17,7 +16,6 @@ func (p *CmdContext) Status() error {
 		"NODE ID",
 		"PACKAGE",
 		"STATUS",
-		"SECRETS",
 	})
 
 	// List files in config directory
@@ -42,13 +40,10 @@ func (p *CmdContext) Status() error {
 			}
 		}
 
-		secrets := strconv.Itoa(len(n.Secrets))
-
 		table.Append([]string{
 			nodeID,
 			status,
 			n.PluginName,
-			secrets,
 		})
 	}
 
