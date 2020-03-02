@@ -23,7 +23,7 @@ func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {
 			id := args[0]
 
 			if !(all || data || config || runtime) {
-				return fmt.Errorf("flag missing to specify what to remove. Use `--help` for details!")
+				return fmt.Errorf("flag missing to specify what to remove. Use `--help` for details")
 			}
 
 			return cmdContext.Remove(id, all, data, config, runtime)

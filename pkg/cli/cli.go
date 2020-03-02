@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"path/filepath"
+
 	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/Blockdaemon/bpm/pkg/pbr"
@@ -13,7 +15,6 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"path/filepath"
 )
 
 const (
@@ -23,6 +24,7 @@ const (
 	yesFlag      = "yes"
 )
 
+// New initializes a new instance of the bpm root command with all the subcommands
 func New(os, version string) *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:          "bpm",
