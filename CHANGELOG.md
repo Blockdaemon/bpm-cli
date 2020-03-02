@@ -16,6 +16,7 @@ Bug fixes:
 
 * Due to a race condition the `packages uninstall` command sometimes uninstalled the wrong package. This is now fixed.
 
+* The help text for the `nodes remove` command now properly denotes which flags are required.
 
 Development improvements:
 

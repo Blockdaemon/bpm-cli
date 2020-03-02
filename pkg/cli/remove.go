@@ -17,7 +17,7 @@ func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "remove <id>",
-		Short: "Remove blockchain node data and configuration",
+		Short: "Remove blockchain node data and configuration. Select one of the required flags for the remove command.",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id := args[0]
@@ -30,10 +30,10 @@ func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolVar(&all, "all", false, "Remove all data, configuration files and node information")
-	cmd.Flags().BoolVar(&config, "config", false, "Remove all configuration files but keep data and node information")
-	cmd.Flags().BoolVar(&data, "data", false, "Remove all data but keep configuration files and node information")
-	cmd.Flags().BoolVar(&runtime, "runtime", false, "Remove all runtimes but keep configuration files and node information")
+	cmd.Flags().BoolVar(&all, "all", false, "[Required] Remove all data, configuration files and node information")
+	cmd.Flags().BoolVar(&config, "config", false, "[Required] Remove all configuration files but keep data and node information")
+	cmd.Flags().BoolVar(&data, "data", false, "[Required] Remove all data but keep configuration files and node information")
+	cmd.Flags().BoolVar(&runtime, "runtime", false, "[Required] Remove all runtimes but keep configuration files and node information")
 
 	return cmd
 
