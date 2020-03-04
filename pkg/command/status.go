@@ -42,8 +42,8 @@ func (p *CmdContext) Status() error {
 
 		table.Append([]string{
 			nodeID,
-			status,
 			n.PluginName,
+			status,
 		})
 	}
 

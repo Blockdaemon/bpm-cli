@@ -14,6 +14,8 @@ Bug fixes:
 
 * The `nodes status` command now works even if a particular package is not installed anymore. Instead of crashing it will show `unknown (package not installed)` for every node for which the package isn't installed.
 
+* The `nodes status` command now shows the values for PACKAGE and STATUS in the correct columns.
+
 * Due to a race condition the `packages uninstall` command sometimes uninstalled the wrong package. This is now fixed.
 
 * The help text for the `nodes remove` command now properly denotes which flags are required.
