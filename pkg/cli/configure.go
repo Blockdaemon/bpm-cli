@@ -10,10 +10,11 @@ import (
 
 func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
 	var skipUpgradeCheck bool
+	var nodeID string
 
 	cmd := &cobra.Command{
 		Use:   "configure",
-		Short: "Configure a new blockchain node",
+		Short: "Configure a blockchain node, creates a new node if it doesn't exist yet",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// The configure command doesn't provide any functionality by itself.
 			// It has two purposes:
@@ -32,14 +33,14 @@ func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
 
 	// Create `configure <plugin>` command for evert installed plugin. With parameters specific
 	// to that pugin
-	for name, meta := range cmdContext.Manifest.Plugins {
+	for pluginName, meta := range cmdContext.Manifest.Plugins {
 		// copy to break closure
-		nameCopy := name
+		pluginNameCopy := pluginName
 		metaCopy := meta
 
 		pluginCmd := &cobra.Command{
-			Use:   nameCopy,
-			Short: fmt.Sprintf("Configure a new blockchain node using the %q package", nameCopy),
+			Use:   pluginNameCopy,
+			Short: fmt.Sprintf("Configure a new blockchain node using the %q package", pluginNameCopy),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				// Read dynamic parameters
 				strParameters := map[string]string{}
@@ -61,10 +62,11 @@ func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
 					}
 				}
 
-				return cmdContext.Configure(nameCopy, strParameters, boolParameters, skipUpgradeCheck)
+				return cmdContext.Configure(pluginNameCopy, nodeID, strParameters, boolParameters, skipUpgradeCheck)
 			},
 		}
 		pluginCmd.Flags().BoolVar(&skipUpgradeCheck, "skip-upgrade-check", false, "Skip checking whether a new version of the package is available")
+		pluginCmd.Flags().StringVar(&nodeID, "ID", "", "The ID of the node. Will be chosen automatically if not specified")
 
 		// Add dynamic configuration parameters
 		for _, parameter := range metaCopy.Parameters {

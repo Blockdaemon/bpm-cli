@@ -8,12 +8,19 @@ import (
 	"path/filepath"
 )
 
+// DeleteFile delets a file
 func DeleteFile(path, filename string) error {
 	return os.Remove(filepath.Join(path, filename))
 }
 
+// FileExists checks if a file exists in a particular path
 func FileExists(path, filename string) bool {
-	if _, err := os.Stat(filepath.Join(path, filename)); err != nil {
+	return PathExists(filepath.Join(path, filename))
+}
+
+// PathExists checks if a path exists
+func PathExists(path string) bool {
+	if _, err := os.Stat(path); err != nil {
 		switch {
 		case os.IsNotExist(err):
 			fallthrough
@@ -25,10 +32,12 @@ func FileExists(path, filename string) bool {
 	return true
 }
 
+// Read returns the contents of a file in a particular path
 func Read(path, filename string) ([]byte, error) {
 	return ioutil.ReadFile(filepath.Join(path, filename))
 }
 
+// ReadFile returns the unmarshalled contents of a json file in a particular path
 func ReadFile(path, filename string, v interface{}) error {
 	data, err := Read(path, filename)
 	if err != nil {
@@ -39,6 +48,7 @@ func ReadFile(path, filename string, v interface{}) error {
 	return json.Unmarshal(data, v)
 }
 
+// WriteFile writes the json-marshalled content of an interface into a file in a particular path
 func WriteFile(path, filename string, v interface{}) error {
 	data, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
@@ -52,10 +62,15 @@ func WriteFile(path, filename string, v interface{}) error {
 	)
 }
 
+// Walk is a wrapper around filepath.Walk
+//
+// This can probably get refactored because it literally does nothing other than
+// call filepath.Walk
 func Walk(path string, f filepath.WalkFunc) error {
 	return filepath.Walk(path, f)
 }
 
+// CopyFile copies a file
 func CopyFile(src, dst string) error {
 	in, err := os.Open(src)
 	if err != nil {
