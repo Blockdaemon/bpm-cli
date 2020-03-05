@@ -1,5 +1,5 @@
 #!/bin/bash
-# This is a simple test that runs through all bpm commands. 
+# This is a simple test that runs through all bpm commands.
 
 basedir=./build/bpm
 
@@ -8,7 +8,7 @@ function getStatusColumn() {
 }
 
 function checkStatus() {
-	status=$(getStatusColumn 2) 
+	status=$(getStatusColumn 3)
 
 	if [[ $status != $1 ]];then
 		exit 1
@@ -47,7 +47,7 @@ go run cmd/main.go --yes --base-dir $basedir packages info polkadot
 go run cmd/main.go --yes --base-dir $basedir nodes configure polkadot
 go run cmd/main.go --yes --base-dir $basedir nodes status
 checkStatus "stopped"
-nodeID=$(getStatusColumn 1) 
+nodeID=$(getStatusColumn 1)
 go run cmd/main.go --yes --base-dir $basedir nodes status
 go run cmd/main.go --yes --base-dir $basedir nodes start $nodeID
 checkStatus "running"
