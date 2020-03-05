@@ -32,16 +32,13 @@ const (
 
 	testPluginInstallResponse = `#!/bin/bash
 		case "$1" in
-		create-secrets)
-		    echo "Pretending to create secrets"
-		    ;;
 		create-configurations)
 		    echo "Pretending to create configurations"
 		    ;;
 		meta)
 			echo "version: 1.0.0"
 			echo "description: A test plugin"
-			echo "protocol_version: 1.0.0"
+			echo "protocol_version: 1.1.0"
 			echo "parameters:"
 			echo "- type: string"
 			echo "  name: subtype"

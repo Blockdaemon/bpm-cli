@@ -6,6 +6,7 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/pbr"
 )
 
+// Info prints information about a particular plugin
 func (p *CmdContext) Info(pluginName string) error {
 	client := pbr.New(p.RegistryURL)
 

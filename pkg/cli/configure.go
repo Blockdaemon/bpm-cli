@@ -14,8 +14,24 @@ func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "configure",
 		Short: "Configure a new blockchain node",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			// The configure command doesn't provide any functionality by itself.
+			// It has two purposes:
+			//
+			// 1. Act as parent command for all `configure <plugin>` commands
+			// 2. If no plugin is installed yet, provide a useful help message
+			pluginName := ""
+
+			if len(args) > 0 {
+				pluginName = args[0]
+			}
+
+			return cmdContext.ConfigureHelp(pluginName)
+		},
 	}
 
+	// Create `configure <plugin>` command for evert installed plugin. With parameters specific
+	// to that pugin
 	for name, meta := range cmdContext.Manifest.Plugins {
 		// copy to break closure
 		nameCopy := name

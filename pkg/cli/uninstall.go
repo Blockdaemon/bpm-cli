@@ -1,27 +1,19 @@
 package cli
 
 import (
-	"fmt"
 	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
 )
 
 func newUninstallCmd(cmdContext command.CmdContext) *cobra.Command {
-	cmd := &cobra.Command{
+	return &cobra.Command{
 		Use:   "uninstall",
-		Short: "Uninstall a package. Data and configuration will not be removed.",
-	}
-	for name := range cmdContext.Manifest.Plugins {
-		pluginCmd := &cobra.Command{
-			Use:   name,
-			Short: fmt.Sprintf("Uninstall the %q package.", name),
-			RunE: func(cmd *cobra.Command, args []string) error {
-				return cmdContext.Uninstall(name)
-			},
-		}
+		Short: "Uninstall a package. Existing nodes will not be removed.",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			pluginName := args[0]
 
-		cmd.AddCommand(pluginCmd)
+			return cmdContext.Uninstall(pluginName)
+		},
 	}
-
-	return cmd
 }

@@ -8,11 +8,13 @@ import (
 	"github.com/kataras/tablewriter"
 )
 
+// List prints a list of the curreently installed plugins
 func (p *CmdContext) List() error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetBorder(false)
 	table.SetHeader([]string{
 		"NAME",
+		"DESCRIPTION",
 		"INSTALLED VERSION",
 		"RECOMMENDED VERSION",
 	})
@@ -33,6 +35,7 @@ func (p *CmdContext) List() error {
 
 		table.Append([]string{
 			name,
+			plugin.Description,
 			plugin.Version,
 			latestVersion,
 		})

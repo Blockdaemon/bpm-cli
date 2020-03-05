@@ -4,17 +4,38 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/Blockdaemon/bpm-sdk/pkg/fileutil"
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/rs/xid"
 )
 
+// ConfigureHelp provides the logic for the `configure` command without parameters
+//
+// Since we cannot do much without a plugin as first parameter, it just prints help information
+func (p *CmdContext) ConfigureHelp(pluginName string) error {
+	if pluginName == "" {
+		if !p.Manifest.HasPluginsInstalled() {
+			return fmt.Errorf("cannot configure without an installed package")
+		}
+
+		return fmt.Errorf("no package specified. See `--help` for details")
+	}
+
+	if !p.isInstalled(pluginName) {
+		return fmt.Errorf("the package %q is currently not installed", pluginName)
+	}
+
+	return nil
+}
+
+// Configure provides the logic for configuring a node using a particular plugin
 func (p *CmdContext) Configure(pluginName string, strParameters map[string]string, boolParameters map[string]bool, skipUpgradeCheck bool) error {
 	// Generate instance id
 	id := xid.New().String()
 
 	if !p.isInstalled(pluginName) {
-		return fmt.Errorf("The package %q is currently not installed.", pluginName)
+		return fmt.Errorf("the package %q is currently not installed", pluginName)
 	}
 
 	// Check if plugin is using the latest version
@@ -28,7 +49,7 @@ func (p *CmdContext) Configure(pluginName string, strParameters map[string]strin
 			fmt.Printf("Upgrade check failed: %s\n", err)
 		} else {
 			if needsUpgrade {
-				return fmt.Errorf("A new version of package %q is available. Please install using \"bpm install %s\" or skip this check using \"--skip-upgrade-check\".\n", pluginName, pluginName)
+				return fmt.Errorf("a new version of package %q is available. Please install using \"bpm install %s\" or skip this check using \"--skip-upgrade-check\"", pluginName, pluginName)
 			}
 		}
 	}
@@ -55,10 +76,21 @@ func (p *CmdContext) Configure(pluginName string, strParameters map[string]strin
 		return err
 	}
 
-	// Secrets
-	err := p.execCmd(n, "create-secrets")
+	// Secrets have been removed but for compatibility reasons we still need to create the secrets directory for older plugins
+	meta, err := p.getMeta(pluginName)
 	if err != nil {
 		return err
+	}
+	if meta.ProtocolVersion == "1.0.0" {
+		_, err = fileutil.MakeDirectory(filepath.Join(n.NodeDirectory(), "secrets"))
+		if err != nil {
+			return err
+		}
+
+		err := p.execCmd(n, "create-secrets")
+		if err != nil {
+			return err
+		}
 	}
 
 	// Config
