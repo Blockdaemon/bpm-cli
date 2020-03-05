@@ -15,7 +15,7 @@ func TestConfigure(t *testing.T) {
 	}
 
 	out := capturer.CaptureOutput(func() {
-		if err := cmdContext.Configure("testplugin", map[string]string{"subtype": "validator"}, map[string]bool{}, false); err != nil {
+		if err := cmdContext.Configure("testplugin", "test-id", map[string]string{"subtype": "validator"}, map[string]bool{}, false); err != nil {
 			t.Error(err)
 		}
 	})
