@@ -8,6 +8,7 @@ import (
 	"github.com/kataras/tablewriter"
 )
 
+// List prints a list of the curreently installed plugins
 func (p *CmdContext) List() error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetBorder(false)

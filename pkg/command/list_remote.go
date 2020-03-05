@@ -9,6 +9,7 @@ import (
 	"github.com/kataras/tablewriter"
 )
 
+// Search searches the registry for plugins
 func (p *CmdContext) Search(query string) error {
 	client := pbr.New(p.RegistryURL)
 

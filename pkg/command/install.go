@@ -19,6 +19,10 @@ func (p *CmdContext) addPluginToManifest(pluginName string) error {
 	return p.Manifest.UpdatePlugin(pluginName, meta)
 }
 
+// InstallFile installs a plugin from a local file.
+//
+// This is very useful during development to avoid having to upload a plugin
+// to the registry every time we want to test a change.
 func (p *CmdContext) InstallFile(pluginName string, sourcePath string) error {
 	if p.Debug {
 		fmt.Printf("Installing package %q from file %q\n", pluginName, sourcePath)
@@ -46,6 +50,7 @@ func (p *CmdContext) InstallFile(pluginName string, sourcePath string) error {
 	return nil
 }
 
+// InstallLatest installs the latest version of a plugin
 func (p *CmdContext) InstallLatest(pluginName string) error {
 	latestVersion, err := p.getLatestVersion(pluginName)
 	if err != nil {
@@ -55,10 +60,11 @@ func (p *CmdContext) InstallLatest(pluginName string) error {
 	return p.Install(pluginName, latestVersion)
 }
 
+// Install installs a particular version of a plugin
 func (p *CmdContext) Install(pluginName, versionToInstall string) error {
 	// Check if this version is already installed
 	if p.getInstalledVersion(pluginName) == versionToInstall {
-		return fmt.Errorf("%q version %q has already been installed.", pluginName, versionToInstall)
+		return fmt.Errorf("%q version %q has already been installed", pluginName, versionToInstall)
 	}
 
 	// Download the plugin file

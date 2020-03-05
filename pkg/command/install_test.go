@@ -28,5 +28,5 @@ func TestInstallAlreadyInstalled(t *testing.T) {
 	}
 
 	err := cmdContext.Install("testplugin", "1.0.0")
-	assertError(err, `"testplugin" version "1.0.0" has already been installed.`, t)
+	assertError(err, `"testplugin" version "1.0.0" has already been installed`, t)
 }

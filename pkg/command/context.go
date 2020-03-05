@@ -68,7 +68,7 @@ func (p *CmdContext) execCmdCapture(n node.Node, cmd string) (string, error) {
 
 	// Check if plugin is installed
 	if !p.isInstalled(pluginName) {
-		return "", fmt.Errorf("The package %q is currently not installed.\n", pluginName)
+		return "", fmt.Errorf("the package %q is currently not installed", pluginName)
 	}
 
 	// Run plugin commands
@@ -81,7 +81,7 @@ func (p *CmdContext) execCmd(n node.Node, cmd string) error {
 
 	// Check if plugin is installed
 	if !p.isInstalled(pluginName) {
-		return fmt.Errorf("The package %q is currently not installed.\n", pluginName)
+		return fmt.Errorf("the package %q is currently not installed", pluginName)
 	}
 
 	// Run plugin commands
