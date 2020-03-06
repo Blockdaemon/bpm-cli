@@ -16,7 +16,8 @@ func (p *CmdContext) Upgrade(nodeName string) error {
 	// Check if the plugin is the same version as used to configure the node
 	packageVersion := p.getInstalledVersion(n.PluginName)
 	if n.Version == packageVersion {
-		return fmt.Errorf("package and node version are identical (%s). Have you considered upgrading the package?", n.Version)
+		fmt.Printf("package and node version are identical (%s). Have you considered upgrading the package?\n", n.Version)
+		return nil
 	}
 
 	if err := p.execCmd(n, "upgrade"); err != nil {
