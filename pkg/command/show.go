@@ -10,9 +10,9 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *CmdContext) ShowConfig(nodeID string) error {
+func (p *CmdContext) ShowConfig(nodeName string) error {
 	// Get the node
-	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeName))
 	if err != nil {
 		return err
 	}
@@ -47,17 +47,17 @@ func (p *CmdContext) ShowConfig(nodeID string) error {
 	return nil
 }
 
-func (p *CmdContext) ShowNode(nodeID string) error {
+func (p *CmdContext) ShowNode(nodeName string) error {
 	// Check if node exists
 	if !config.FileExists(
-		filepath.Join(config.NodesDir(p.HomeDir), nodeID),
+		filepath.Join(config.NodesDir(p.HomeDir), nodeName),
 		"node.json",
 	) {
-		return fmt.Errorf("Node %q does not exist\n", nodeID)
+		return fmt.Errorf("Node %q does not exist\n", nodeName)
 	}
 
 	// Get the node
-	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeName))
 	if err != nil {
 		return err
 	}

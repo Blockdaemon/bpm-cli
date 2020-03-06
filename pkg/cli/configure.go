@@ -10,7 +10,7 @@ import (
 
 func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
 	var skipUpgradeCheck bool
-	var nodeID string
+	var nodeName string
 
 	cmd := &cobra.Command{
 		Use:   "configure",
@@ -62,11 +62,11 @@ func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {
 					}
 				}
 
-				return cmdContext.Configure(pluginNameCopy, nodeID, strParameters, boolParameters, skipUpgradeCheck)
+				return cmdContext.Configure(pluginNameCopy, nodeName, strParameters, boolParameters, skipUpgradeCheck)
 			},
 		}
 		pluginCmd.Flags().BoolVar(&skipUpgradeCheck, "skip-upgrade-check", false, "Skip checking whether a new version of the package is available")
-		pluginCmd.Flags().StringVar(&nodeID, "ID", "", "The ID of the node. Will be chosen automatically if not specified")
+		pluginCmd.Flags().StringVar(&nodeName, "name", "", "The name of the node. Will be chosen automatically if not specified")
 
 		// Add dynamic configuration parameters
 		for _, parameter := range metaCopy.Parameters {
