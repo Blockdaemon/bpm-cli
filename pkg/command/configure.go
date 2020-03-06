@@ -30,11 +30,19 @@ func (p *CmdContext) ConfigureHelp(pluginName string) error {
 }
 
 // Configure provides the logic for configuring a node using a particular plugin
-func (p *CmdContext) Configure(pluginName string, id string, strParameters map[string]string, boolParameters map[string]bool, skipUpgradeCheck bool) error {
-	// Generate an ID if none exists yet
-	if id == "" {
+func (p *CmdContext) Configure(pluginName string, name string, strParameters map[string]string, boolParameters map[string]bool, skipUpgradeCheck bool) error {
+	// Generate a name if none exists yet
+	if name == "" {
 		h := haikunator.NewHaikunator()
-		id = h.Haikunate()
+
+		// Pick random names until we find one that doesn't exist yet
+		for {
+			name = h.Haikunate()
+			nodeFile := config.NodeFile(p.HomeDir, name)
+			if !config.PathExists(nodeFile) {
+				break
+			}
+		}
 	}
 
 	if !p.isInstalled(pluginName) {
@@ -57,7 +65,7 @@ func (p *CmdContext) Configure(pluginName string, id string, strParameters map[s
 		}
 	}
 
-	nodeFile := config.NodeFile(p.HomeDir, id)
+	nodeFile := config.NodeFile(p.HomeDir, name)
 	var currentNode node.Node
 	var err error
 
@@ -65,7 +73,7 @@ func (p *CmdContext) Configure(pluginName string, id string, strParameters map[s
 		// Node already exists, we'll just run `create-configurations` again
 		currentNode, err = node.Load(nodeFile)
 	} else {
-		currentNode, err = p.createNode(pluginName, id, strParameters, boolParameters)
+		currentNode, err = p.createNode(pluginName, name, strParameters, boolParameters)
 	}
 	if err != nil {
 		return err
@@ -77,16 +85,16 @@ func (p *CmdContext) Configure(pluginName string, id string, strParameters map[s
 		return err
 	}
 
-	fmt.Printf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm nodes start %s\nTo see the status of configured nodes, run:\n    bpm nodes status\n", id, currentNode.ConfigsDirectory(), id)
+	fmt.Printf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm nodes start %s\nTo see the status of configured nodes, run:\n    bpm nodes status\n", name, currentNode.ConfigsDirectory(), name)
 
 	return nil
 }
 
-func (p *CmdContext) createNode(pluginName string, id string, strParameters map[string]string, boolParameters map[string]bool) (node.Node, error) {
+func (p *CmdContext) createNode(pluginName string, name string, strParameters map[string]string, boolParameters map[string]bool) (node.Node, error) {
 	// Create node config
-	nodeFile := config.NodeFile(p.HomeDir, id)
+	nodeFile := config.NodeFile(p.HomeDir, name)
 	n := node.New(nodeFile)
-	n.ID = id
+	n.ID = name
 	n.PluginName = pluginName
 	n.StrParameters = strParameters
 	n.BoolParameters = boolParameters

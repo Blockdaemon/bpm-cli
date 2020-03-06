@@ -44,21 +44,18 @@ go run cmd/main.go --yes --base-dir $basedir packages list
 go run cmd/main.go --yes --base-dir $basedir packages search polkadot
 go run cmd/main.go --yes --base-dir $basedir packages install polkadot 1.1.0
 go run cmd/main.go --yes --base-dir $basedir packages info polkadot
-go run cmd/main.go --yes --base-dir $basedir nodes configure polkadot
-go run cmd/main.go --yes --base-dir $basedir nodes status
+go run cmd/main.go --yes --base-dir $basedir nodes configure polkadot --name test-node
 checkStatus "stopped"
-nodeID=$(getStatusColumn 1)
-go run cmd/main.go --yes --base-dir $basedir nodes status
-go run cmd/main.go --yes --base-dir $basedir nodes start $nodeID
+go run cmd/main.go --yes --base-dir $basedir nodes start test-node
 checkStatus "running"
-go run cmd/main.go --yes --base-dir $basedir nodes show node $nodeID
-go run cmd/main.go --yes --base-dir $basedir nodes show config $nodeID
+go run cmd/main.go --yes --base-dir $basedir nodes show node test-node
+go run cmd/main.go --yes --base-dir $basedir nodes show config test-node
 # Commented out because it doesn't work in the CI due to networking issues
 # go run cmd/main.go --yes --base-dir $basedir test $nodeID
-go run cmd/main.go --yes --base-dir $basedir nodes stop $nodeID
-go run cmd/main.go --yes --base-dir $basedir nodes remove --config $nodeID
-go run cmd/main.go --yes --base-dir $basedir nodes remove --data $nodeID
-go run cmd/main.go --yes --base-dir $basedir nodes remove --all $nodeID
+go run cmd/main.go --yes --base-dir $basedir nodes stop test-node
+go run cmd/main.go --yes --base-dir $basedir nodes remove --config test-node
+go run cmd/main.go --yes --base-dir $basedir nodes remove --data test-node
+go run cmd/main.go --yes --base-dir $basedir nodes remove --all test-node
 go run cmd/main.go --yes --base-dir $basedir packages uninstall polkadot
 
 echo ">>> DONE, ALL TESTS RAN SUCCESSFUL"

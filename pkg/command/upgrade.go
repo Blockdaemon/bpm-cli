@@ -7,8 +7,8 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *CmdContext) Upgrade(nodeID string) error {
-	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
+func (p *CmdContext) Upgrade(nodeName string) error {
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeName))
 	if err != nil {
 		return err
 	}
@@ -29,6 +29,6 @@ func (p *CmdContext) Upgrade(nodeID string) error {
 		return err
 	}
 
-	fmt.Printf("The node %q has been upgraded.\n", nodeID)
+	fmt.Printf("The node %q has been upgraded.\n", nodeName)
 	return nil
 }

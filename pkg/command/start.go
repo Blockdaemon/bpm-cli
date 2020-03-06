@@ -7,8 +7,8 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *CmdContext) Start(nodeID string) error {
-	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
+func (p *CmdContext) Start(nodeName string) error {
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeName))
 	if err != nil {
 		return err
 	}
@@ -23,6 +23,6 @@ func (p *CmdContext) Start(nodeID string) error {
 		return err
 	}
 
-	fmt.Printf("The node %q has been started.\n", nodeID)
+	fmt.Printf("The node %q has been started.\n", nodeName)
 	return nil
 }

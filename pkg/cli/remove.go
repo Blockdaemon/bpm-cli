@@ -16,17 +16,17 @@ func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {
 	)
 
 	cmd := &cobra.Command{
-		Use:   "remove <id>",
+		Use:   "remove <name>",
 		Short: "Remove blockchain node data and configuration. Select one of the required flags for the remove command.",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id := args[0]
+			name := args[0]
 
 			if !(all || data || config || runtime) {
 				return fmt.Errorf("flag missing to specify what to remove. Use `--help` for details")
 			}
 
-			return cmdContext.Remove(id, all, data, config, runtime)
+			return cmdContext.Remove(name, all, data, config, runtime)
 		},
 	}
 

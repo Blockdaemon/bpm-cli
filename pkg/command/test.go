@@ -5,8 +5,8 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *CmdContext) Test(nodeID string) error {
-	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
+func (p *CmdContext) Test(nodeName string) error {
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeName))
 	if err != nil {
 		return err
 	}
