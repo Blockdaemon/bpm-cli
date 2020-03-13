@@ -20,7 +20,7 @@ func (p *CmdContext) ShowConfig(nodeName string) error {
 	var buf bytes.Buffer
 
 	// List files in config directory
-	if err := config.Walk(n.ConfigsDirectory(), func(path string, info os.FileInfo, err error) error {
+	if err := config.Walk(filepath.Join(n.NodeDirectory(), "config"), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

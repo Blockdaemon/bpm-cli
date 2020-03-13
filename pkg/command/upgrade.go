@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
+	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
@@ -11,6 +12,16 @@ func (p *CmdContext) Upgrade(nodeName string) error {
 	n, err := node.Load(config.NodeFile(p.HomeDir, nodeName))
 	if err != nil {
 		return err
+	}
+
+	// Check if upgrades are supported
+	meta, err := p.getMeta(n.PluginName)
+	if err != nil {
+		return err
+	}
+	if !meta.Supports(plugin.SupportsUpgrade) {
+		fmt.Printf("Package %q does not support upgrades. Skipping!\n", n.PluginName)
+		return nil
 	}
 
 	// Check if the plugin is the same version as used to configure the node

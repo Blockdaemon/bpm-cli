@@ -19,3 +19,5 @@ require (
 	golang.org/x/tools/gopls v0.3.1 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
+
+replace github.com/Blockdaemon/bpm-sdk => ../bpm-sdk

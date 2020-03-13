@@ -6,6 +6,7 @@ import (
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/fileutil"
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
+	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
 	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/taion809/haikunator"
 )
@@ -96,14 +97,17 @@ func (p *CmdContext) Configure(pluginName string, name string, strParameters map
 		}
 	}
 
-	// These have been introduced in protocol version 1.1.0
+	// validate-parameters has been introduced in protocol version 1.1.0
 	if meta.ProtocolVersion != "1.0.0" {
 		// Validate
 		err = p.execCmd(currentNode, "validate-parameters")
 		if err != nil {
 			return err
 		}
-		// Identity
+	}
+
+	// Identity
+	if meta.Supports(plugin.SupportsIdentity) {
 		err = p.execCmd(currentNode, "create-identity")
 		if err != nil {
 			return err
@@ -116,7 +120,7 @@ func (p *CmdContext) Configure(pluginName string, name string, strParameters map
 		return err
 	}
 
-	fmt.Printf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm nodes start %s\nTo see the status of configured nodes, run:\n    bpm nodes status\n", name, currentNode.ConfigsDirectory(), name)
+	fmt.Printf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm nodes start %s\nTo see the status of configured nodes, run:\n    bpm nodes status\n", name, currentNode.NodeDirectory(), name)
 
 	return nil
 }
