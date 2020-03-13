@@ -9,10 +9,11 @@ import (
 
 func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {
 	var (
-		all     bool
-		data    bool
-		config  bool
-		runtime bool
+		all      bool
+		data     bool
+		config   bool
+		runtime  bool
+		identity bool
 	)
 
 	cmd := &cobra.Command{
@@ -22,11 +23,11 @@ func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			name := args[0]
 
-			if !(all || data || config || runtime) {
+			if !(all || data || config || runtime || identity) {
 				return fmt.Errorf("flag missing to specify what to remove. Use `--help` for details")
 			}
 
-			return cmdContext.Remove(name, all, data, config, runtime)
+			return cmdContext.Remove(name, all, data, config, runtime, identity)
 		},
 	}
 
@@ -34,6 +35,7 @@ func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {
 	cmd.Flags().BoolVar(&config, "config", false, "[Required] Remove all configuration files but keep data and node information")
 	cmd.Flags().BoolVar(&data, "data", false, "[Required] Remove all data but keep configuration files and node information")
 	cmd.Flags().BoolVar(&runtime, "runtime", false, "[Required] Remove all runtimes but keep configuration files and node information")
+	cmd.Flags().BoolVar(&identity, "identity", false, "[Required] Remove the identity of the node")
 
 	return cmd
 

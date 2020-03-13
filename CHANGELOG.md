@@ -2,6 +2,12 @@
 
 New functionality:
 
+* Instead of cryptic ids, nodes are now named using a human readable name generator.
+
+* The `nodes configure` command now has a new parameter `--name` that allows to name a node.
+
+* The `nodes remove` command now has a new parameter `--identity` to only remove the identity of a node.
+
 * The `packages uninstall` command is now always available and shows up in the help. Previously it was only available and shown in the help when at least one package was installed. This behaviour was a-typical for a cli tool and surprising for users.
 
 * The `nodes configure` command now always shows up in the help. The reasoning is the same as with `packages uninstall`.
@@ -22,8 +28,11 @@ Bug fixes:
 
 Development improvements:
 
-* Support for new plugin protocol version 1.1.0: This version removes the `create-secrets` call. There was a lot of confusion between `create-configurations` and `create-secrets` because most secrets needed to be copied into the configuration anyway to be used. The only benefit was the ability to backup all secrets separately from the configurations. This doesn't warrant the added complexity.
-Compatibility with the old protocol version 1.0.0 is kept.
+* Support for new plugin protocol version 1.1.0
+	* Rename the `create-secrets` call to `create-identity`. This makes the intend more clear.
+	* Add a `remove-identity` call similar to `remove-config`
+	* Add a `validate-parameters` call (parameters used to be validated implicitely when creating the configurations)
+	* Adds plugin name to the plugin meta information
 
 * Remove vendor directory: This makes it easier to diff github commits. The downside of having to rely on third-parties for dependencies is somewhat mitigated by the official [Google module mirror](https://proxy.golang.org/). We'll add our own mirror soon to have better control over dependencies and perform security checks on the dependencies.
 

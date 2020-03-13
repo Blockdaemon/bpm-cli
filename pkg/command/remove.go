@@ -9,7 +9,8 @@ import (
 	bpmconfig "github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *CmdContext) Remove(nodeName string, all bool, data bool, config bool, runtime bool) error {
+// Remove removes the node or parts of it
+func (p *CmdContext) Remove(nodeName string, all bool, data bool, config bool, runtime bool, identity bool) error {
 	n, err := node.Load(bpmconfig.NodeFile(p.HomeDir, nodeName))
 	if err != nil {
 		return err
@@ -30,6 +31,21 @@ func (p *CmdContext) Remove(nodeName string, all bool, data bool, config bool, r
 	if data || all {
 		if err := p.execCmd(n, "remove-data"); err != nil {
 			return err
+		}
+	}
+
+	if identity || all {
+		// remove-identity has been introduced in protocol version 1.1.0
+		meta, err := p.getMeta(n.PluginName)
+		if err != nil {
+			return err
+		}
+		if meta.ProtocolVersion == "1.0.0" {
+			fmt.Println("You are using an outdated package which doesn't support `remove-identity`. Skipping!")
+		} else {
+			if err := p.execCmd(n, "remove-identity"); err != nil {
+				return err
+			}
 		}
 	}
 
