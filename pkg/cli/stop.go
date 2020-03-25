@@ -7,12 +7,12 @@ import (
 
 func newStopCmd(cmdContext command.CmdContext) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "stop <id>",
+		Use:   "stop <name>",
 		Short: "Stops a running blockchain node",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id := args[0]
-			return cmdContext.Stop(id)
+			name := args[0]
+			return cmdContext.Stop(name)
 		},
 	}
 

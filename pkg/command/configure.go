@@ -6,8 +6,9 @@ import (
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/fileutil"
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
+	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
 	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/rs/xid"
+	"github.com/taion809/haikunator"
 )
 
 // ConfigureHelp provides the logic for the `configure` command without parameters
@@ -30,9 +31,20 @@ func (p *CmdContext) ConfigureHelp(pluginName string) error {
 }
 
 // Configure provides the logic for configuring a node using a particular plugin
-func (p *CmdContext) Configure(pluginName string, strParameters map[string]string, boolParameters map[string]bool, skipUpgradeCheck bool) error {
-	// Generate instance id
-	id := xid.New().String()
+func (p *CmdContext) Configure(pluginName string, name string, strParameters map[string]string, boolParameters map[string]bool, skipUpgradeCheck bool) error {
+	// Generate a name if none exists yet
+	if name == "" {
+		h := haikunator.NewHaikunator()
+
+		// Pick random names until we find one that doesn't exist yet
+		for {
+			name = h.Haikunate()
+			nodeFile := config.NodeFile(p.HomeDir, name)
+			if !config.PathExists(nodeFile) {
+				break
+			}
+		}
+	}
 
 	if !p.isInstalled(pluginName) {
 		return fmt.Errorf("the package %q is currently not installed", pluginName)
@@ -54,9 +66,70 @@ func (p *CmdContext) Configure(pluginName string, strParameters map[string]strin
 		}
 	}
 
+	nodeFile := config.NodeFile(p.HomeDir, name)
+	var currentNode node.Node
+	var err error
+
+	if config.PathExists(nodeFile) {
+		// Node already exists, we'll just run `create-configurations` again
+		currentNode, err = node.Load(nodeFile)
+	} else {
+		currentNode, err = p.createNode(pluginName, name, strParameters, boolParameters)
+	}
+	if err != nil {
+		return err
+	}
+
+	meta, err := p.getMeta(pluginName)
+	if err != nil {
+		return err
+	}
+	// Secrets have been removed but for compatibility reasons we still need to create the secrets directory for older plugins
+	if meta.ProtocolVersion == "1.0.0" {
+		_, err = fileutil.MakeDirectory(filepath.Join(currentNode.NodeDirectory(), "secrets"))
+		if err != nil {
+			return err
+		}
+
+		err := p.execCmd(currentNode, "create-secrets")
+		if err != nil {
+			return err
+		}
+	}
+
+	// validate-parameters has been introduced in protocol version 1.1.0
+	if meta.ProtocolVersion != "1.0.0" {
+		// Validate
+		err = p.execCmd(currentNode, "validate-parameters")
+		if err != nil {
+			return err
+		}
+	}
+
+	// Identity
+	if meta.Supports(plugin.SupportsIdentity) {
+		err = p.execCmd(currentNode, "create-identity")
+		if err != nil {
+			return err
+		}
+	}
+
+	// Config
+	err = p.execCmd(currentNode, "create-configurations")
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm nodes start %s\nTo see the status of configured nodes, run:\n    bpm nodes status\n", name, currentNode.NodeDirectory(), name)
+
+	return nil
+}
+
+func (p *CmdContext) createNode(pluginName string, name string, strParameters map[string]string, boolParameters map[string]bool) (node.Node, error) {
 	// Create node config
-	n := node.New(config.NodeFile(p.HomeDir, id))
-	n.ID = id
+	nodeFile := config.NodeFile(p.HomeDir, name)
+	n := node.New(nodeFile)
+	n.ID = name
 	n.PluginName = pluginName
 	n.StrParameters = strParameters
 	n.BoolParameters = boolParameters
@@ -73,33 +146,8 @@ func (p *CmdContext) Configure(pluginName string, strParameters map[string]strin
 	}
 
 	if err := n.Save(); err != nil {
-		return err
+		return n, err
 	}
 
-	// Secrets have been removed but for compatibility reasons we still need to create the secrets directory for older plugins
-	meta, err := p.getMeta(pluginName)
-	if err != nil {
-		return err
-	}
-	if meta.ProtocolVersion == "1.0.0" {
-		_, err = fileutil.MakeDirectory(filepath.Join(n.NodeDirectory(), "secrets"))
-		if err != nil {
-			return err
-		}
-
-		err := p.execCmd(n, "create-secrets")
-		if err != nil {
-			return err
-		}
-	}
-
-	// Config
-	err = p.execCmd(n, "create-configurations")
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("\nNode with id %q has been initialized.\n\nTo change the configuration, modify the files here:\n    %s\nTo start the node, run:\n    bpm nodes start %s\nTo see the status of configured nodes, run:\n    bpm nodes status\n", id, n.ConfigsDirectory(), id)
-
-	return nil
+	return n, nil
 }

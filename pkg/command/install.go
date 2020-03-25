@@ -64,7 +64,8 @@ func (p *CmdContext) InstallLatest(pluginName string) error {
 func (p *CmdContext) Install(pluginName, versionToInstall string) error {
 	// Check if this version is already installed
 	if p.getInstalledVersion(pluginName) == versionToInstall {
-		return fmt.Errorf("%q version %q has already been installed", pluginName, versionToInstall)
+		fmt.Printf("%q version %q has already been installed", pluginName, versionToInstall)
+		return nil
 	}
 
 	// Download the plugin file

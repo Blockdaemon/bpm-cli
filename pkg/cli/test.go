@@ -7,12 +7,12 @@ import (
 
 func newTestCmd(cmdContext command.CmdContext) *cobra.Command {
 	return &cobra.Command{
-		Use:   "test <id>",
+		Use:   "test <name>",
 		Short: "Tests a running blockchain node",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id := args[0]
-			return cmdContext.Test(id)
+			name := args[0]
+			return cmdContext.Test(name)
 		},
 	}
 }

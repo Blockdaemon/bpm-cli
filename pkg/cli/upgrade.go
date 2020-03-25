@@ -11,8 +11,8 @@ func newUpgradeCmd(cmdContext command.CmdContext) *cobra.Command {
 		Short: "Upgrade a blockchain node to the current version of the package",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id := args[0]
-			return cmdContext.Upgrade(id)
+			name := args[0]
+			return cmdContext.Upgrade(name)
 		},
 	}
 }

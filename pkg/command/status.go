@@ -13,7 +13,7 @@ func (p *CmdContext) Status() error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetBorder(false)
 	table.SetHeader([]string{
-		"NODE ID",
+		"NODE NAME",
 		"PACKAGE",
 		"STATUS",
 	})
@@ -25,9 +25,9 @@ func (p *CmdContext) Status() error {
 	}
 
 	for _, nodeDir := range nodeDirs {
-		nodeID := nodeDir.Name()
+		nodeName := nodeDir.Name()
 
-		n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
+		n, err := node.Load(config.NodeFile(p.HomeDir, nodeName))
 		if err != nil {
 			return err
 		}
@@ -41,7 +41,7 @@ func (p *CmdContext) Status() error {
 		}
 
 		table.Append([]string{
-			nodeID,
+			nodeName,
 			n.PluginName,
 			status,
 		})

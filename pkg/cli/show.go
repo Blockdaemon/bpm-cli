@@ -12,22 +12,22 @@ func newShowCmd(cmdContext command.CmdContext) *cobra.Command {
 	}
 
 	showConfigCmd := &cobra.Command{
-		Use:   "config <id>",
+		Use:   "config <name>",
 		Short: "Display config files for a node",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id := args[0]
-			return cmdContext.ShowConfig(id)
+			name := args[0]
+			return cmdContext.ShowConfig(name)
 		},
 	}
 
 	showNodeCmd := &cobra.Command{
-		Use:   "node <id>",
+		Use:   "node <name>",
 		Short: "Display the node.json config",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id := args[0]
-			return cmdContext.ShowNode(id)
+			name := args[0]
+			return cmdContext.ShowNode(name)
 		},
 	}
 

@@ -7,8 +7,8 @@ import (
 	"github.com/Blockdaemon/bpm/pkg/config"
 )
 
-func (p *CmdContext) Stop(nodeID string) error {
-	n, err := node.Load(config.NodeFile(p.HomeDir, nodeID))
+func (p *CmdContext) Stop(nodeName string) error {
+	n, err := node.Load(config.NodeFile(p.HomeDir, nodeName))
 	if err != nil {
 		return err
 	}
@@ -17,6 +17,6 @@ func (p *CmdContext) Stop(nodeID string) error {
 		return err
 	}
 
-	fmt.Printf("The node %q has been stopped.\n", nodeID)
+	fmt.Printf("The node %q has been stopped.\n", nodeName)
 	return nil
 }
