@@ -84,13 +84,17 @@ func (p *CmdContext) Configure(pluginName string, name string, strParameters map
 	if err != nil {
 		return err
 	}
-	// Secrets have been removed but for compatibility reasons we still need to create the secrets directory for older plugins
+	// Secrets have been removed but for compatibility reasons we still need to create the directories for older plugins
 	if meta.ProtocolVersion == "1.0.0" {
 		_, err = fileutil.MakeDirectory(filepath.Join(currentNode.NodeDirectory(), "secrets"))
 		if err != nil {
 			return err
 		}
 
+		_, err = fileutil.MakeDirectory(filepath.Join(currentNode.NodeDirectory(), plugin.ConfigsDirectory))
+		if err != nil {
+			return err
+		}
 		err := p.execCmd(currentNode, "create-secrets")
 		if err != nil {
 			return err
