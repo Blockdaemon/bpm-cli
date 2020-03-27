@@ -1,6 +1,13 @@
 #!/bin/bash
 # This is a simple test that runs through all bpm commands.
 
+if [ -z "$1" ]
+  then
+    echo "USAGE $0 <polkadot version>"
+fi
+
+VERSION=$1
+
 basedir=./build/bpm
 
 function getStatusColumn() {
@@ -42,9 +49,9 @@ setup
 go run cmd/main.go --yes --base-dir $basedir version
 go run cmd/main.go --yes --base-dir $basedir packages list
 go run cmd/main.go --yes --base-dir $basedir packages search polkadot
-go run cmd/main.go --yes --base-dir $basedir packages install polkadot 1.1.0
+go run cmd/main.go --yes --base-dir $basedir packages install polkadot $VERSION
 go run cmd/main.go --yes --base-dir $basedir packages info polkadot
-go run cmd/main.go --yes --base-dir $basedir nodes configure polkadot --name test-node
+go run cmd/main.go --yes --base-dir $basedir nodes configure polkadot --name test-node --skip-upgrade-check
 checkStatus "stopped"
 go run cmd/main.go --yes --base-dir $basedir nodes start test-node
 checkStatus "running"
