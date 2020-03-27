@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bpm-cli-docs-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: bpm-cli-docs
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bpm-cli-docs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bpm-cli-docs
+  template:
+    metadata:
+      labels:
+        app: bpm-cli-docs
+    spec:
+      containers:
+        - name: bpm-cli-docs
+          image: redocly/redoc:latest
+          env:
+            - name: "SPEC_URL"
+              value: "https://bd-docs.nyc3.cdn.digitaloceanspaces.com/bpm-cli-swagger.yaml"
