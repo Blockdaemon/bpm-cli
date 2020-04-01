@@ -1,3 +1,9 @@
+# 0.10.1
+
+Bug fixes:
+
+* Do not crash on `nodes status` if the package `status` command crashes. Show error instead
+
 # 0.10.0
 
 New functionality:

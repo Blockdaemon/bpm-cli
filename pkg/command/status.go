@@ -1,6 +1,7 @@
 package command
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
@@ -36,7 +37,7 @@ func (p *CmdContext) Status() error {
 		if p.isInstalled(n.PluginName) {
 			status, err = p.execCmdCapture(n, "status")
 			if err != nil {
-				return err
+				status = fmt.Sprintf("error: %s", err)
 			}
 		}
 
