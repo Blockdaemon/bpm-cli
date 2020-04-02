@@ -2,7 +2,7 @@ VERSION:=$(CI_COMMIT_REF_NAME)
 
 ifeq ($(VERSION),)
 	# Looks like we are not running in the CI so default to current branch
-	VERSION:=$(shell git rev-parse --abbrev-ref HEAD)
+	VERSION:=$(shell git symbolic-ref -q --short HEAD || git describe --tags --exact-match)
 endif
 
 # Need to wrap in "bash -c" so env vars work in the compiler as well as on the cli to specify the output
