@@ -80,46 +80,12 @@ func (p *CmdContext) Configure(pluginName string, name string, strParameters map
 		return err
 	}
 
-	meta, err := p.getMeta(pluginName)
-	if err != nil {
-		return err
-	}
-	// Secrets have been removed but for compatibility reasons we still need to create the directories for older plugins
-	if meta.ProtocolVersion == "1.0.0" {
-		_, err = fileutil.MakeDirectory(filepath.Join(currentNode.NodeDirectory(), "secrets"))
-		if err != nil {
-			return err
-		}
-
-		_, err = fileutil.MakeDirectory(filepath.Join(currentNode.NodeDirectory(), plugin.ConfigsDirectory))
-		if err != nil {
-			return err
-		}
-		err := p.execCmd(currentNode, "create-secrets")
-		if err != nil {
-			return err
-		}
+	if err := p.validateNode(currentNode); err != nil {
+		// If validatation failed we remove the node again
+		return currentNode.Remove()
 	}
 
-	// validate-parameters has been introduced in protocol version 1.1.0
-	if meta.ProtocolVersion != "1.0.0" {
-		// Validate
-		err = p.execCmd(currentNode, "validate-parameters")
-		if err != nil {
-			return err
-		}
-	}
-
-	// Identity
-	if meta.Supports(plugin.SupportsIdentity) {
-		err = p.execCmd(currentNode, "create-identity")
-		if err != nil {
-			return err
-		}
-	}
-
-	// Config
-	err = p.execCmd(currentNode, "create-configurations")
+	err = p.initializeNode(currentNode)
 	if err != nil {
 		return err
 	}
@@ -154,4 +120,53 @@ func (p *CmdContext) createNode(pluginName string, name string, strParameters ma
 	}
 
 	return n, nil
+}
+
+func (p *CmdContext) validateNode(currentNode node.Node) error {
+	meta, err := p.getMeta(currentNode.PluginName)
+	if err != nil {
+		return err
+	}
+
+	// validate-parameters has been introduced in protocol version 1.1.0
+	if meta.ProtocolVersion != "1.0.0" {
+		// Validate
+		err = p.execCmd(currentNode, "validate-parameters")
+	}
+
+	return err
+}
+
+func (p *CmdContext) initializeNode(currentNode node.Node) error {
+	meta, err := p.getMeta(currentNode.PluginName)
+	if err != nil {
+		return err
+	}
+	// Secrets have been removed but for compatibility reasons we still need to create the directories for older plugins
+	if meta.ProtocolVersion == "1.0.0" {
+		_, err = fileutil.MakeDirectory(filepath.Join(currentNode.NodeDirectory(), "secrets"))
+		if err != nil {
+			return err
+		}
+
+		_, err = fileutil.MakeDirectory(filepath.Join(currentNode.NodeDirectory(), plugin.ConfigsDirectory))
+		if err != nil {
+			return err
+		}
+		err := p.execCmd(currentNode, "create-secrets")
+		if err != nil {
+			return err
+		}
+	}
+
+	// Identity
+	if meta.Supports(plugin.SupportsIdentity) {
+		err = p.execCmd(currentNode, "create-identity")
+		if err != nil {
+			return err
+		}
+	}
+
+	// Config
+	return p.execCmd(currentNode, "create-configurations")
 }
