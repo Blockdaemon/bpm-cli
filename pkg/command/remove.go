@@ -2,8 +2,6 @@ package command
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/Blockdaemon/bpm-sdk/pkg/node"
 	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
@@ -50,10 +48,8 @@ func (p *CmdContext) Remove(nodeName string, all bool, data bool, config bool, r
 	}
 
 	if all {
-		baseDir := bpmconfig.NodesDir(p.HomeDir)
-		nodeDir := filepath.Join(baseDir, nodeName)
-		fmt.Printf("\nRemoving directory %q\n", nodeDir)
-		if err := os.RemoveAll(nodeDir); err != nil {
+		fmt.Printf("\nRemoving node %q\n", nodeName)
+		if err := n.Remove(); err != nil {
 			return err
 		}
 	}

@@ -1,3 +1,9 @@
+# 0.10.2
+
+Bug fixes:
+
+* Clean up (i.e. remove) node file & directory if the parameter validation fails during `configure`
+
 # 0.10.1
 
 Bug fixes:
