@@ -31,9 +31,9 @@ func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolVar(&all, "all", false, "[Required] Remove all data, configuration files and node information")
+	cmd.Flags().BoolVar(&all, "all", false, "[Required] Remove all data, configuration files and node information. Linux only: To avoid file permission denied errors on Linux use 'sudo' with this command")
 	cmd.Flags().BoolVar(&config, "config", false, "[Required] Remove all configuration files but keep data and node information")
-	cmd.Flags().BoolVar(&data, "data", false, "[Required] Remove all data but keep configuration files and node information")
+	cmd.Flags().BoolVar(&data, "data", false, "[Required] Remove all data but keep configuration files and node information. Linux only: To avoid file permission denied errors on Linux use 'sudo' with this command")
 	cmd.Flags().BoolVar(&runtime, "runtime", false, "[Required] Remove all runtimes but keep configuration files and node information")
 	cmd.Flags().BoolVar(&identity, "identity", false, "[Required] Remove the identity of the node")
 

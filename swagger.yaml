@@ -354,6 +354,8 @@ info:
     nodes remove --all <node-id>
     ```
 
+    **Linux only:** Depending on the package, it is possible that the data created is inaccesible by your user. If that's the case you will get `permission denied` errors during the removal. To avoid the errors, run the bpm command using `sudo`.
+
     **Warning:** By removing the whole node you will also remove the `secrets` directory. It's always advisable to backup the `secrets` directory to a safe place before doing anything with the node.
 
     ## Tutorial 3: Connect to an existing permissioned Parity network
@@ -431,7 +433,7 @@ info:
     ```bash
     bpm nodes start <node-id>
     bpm nodes stop <node-id>
-    bpm nodes remove --all <node-id>
+    sudo bpm nodes remove --all <node-id>
     ```
 
     # Usage

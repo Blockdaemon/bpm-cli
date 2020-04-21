@@ -1,3 +1,9 @@
+# 0.10.?
+
+Bug fixes:
+
+* Add documentation and help to deal with file permission problems on Linux
+
 # 0.10.2
 
 Bug fixes:
