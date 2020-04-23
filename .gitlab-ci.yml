@@ -17,9 +17,12 @@ variables:
   # When using dind, it's wise to use the overlayfs driver for
   # improved performance.
   DOCKER_DRIVER: overlay2
+  BUCKET_NAME: blockdaemon-cli-bpm-docs
+  BUCKET_PATH: "gs://${BUCKET_NAME}"
+  SOURCE: https://raw.githubusercontent.com/Blockdaemon/bpm-cli/master/swagger.yaml
 
 services:
-- docker:18.09-dind
+  - docker:18.09-dind
 
 check:
   image: golangci/golangci-lint:v1.15
@@ -36,3 +39,13 @@ build:
     untracked: true
     paths:
       - bin/
+
+deploy_swagger_to_bucket:
+  image: google/cloud-sdk:latest
+  stage: .post
+  script:
+    - gcloud auth activate-service-account --key-file ${TERRAFORM_SA}
+    - curl ${SOURCE} | gsutil -h "Cache-Control:must-revalidate, max-age=600" cp - ${BUCKET_PATH}/swagger.yaml
+  when: always
+  only:
+    - master
