@@ -1,5 +1,9 @@
 # 0.10.?
 
+Development imrpovements:
+
+* Build process based on goreleaser. This creates tgz,dev,rpm and brew packages as well as checksums and gpg signatures
+
 Bug fixes:
 
 * Add documentation and help to deal with file permission problems on Linux

@@ -1,0 +1,50 @@
+project_name: bpm-cli
+before:
+  hooks:
+    - go mod download # Download once at the start because goreleaser builds in parallel (https://goreleaser.com/customization/)
+    - golangci-lint run --enable gofmt ./...
+    - go test -v ./...
+    - ./smoke-test.sh 1.1.0 # Testing compatibility with old plugins
+    - ./smoke-test.sh 1.2.0
+builds:
+- main: ./cmd/main.go
+  ldflags:
+    - -X main.version={{.Version}}
+  env:
+    - CGO_ENABLED=0
+  goos:
+    - darwin
+    - linux
+  goarch:
+    - amd64
+    - 386
+# archives: // Commented out because the defaults are just fine
+nfpms:
+  - formats:
+    - deb
+    - rpm
+    vendor: Blockdaemon
+    homepage: https://blockdaemon.com
+    maintainer: Blockdaemon <support@blockdaemon.com>
+    description: Blockchain Package Manager. Deploy, maintain, and upgrade blockchain nodes on your own infrastructure.
+    license: Apache 2.0
+    recommends:
+      - docker-ce
+brews:
+  - gitlab:
+      owner: jonaspf2
+      name: bpm-cli-brew-tap
+    homepage: https://blockdaemon.com
+    description: Blockchain Package Manager. Deploy, maintain, and upgrade blockchain nodes on your own infrastructure.
+  
+
+
+# checksum: // Commented out because the defaults are just fine
+signs:
+  - artifacts: checksum
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'

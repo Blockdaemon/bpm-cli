@@ -2,3 +2,4 @@ bpm
 bin/**
 /build
 .vscode/settings.json
+/dist
