@@ -19,6 +19,7 @@ builds:
     - amd64
     - 386
 # archives: // Commented out because the defaults are just fine
+# checksum: // Commented out because the defaults are just fine
 nfpms:
   - formats:
     - deb
@@ -36,10 +37,6 @@ brews:
       name: bpm-cli-brew-tap
     homepage: https://blockdaemon.com
     description: Blockchain Package Manager. Deploy, maintain, and upgrade blockchain nodes on your own infrastructure.
-  
-
-
-# checksum: // Commented out because the defaults are just fine
 signs:
   - artifacts: checksum
 changelog:
@@ -48,3 +45,7 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
+release:
+  github:
+    owner: blockdaemon
+    name: bpm-cli
