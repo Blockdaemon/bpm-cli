@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
+	"go.blockdaemon.com/bpm/sdk/pkg/plugin"
 	"time"
 )
 

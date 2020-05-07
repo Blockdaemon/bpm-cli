@@ -8,13 +8,13 @@ import (
 
 	"path/filepath"
 
-	"github.com/Blockdaemon/bpm/pkg/command"
-	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/Blockdaemon/bpm/pkg/pbr"
-	pkgversion "github.com/Blockdaemon/bpm/pkg/version"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"go.blockdaemon.com/bpm/cli/pkg/command"
+	"go.blockdaemon.com/bpm/cli/pkg/config"
+	"go.blockdaemon.com/bpm/cli/pkg/pbr"
+	pkgversion "go.blockdaemon.com/bpm/cli/pkg/version"
 )
 
 const (

@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
+	"go.blockdaemon.com/bpm/cli/pkg/command"
 )
 
 // newInstallCmd downloads and install a plugin from the PBR to the plugins directory

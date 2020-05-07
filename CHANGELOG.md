@@ -3,6 +3,8 @@
 Development imrpovements:
 
 * Build process based on goreleaser. This creates tgz,dev,rpm and brew packages as well as checksums and gpg signatures
+* Change project location to `go.blockdaemon.com/bpm/cli` which redirects to the actual repository
+* Upgrade to bpm-sdk v0.13.0
 
 Bug fixes:
 

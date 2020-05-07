@@ -577,7 +577,7 @@ info:
 
     * Temporary docker issues can sometimes be resolved by removing all containers (`bpm nodes remove --runtime <node-id>`) followed by starting them again `bpm nodes start <node-id>`.
 
-    Please report any issues to [Github](https://github.com/Blockdaemon/bpm-cli/issues) or contact [support@blockdaemon.com](mailto:support@blockdaemon.com).
+    Please report any issues to [Github](https://go.blockdaemon.com/bpm/cli-cli/issues) or contact [support@blockdaemon.com](mailto:support@blockdaemon.com).
 
     # Architecture Considerations
 

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/Blockdaemon/bpm-sdk/pkg/fileutil"
-	"github.com/Blockdaemon/bpm-sdk/pkg/node"
-	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
-	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/taion809/haikunator"
+	"go.blockdaemon.com/bpm/cli/pkg/config"
+	"go.blockdaemon.com/bpm/sdk/pkg/fileutil"
+	"go.blockdaemon.com/bpm/sdk/pkg/node"
+	"go.blockdaemon.com/bpm/sdk/pkg/plugin"
 )
 
 // ConfigureHelp provides the logic for the `configure` command without parameters

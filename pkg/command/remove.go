@@ -3,9 +3,9 @@ package command
 import (
 	"fmt"
 
-	"github.com/Blockdaemon/bpm-sdk/pkg/node"
-	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
-	bpmconfig "github.com/Blockdaemon/bpm/pkg/config"
+	bpmconfig "go.blockdaemon.com/bpm/cli/pkg/config"
+	"go.blockdaemon.com/bpm/sdk/pkg/node"
+	"go.blockdaemon.com/bpm/sdk/pkg/plugin"
 )
 
 // Remove removes the node or parts of it
