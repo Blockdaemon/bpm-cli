@@ -1,6 +1,6 @@
-# 0.10.?
+# 0.10.4
 
-Development imrpovements:
+Development improvements:
 
 * Build process based on goreleaser. This creates tgz,dev,rpm and brew packages as well as checksums and gpg signatures
 
