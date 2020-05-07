@@ -32,7 +32,7 @@ nfpms:
       - docker-ce
 brews:
   - gitlab:
-      owner: jonaspf2
+      owner: blockdaemon
       name: bpm-cli-brew-tap
     homepage: https://blockdaemon.com
     description: Blockchain Package Manager. Deploy, maintain, and upgrade blockchain nodes on your own infrastructure.
