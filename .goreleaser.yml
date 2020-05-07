@@ -46,6 +46,6 @@ changelog:
     - '^docs:'
     - '^test:'
 release:
-  github:
+  gitlab:
     owner: blockdaemon
     name: bpm-cli
