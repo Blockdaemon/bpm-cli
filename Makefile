@@ -34,6 +34,10 @@ pre-release:
 	@ cat CHANGELOG.md
 	@ read -p "Press enter to continue if the changelog looks ok. CTRL+C to abort."
 
+.PHONY: dev-release
+dev-release: check
+	goreleaser --snapshot --skip-publish --rm-dist
+
 .PHONY: release
 release: pre-release check
 	# tag it
