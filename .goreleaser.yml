@@ -34,7 +34,7 @@ nfpms:
 brews:
   - gitlab:
       owner: blockdaemon
-      name: bpm-cli-brew-tap
+      name: homebrew-tap
     homepage: https://blockdaemon.com
     description: Blockchain Package Manager. Deploy, maintain, and upgrade blockchain nodes on your own infrastructure.
 signs:
