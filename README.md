@@ -31,7 +31,7 @@ Make sure Docker is running, otherwise the tests will fail.
 
 To build during development without creating a version or publishing binaries, run:
 
-  make dev-release
+    make dev-release
 
 ## Releasing a new version
 
@@ -39,7 +39,7 @@ Make sure Docker is running, otherwise the tests will fail.
 
 You need the Blockdaemon release GPG key imported into your GPG keyring.
 
-  make version=<VERSION> release
+    make version=<VERSION> release
 
 `<VERSION>` needs to be a valid [semantic version](https://semver.org/). Do **not prefix with `v`**, the script does that automatically.
 
