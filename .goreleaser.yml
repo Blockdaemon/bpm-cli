@@ -34,7 +34,8 @@ brews:
     homepage: https://blockdaemon.com
     description: Blockchain Package Manager. Deploy, maintain, and upgrade blockchain nodes on your own infrastructure.
 signs:
-  - artifacts: checksum
+  - artifacts: all
+    args: ["-u", "F08C9DBB7215EC0FBC887A9E30F518E8C905E87B", "--output", "${signature}", "--detach-sign", "${artifact}"]
 changelog:
   sort: asc
   filters:
