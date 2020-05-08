@@ -7,6 +7,12 @@ Further reading:
 * End-user documentation: https://cli.bpm.docs.blockdaemon.com/
 * Developer documentation: https://sdk.bpm.docs.blockdaemon.com/
 
+# Contributing
+
+Pleaes use [conventional commits](https://www.conventionalcommits.org) for you commit messages. This will help us in the future to auto-generate changelogs.
+
+New features should be developed in a branch and merged after a code review.
+
 # Building from source
 
 ## Requirements
@@ -21,10 +27,20 @@ Make sure you have the following tools:
 
 ## Building during development
 
+Make sure Docker is running, otherwise the tests will fail.
+
 To build during development without creating a version or publishing binaries, run:
 
-  goreleaser --snapshot --skip-publish --rm-dist
+  make dev-release
 
 ## Releasing a new version
 
-1. Check that `CHANGELOG.md` is up-to-date
+Make sure Docker is running, otherwise the tests will fail.
+
+You need the Blockdaemon release GPG key imported into your GPG keyring.
+
+  make version=<VERSION> release
+
+`<VERSION>` needs to be a valid [semantic version](https://semver.org/). Do **not prefix with `v`**, the script does that automatically.
+
+
