@@ -2,10 +2,6 @@ project_name: bpm-cli
 before:
   hooks:
     - go mod download # Download once at the start because goreleaser builds in parallel (https://goreleaser.com/customization/)
-    - golangci-lint run --enable gofmt ./...
-    - go test -v ./...
-    - ./smoke-test.sh 1.1.0 # Testing compatibility with old plugins
-    - ./smoke-test.sh 1.2.0
 builds:
 - main: ./cmd/main.go
   ldflags:
