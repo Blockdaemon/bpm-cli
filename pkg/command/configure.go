@@ -81,12 +81,17 @@ func (p *CmdContext) Configure(pluginName string, name string, strParameters map
 	}
 
 	if err := p.validateNode(currentNode); err != nil {
-		// If validatation failed we remove the node again
+		// If validatation failed, we remove the node again
 		return currentNode.Remove()
 	}
 
 	err = p.initializeNode(currentNode)
 	if err != nil {
+		// If initialization failed, we remove the node again
+		if errRemove := currentNode.Remove(); errRemove != nil {
+			// Cannot return the error because that would shadow the orginal error. Instead we just print it out.
+			fmt.Printf("Cannot remove misconfigured node %q: %s\n", currentNode.ID, errRemove)
+		}
 		return err
 	}
 
