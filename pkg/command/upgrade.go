@@ -3,9 +3,9 @@ package command
 import (
 	"fmt"
 
-	"github.com/Blockdaemon/bpm-sdk/pkg/node"
-	"github.com/Blockdaemon/bpm-sdk/pkg/plugin"
-	"github.com/Blockdaemon/bpm/pkg/config"
+	"go.blockdaemon.com/bpm/cli/pkg/config"
+	"go.blockdaemon.com/bpm/sdk/pkg/node"
+	"go.blockdaemon.com/bpm/sdk/pkg/plugin"
 )
 
 func (p *CmdContext) Upgrade(nodeName string) error {

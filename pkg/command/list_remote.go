@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Blockdaemon/bpm/pkg/pbr"
 	"github.com/kataras/tablewriter"
+	"go.blockdaemon.com/bpm/cli/pkg/pbr"
 )
 
 // Search searches the registry for plugins

@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Blockdaemon/bpm/pkg/config"
-	"github.com/Blockdaemon/bpm/pkg/manager"
-	"github.com/Blockdaemon/bpm/pkg/pbr"
+	"go.blockdaemon.com/bpm/cli/pkg/config"
+	"go.blockdaemon.com/bpm/cli/pkg/manager"
+	"go.blockdaemon.com/bpm/cli/pkg/pbr"
 )
 
 func (p *CmdContext) addPluginToManifest(pluginName string) error {

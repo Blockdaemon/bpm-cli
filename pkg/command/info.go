@@ -3,7 +3,7 @@ package command
 import (
 	"fmt"
 
-	"github.com/Blockdaemon/bpm/pkg/pbr"
+	"go.blockdaemon.com/bpm/cli/pkg/pbr"
 )
 
 // Info prints information about a particular plugin

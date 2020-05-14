@@ -3,9 +3,9 @@ package cli
 import (
 	"fmt"
 
-	sdkplugin "github.com/Blockdaemon/bpm-sdk/pkg/plugin"
-	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
+	"go.blockdaemon.com/bpm/cli/pkg/command"
+	sdkplugin "go.blockdaemon.com/bpm/sdk/pkg/plugin"
 )
 
 func newConfigureCmd(cmdContext command.CmdContext) *cobra.Command {

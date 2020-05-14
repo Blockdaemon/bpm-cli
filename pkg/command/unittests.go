@@ -2,7 +2,7 @@ package command
 
 import (
 	"fmt"
-	"github.com/Blockdaemon/bpm/pkg/config"
+	"go.blockdaemon.com/bpm/cli/pkg/config"
 	"net/http"
 	"net/http/httptest"
 	"os"

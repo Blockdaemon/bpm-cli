@@ -3,8 +3,8 @@ package cli
 import (
 	"fmt"
 
-	"github.com/Blockdaemon/bpm/pkg/command"
 	"github.com/spf13/cobra"
+	"go.blockdaemon.com/bpm/cli/pkg/command"
 )
 
 func newRemoveCmd(cmdContext command.CmdContext) *cobra.Command {

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Blockdaemon/bpm-sdk/pkg/node"
-	"github.com/Blockdaemon/bpm/pkg/config"
 	"github.com/kataras/tablewriter"
+	"go.blockdaemon.com/bpm/cli/pkg/config"
+	"go.blockdaemon.com/bpm/sdk/pkg/node"
 )
 
 // Status returns the status of a particular node

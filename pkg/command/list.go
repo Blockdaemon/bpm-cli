@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Blockdaemon/bpm/pkg/pbr"
 	"github.com/kataras/tablewriter"
+	"go.blockdaemon.com/bpm/cli/pkg/pbr"
 )
 
 // List prints a list of the curreently installed plugins

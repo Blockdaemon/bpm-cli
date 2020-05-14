@@ -4,7 +4,7 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/Blockdaemon/bpm/pkg/cli"
+	"go.blockdaemon.com/bpm/cli/pkg/cli"
 )
 
 // Set on compile: -ldflags "-X main.version=dev"
