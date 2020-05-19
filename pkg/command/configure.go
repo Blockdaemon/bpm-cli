@@ -178,5 +178,9 @@ func (p *CmdContext) initializeNode(currentNode node.Node) error {
 	}
 
 	// Config
-	return p.execCmd(currentNode, "create-configurations")
+	if err := p.execCmd(currentNode, "create-configurations"); err != nil {
+		return err
+	}
+
+	return nil
 }
