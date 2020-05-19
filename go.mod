@@ -13,9 +13,10 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
 	github.com/taion809/haikunator v0.0.0-20150324135039-4e414e676fd1
-	go.blockdaemon.com/bpm/sdk v0.13.0
+	go.blockdaemon.com/bpm/sdk v0.14.0
 	golang.org/x/net v0.0.0-20190912160710-24e19bdeb0f2 // indirect
 	golang.org/x/sys v0.0.0-20200501145240-bc7a7d42d5c3 // indirect
 	golang.org/x/tools/gopls v0.3.1 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
+

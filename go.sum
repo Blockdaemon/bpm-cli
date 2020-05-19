@@ -98,6 +98,8 @@ go.blockdaemon.com/bpm/sdk v0.12.1-0.20200507145233-9730f2d51cc3 h1:rGhrfPYNfenj
 go.blockdaemon.com/bpm/sdk v0.12.1-0.20200507145233-9730f2d51cc3/go.mod h1:B2xf0w0ZXvndu2KCo4zvawkg2M0FJb+g3cXZ0bQDqVc=
 go.blockdaemon.com/bpm/sdk v0.13.0 h1:JNEdQ6fZPugjNw5r/qeeR+Isi0XUcxO1ojAeNjl6uuA=
 go.blockdaemon.com/bpm/sdk v0.13.0/go.mod h1:B2xf0w0ZXvndu2KCo4zvawkg2M0FJb+g3cXZ0bQDqVc=
+go.blockdaemon.com/bpm/sdk v0.14.0 h1:3PhqCAQdrZFnbFlqdUMioOTV5EkVzkOi/4sQPBzrgME=
+go.blockdaemon.com/bpm/sdk v0.14.0/go.mod h1:tjtqQuR57qWhSGeBhxoXbP+C+4jx0WD4dv8mVuByys4=
 golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
