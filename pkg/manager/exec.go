@@ -9,12 +9,12 @@ import (
 )
 
 // ExecCmd runs a particular command with this plugin
-func ExecCmd(debug bool, pluginFilename string, args ...string) error {
+func ExecCmd(debug bool, executable string, args ...string) error {
 	if debug {
-		fmt.Printf("Running: %s %s\n", pluginFilename, strings.Join(args, " "))
+		fmt.Printf("Running: %s %s\n", executable, strings.Join(args, " "))
 	}
 
-	cmd := exec.Command(pluginFilename, args...)
+	cmd := exec.Command(executable, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
@@ -22,12 +22,12 @@ func ExecCmd(debug bool, pluginFilename string, args ...string) error {
 }
 
 // ExecCmdCapture runs a particular command with this plugin and returns it's output if succefull
-func ExecCmdCapture(debug bool, pluginFilename string, args ...string) (string, error) {
+func ExecCmdCapture(debug bool, executable string, args ...string) (string, error) {
 	if debug {
-		fmt.Printf("Running: %s %s\n", pluginFilename, strings.Join(args, " "))
+		fmt.Printf("Running: %s %s\n", executable, strings.Join(args, " "))
 	}
 
-	cmd := exec.Command(pluginFilename, args...)
+	cmd := exec.Command(executable, args...)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr

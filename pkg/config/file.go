@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 )
 
-// DeleteFile delets a file
-func DeleteFile(path, filename string) error {
-	return os.Remove(filepath.Join(path, filename))
+// DeleteFileOrDirectory delets a file or directory
+func DeleteFileOrDirectory(path, filename string) error {
+	return os.RemoveAll(filepath.Join(path, filename))
 }
 
 // FileExists checks if a file exists in a particular path

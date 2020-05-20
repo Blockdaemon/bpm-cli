@@ -12,7 +12,7 @@ func (p *CmdContext) Uninstall(pluginName string) error {
 	}
 
 	// Delete the plugin
-	if err := config.DeleteFile(config.PluginsDir(p.HomeDir), pluginName); err != nil {
+	if err := config.DeleteFileOrDirectory(config.PluginsDir(p.HomeDir), pluginName); err != nil {
 		return err
 	}
 
