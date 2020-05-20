@@ -10,7 +10,6 @@ import (
 	"go.blockdaemon.com/bpm/cli/pkg/version"
 	"go.blockdaemon.com/bpm/sdk/pkg/node"
 	"go.blockdaemon.com/bpm/sdk/pkg/plugin"
-
 	"gopkg.in/yaml.v2"
 )
 
@@ -89,12 +88,24 @@ func (p *CmdContext) execCmd(n node.Node, cmd string) error {
 	return manager.ExecCmd(p.Debug, pluginFilename, cmd, n.NodeFile())
 }
 
-func (p *CmdContext) getMeta(pluginName string) (plugin.MetaInfo, error) {
+// getMetaFromManifest returns the meta information for a plugin from the manifest
+//
+// This is typically faster than getMetaFromExcutable because we have the data in memory already
+func (p *CmdContext) getMetaFromManifest(pluginName string) (plugin.MetaInfo, error) {
+	metaInfo, ok := p.Manifest.Plugins[pluginName]
+	if !ok {
+		return plugin.MetaInfo{}, fmt.Errorf("could not find %q in the manifest, is it installed?", pluginName)
+	}
+
+	return metaInfo, nil
+}
+
+// getMetaFromManifest returns the meta information for a plugin by calling the `meta` command on the plugin executable
+func (p *CmdContext) getMetaFromExecutable(executablePath string) (plugin.MetaInfo, error) {
 	meta := plugin.MetaInfo{}
-	pluginFilename := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
 
 	// Get parameter options
-	output, err := manager.ExecCmdCapture(p.Debug, pluginFilename, "meta")
+	output, err := manager.ExecCmdCapture(p.Debug, executablePath, "meta")
 	if err != nil {
 		return meta, err
 	}

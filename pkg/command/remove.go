@@ -14,7 +14,7 @@ func (p *CmdContext) Remove(nodeName string, all bool, data bool, config bool, r
 	if err != nil {
 		return err
 	}
-	meta, err := p.getMeta(n.PluginName)
+	meta, err := p.getMetaFromManifest(n.PluginName)
 	if err != nil {
 		return err
 	}
