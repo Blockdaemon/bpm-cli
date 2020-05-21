@@ -13,7 +13,6 @@ builds:
     - linux
   goarch:
     - amd64
-    - 386
 # archives: // Commented out because the defaults are just fine
 # checksum: // Commented out because the defaults are just fine
 nfpms:
