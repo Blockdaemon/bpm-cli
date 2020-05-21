@@ -118,7 +118,7 @@ func (p *CmdContext) createNode(pluginName string, name string, strParameters ma
 }
 
 func (p *CmdContext) validateNode(currentNode node.Node) error {
-	meta, err := p.getMeta(currentNode.PluginName)
+	meta, err := p.getMetaFromManifest(currentNode.PluginName)
 	if err != nil {
 		return err
 	}
@@ -133,7 +133,7 @@ func (p *CmdContext) validateNode(currentNode node.Node) error {
 }
 
 func (p *CmdContext) initializeNode(currentNode node.Node) error {
-	meta, err := p.getMeta(currentNode.PluginName)
+	meta, err := p.getMetaFromManifest(currentNode.PluginName)
 	if err != nil {
 		return err
 	}
@@ -178,5 +178,9 @@ func (p *CmdContext) initializeNode(currentNode node.Node) error {
 	}
 
 	// Config
-	return p.execCmd(currentNode, "create-configurations")
+	if err := p.execCmd(currentNode, "create-configurations"); err != nil {
+		return err
+	}
+
+	return nil
 }

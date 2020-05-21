@@ -13,8 +13,9 @@ check: test lint
 .PHONY: test
 test:
 	go test -v ./...
-	./smoke-test.sh 1.1.0 # Testing compatibility with old plugins
-	./smoke-test.sh 1.2.0
+	./smoke-test.sh polkadot 1.1.0 # Testing compatibility with old plugins
+	./smoke-test.sh polkadot 1.2.0
+	./smoke-test.sh tezos 1.2.0
 
 .PHONY: lint
 lint:

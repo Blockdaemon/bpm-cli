@@ -19,7 +19,7 @@ func (p *CmdContext) Info(pluginName string) error {
 	fmt.Printf("Description:  %s\n", versions[0].Package.Description)
 
 	if p.isInstalled(pluginName) {
-		meta, err := p.getMeta(pluginName)
+		meta, err := p.getMetaFromManifest(pluginName)
 		if err != nil {
 			return err
 		}

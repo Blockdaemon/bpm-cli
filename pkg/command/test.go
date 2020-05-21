@@ -15,7 +15,7 @@ func (p *CmdContext) Test(nodeName string) error {
 	}
 
 	// Check if tests are supported
-	meta, err := p.getMeta(n.PluginName)
+	meta, err := p.getMetaFromManifest(n.PluginName)
 	if err != nil {
 		return err
 	}

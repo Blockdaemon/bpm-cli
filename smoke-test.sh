@@ -1,12 +1,13 @@
 #!/bin/bash
 # This is a simple test that runs through all bpm commands.
 
-if [ -z "$1" ]
+if [[ -z "$1" || -z "$2" ]]
   then
-    echo "USAGE $0 <polkadot version>"
+    echo "USAGE $0 <plugin> <version>"
 fi
 
-VERSION=$1
+PLUGIN=$1
+VERSION=$2
 
 basedir=./build/bpm
 
@@ -48,10 +49,10 @@ setup
 
 go run cmd/main.go --yes --base-dir $basedir version
 go run cmd/main.go --yes --base-dir $basedir packages list
-go run cmd/main.go --yes --base-dir $basedir packages search polkadot
-go run cmd/main.go --yes --base-dir $basedir packages install polkadot $VERSION
-go run cmd/main.go --yes --base-dir $basedir packages info polkadot
-go run cmd/main.go --yes --base-dir $basedir nodes configure polkadot --name test-node --skip-upgrade-check
+go run cmd/main.go --yes --base-dir $basedir packages search $PLUGIN
+go run cmd/main.go --yes --base-dir $basedir packages install $PLUGIN $VERSION
+go run cmd/main.go --yes --base-dir $basedir packages info $PLUGIN
+go run cmd/main.go --yes --base-dir $basedir nodes configure $PLUGIN --name test-node --skip-upgrade-check
 checkStatus "stopped"
 go run cmd/main.go --yes --base-dir $basedir nodes start test-node
 checkStatus "running"
@@ -63,6 +64,6 @@ go run cmd/main.go --yes --base-dir $basedir nodes stop test-node
 go run cmd/main.go --yes --base-dir $basedir nodes remove --config test-node
 go run cmd/main.go --yes --base-dir $basedir nodes remove --data test-node
 go run cmd/main.go --yes --base-dir $basedir nodes remove --all test-node
-go run cmd/main.go --yes --base-dir $basedir packages uninstall polkadot
+go run cmd/main.go --yes --base-dir $basedir packages uninstall $PLUGIN
 
 echo ">>> DONE, ALL TESTS RAN SUCCESSFUL"
