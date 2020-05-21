@@ -8,11 +8,14 @@ build:
 	GOOS=windows GOARCH=amd64 $(BUILD_CMD)
 
 .PHONY: check
-check: test lint
+check: unit-test lint
 
-.PHONY: test
-test:
+.PHONY: unit-test
+unit-test:
 	go test -v ./...
+
+.PHONY: smoke-test
+smoke-test:
 	./smoke-test.sh polkadot 1.1.0 # Testing compatibility with old plugins
 	./smoke-test.sh polkadot 1.2.0
 	./smoke-test.sh tezos 1.2.0
@@ -20,7 +23,6 @@ test:
 .PHONY: lint
 lint:
 	golangci-lint run --enable gofmt ./...
-.PHONY: build
 
 .PHONY: pre-release
 pre-release: 
@@ -36,11 +38,11 @@ pre-release:
 	@ read -p "Press enter to continue if the changelog looks ok. CTRL+C to abort."
 
 .PHONY: dev-release
-dev-release: check
+dev-release: smoke-test check
 	goreleaser --snapshot --skip-publish --rm-dist
 
 .PHONY: release
-release: pre-release check
+release: pre-release smoke-test check
 	# tag it
 	git tag v$(version)
 	git push origin v$(version)
