@@ -1,3 +1,14 @@
+# 0.11.0
+
+### Bug Fixes
+
+* remove nodes that failed during configuration ([dd9458b](https://gitlab.com/Blockdaemon/bpm-cli/commit/dd9458be69704ec9f2bd6e5f7faa24f1b8c7b926))
+
+### Features
+
+* support bpm-sdk protocol version 1.2.0 ([aa26d73](https://gitlab.com/Blockdaemon/bpm-cli/commit/aa26d73a89c6bddb17449cd167d369faa60cff0f))
+* support plugins packaged in tar.gz ([f8c1925](https://gitlab.com/Blockdaemon/bpm-cli/commit/f8c192590a3d974ea0f102695d710b0026c88769))
+
 # 0.10.4
 
 Development improvements:
