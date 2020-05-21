@@ -110,16 +110,6 @@ func (p *CmdContext) createNode(pluginName string, name string, strParameters ma
 	n.BoolParameters = boolParameters
 	n.Version = p.getInstalledVersion(pluginName)
 
-	// Only temporary until we find a better solution to distribute the certs
-	if config.FileExists(p.HomeDir, "beats") {
-		n.Collection.Host = "dev-1.logstash.blockdaemon.com:5044"
-		n.Collection.Cert = "~/.bpm/beats/beat.crt"
-		n.Collection.CA = "~/.bpm/beats/ca.crt"
-		n.Collection.Key = "~/.bpm/beats/beat.key"
-	} else {
-		fmt.Printf("\nNo credentials found in %q, skipping configuration of Blockdaemon monitoring. Please configure your own monitoring in the node configuration files.\n\n", filepath.Join(p.HomeDir, "beats"))
-	}
-
 	if err := n.Save(); err != nil {
 		return n, err
 	}
@@ -164,11 +154,26 @@ func (p *CmdContext) initializeNode(currentNode node.Node) error {
 		}
 	}
 
+	// Set up runtime environment
+	if meta.ProtocolVersionGreaterEqualThan("1.2.0") {
+		if err := p.execCmd(currentNode, "set-up-environment"); err != nil {
+			return err
+		}
+	} else {
+		if p.Debug {
+			fmt.Printf("Skipping 'set-up-environment' because the package's protocol version doesn't support it: %s\n", meta.ProtocolVersion)
+		}
+	}
+
 	// Identity
 	if meta.Supports(plugin.SupportsIdentity) {
 		err = p.execCmd(currentNode, "create-identity")
 		if err != nil {
 			return err
+		}
+	} else {
+		if p.Debug {
+			fmt.Printf("Skipping 'create-identity' because the package doesn't support it\n")
 		}
 	}
 

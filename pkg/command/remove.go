@@ -14,6 +14,10 @@ func (p *CmdContext) Remove(nodeName string, all bool, data bool, config bool, r
 	if err != nil {
 		return err
 	}
+	meta, err := p.getMeta(n.PluginName)
+	if err != nil {
+		return err
+	}
 
 	if config || all {
 		if err := p.execCmd(n, "remove-config"); err != nil {
@@ -34,10 +38,6 @@ func (p *CmdContext) Remove(nodeName string, all bool, data bool, config bool, r
 	}
 
 	if identity || all {
-		meta, err := p.getMeta(n.PluginName)
-		if err != nil {
-			return err
-		}
 		if meta.Supports(plugin.SupportsIdentity) {
 			if err := p.execCmd(n, "remove-identity"); err != nil {
 				return err
@@ -48,6 +48,13 @@ func (p *CmdContext) Remove(nodeName string, all bool, data bool, config bool, r
 	}
 
 	if all {
+		// Tear down runtime environment
+		if meta.ProtocolVersionGreaterEqualThan("1.2.0") {
+			if err := p.execCmd(n, "tear-down-environment"); err != nil {
+				return err
+			}
+		}
+
 		fmt.Printf("\nRemoving node %q\n", nodeName)
 		if err := n.Remove(); err != nil {
 			return err
