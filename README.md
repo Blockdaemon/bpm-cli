@@ -43,4 +43,12 @@ You need the Blockdaemon release GPG key imported into your GPG keyring.
 
 `<VERSION>` needs to be a valid [semantic version](https://semver.org/). Do **not prefix with `v`**, the script does that automatically.
 
+# Writing documentation
 
+The documentation is built using [redoc](https://redocly.github.io/redoc/) which renders and openapi/swagger file. Most of the text is stored in the `docs/documentation.md` file.
+
+In order to render the documentation locally while working on it, run:
+
+    make serve-docs
+
+and navigate to http://localhost:8080 to see a live rendering of the documentation.

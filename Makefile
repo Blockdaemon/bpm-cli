@@ -24,6 +24,11 @@ smoke-test:
 lint:
 	golangci-lint run --enable gofmt ./...
 
+# Install redoc-cli using: npm install -g redoc-cli
+.PHONY: serve-docs
+serve-docs:
+	redoc-cli serve --watch swagger.yaml
+
 .PHONY: pre-release
 pre-release: 
 	@ test -n "$(version)" || (echo 'ERROR: version is not set. Call like this: make version=1.14.0-rc1 release'; exit 1) 
