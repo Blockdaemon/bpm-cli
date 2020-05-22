@@ -29,6 +29,9 @@ func (p *CmdContext) InstallFile(pluginName string, sourcePath string) error {
 	p.printfDebug("Installing package %q from file %q\n", pluginName, sourcePath)
 
 	targetPath := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
+	p.printfDebug("Remove previously installed version of there is one")
+	p.clearInstallationDestination(targetPath)
+
 	if err := config.CopyFile(sourcePath, targetPath); err != nil {
 		return err
 	}
@@ -55,6 +58,19 @@ func (p *CmdContext) InstallLatest(pluginName string) error {
 	}
 
 	return p.Install(pluginName, latestVersion)
+}
+
+func (p *CmdContext) clearInstallationDestination(dstPath string) error {
+	// If something (file or directory!) already exists, delete it
+	exists, err := fileutil.FileExists(dstPath)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return os.RemoveAll(dstPath)
+	}
+
+	return nil
 }
 
 // Install installs a particular version of a plugin
@@ -96,13 +112,8 @@ func (p *CmdContext) Install(pluginName, versionToInstall string) error {
 
 		dstPath := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
 
-		// If something (file or directory!) already exists, delete it
-		exists, err := fileutil.FileExists(dstPath)
-		if err != nil {
+		if err := p.clearInstallationDestination(dstPath); err != nil {
 			return err
-		}
-		if exists {
-			os.RemoveAll(dstPath)
 		}
 
 		if err := os.Mkdir(dstPath, os.FileMode(0755)); err != nil {
