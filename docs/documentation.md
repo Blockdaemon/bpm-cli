@@ -92,8 +92,8 @@ brew install bpm-cli
 **Note:** In this section, you will need to replace values for placeholder found between `< >`:
 
 * `<BPM_URL>` with :
-    * Linux - https://runner-test.sfo2.digitaloceanspaces.com/bpm-0.7.0-linux-amd64
-    * OSX - https://runner-test.sfo2.digitaloceanspaces.com/bpm-0.7.0-darwin-amd64
+    * Linux - `https://runner-test.sfo2.digitaloceanspaces.com/bpm-<VERSION>-linux-amd64`
+    * OSX - `https://runner-test.sfo2.digitaloceanspaces.com/bpm-<VERSION>-darwin-amd64`
 * `<OS>` with `darwin` or `linux` depending on your operating system.
 * `<VERSION>` with the BPM version, e.g. `0.7.0`
 
@@ -389,10 +389,14 @@ Global Flags:
 For now, let's remove the whole node:
 
 ```bash
-nodes remove --all <node-id>
+bpm nodes remove <node-id> --all
 ```
 
 **Linux only:** Depending on the package, it is possible that the data created is inaccesible by your user. If that's the case you will get `permission denied` errors during the removal. To avoid the errors, run the bpm command using `sudo`.
+
+```bash
+sudo bpm nodes remove <node-id> --all
+```
 
 # Usage
 
@@ -529,9 +533,9 @@ The BPM CLI sometimes asks for user confirmation. To use it in an automated non-
 
 * If a `bpm nodes start` command fails there is a good chance that something went wrong with the docker containers. Use the typical docker commands like `docker ps` or `docker logs` to see if all containers are running and whether there are any errors in the logs.
 
-* Temporary docker issues can sometimes be resolved by removing all containers (`bpm nodes remove --runtime <node-id>`) followed by starting them again `bpm nodes start <node-id>`.
+* Temporary docker issues can sometimes be resolved by removing all containers (`bpm nodes remove <node-id> --runtime`) followed by starting them again `bpm nodes start <node-id>`.
 
-Please report any issues to [Github](https://go.blockdaemon.com/bpm/cli-cli/issues) or contact [support@blockdaemon.com](mailto:support@blockdaemon.com).
+Please report any issues to [support@blockdaemon.com](mailto:support@blockdaemon.com).
 
 # Logs and Monitoring
 
@@ -614,14 +618,14 @@ To summarize, use the following commands to manage the node:
 ```bash
 bpm nodes start <node-id>
 bpm nodes stop <node-id>
-sudo bpm nodes remove --all <node-id>
+bpm nodes remove <node-id> --all
 ```
 
 ## Polkadot
 
 [Polkadot](https://polkadot.network/) is a sharded protocol that enables blockchain networks to operate together seamlessly
 
-See [Tutorial 2: Starting a Polkadot testnet node](#section/Tutorial-2:-Starting-a-Polkadot-testnet-node) for details on how to use the polkadot package.
+See [Tutorial 2: Starting a Polkadot testnet node](#section/Quickstart/Tutorial-2:-Starting-a-Polkadot-testnet-node) for details on how to use the polkadot package.
 
 ## Tezos
 
@@ -761,7 +765,7 @@ bpm nodes remove --help
 For now, let's remove the complete node:
 
 ```bash
-nodes remove --all <node-id>
+bpm nodes remove <node-id> --all
 ```
 
 !!! warning
