@@ -559,6 +559,373 @@ If you are interested in using the Blockdaemon monitoring services and need a mo
 
 # Packages
 
+## Celo
+
+[Celo](https://docs.celo.org/v/master/) is an ambitious staking protocol that hopes to solve issues with DPOS centralisation whilst also bringing financial services to those that are left out of the loop currently. Using the Celo Protocol there are 5 different types of nodes that make up the Celo ecosystem:
+
+- Validator (including proxy nodes)
+- Attestations (including attestation service node)
+- Fullnodes
+
+### Installing the Celo package
+In order to manage Celo nodes we will need to install the Celo package:
+
+```bash
+bpm packages install celo
+```
+
+Configuring Celo nodes require specific parameters when running the configure command. Run the configure command with `--help` to see the available parameters for Celo nodes. Note not all parameters are needed for each node type:
+
+```bash
+bpm nodes configure celo --help
+```
+
+### Configure a Celo Fullnode
+
+In order to configure a fullnode you will need to provide parameters to the configure command. These are the minimum parameters needed to configure a fullnode
+
+```
+--subtype string                  The type of node. Must be either validator, `proxy` or `fullnode` (default "fullnode")
+--network string                  Mainnet or baklava testnet (default "baklava")
+--networkid string                The current Celo network id
+--account string                  The account to send rewards to
+--bootnodes string                List of bootnodes to connect to
+```
+To view all available parameters run the configure command with `--help`:
+```bash
+bpm nodes configure celo --help
+```
+
+Configure the fullnode:
+```bash
+bpm nodes configure celo --subtype fullnode --network <network> --networkid <networkid> --account <account_address> --bootnodes "<enode_URLs>"
+```
+
+You should get an output similar to:
+```
+Writing file '/Users/blockdaemon/.bpm/nodes/small-water-3910/celo.dockercmd'
+Writing file '/Users/blockdaemon/.bpm/nodes/small-water-3910/configs/collector.env'
+
+Node with id "small-water-3910" has been initialized.
+
+To change the configuration, modify the files here:
+    /Users/blockdaemon/.bpm/nodes/small-water-3910
+To start the node, run:
+    bpm nodes start small-water-3910
+To see the status of configured nodes, run:
+    bpm nodes status
+```
+
+Start the fullnode with the provided command in the output above. 
+```bash
+bpm nodes start <node_id>
+```
+
+### Configure a Celo Validator Node
+
+When running a validator node you will first need to configure a proxy node.
+
+These are the minimum parameters needed to configure the proxy node:
+```
+--subtype string                  The type of node. Must be either validator, `proxy` or `fullnode` (default "fullnode")
+--network string                  Mainnet or baklava testnet (default "baklava")
+--networkid string                The current Celo network id
+--signer string                   The signer address
+--bootnodes string                List of bootnodes to connect to
+```
+
+To view all available parameters run the configure command with `--help`:
+```bash
+bpm nodes configure celo --help
+```
+
+Configure the proxy node:
+```bash
+bpm nodes configure celo --subtype proxy --network <network> --networkid <networkid> --signer <signer_address> --bootnodes "<enode_URLs>"
+```
+
+You should get an output similar to:
+```
+Writing file '/Users/blockdaemon/.bpm/nodes/damp-haze-2534/celo.dockercmd'
+Writing file '/Users/blockdaemon/.bpm/nodes/damp-haze-2534/configs/collector.env'
+
+Node with id "damp-haze-2534" has been initialized.
+
+To change the configuration, modify the files here:
+    /Users/blockdaemon/.bpm/nodes/damp-haze-2534
+To start the node, run:
+    bpm nodes start damp-haze-2534
+To see the status of configured nodes, run:
+    bpm nodes status
+```
+
+Start the proxy node with the provided command in the output above. 
+```bash
+bpm nodes start <node_id>
+```
+
+Next you will need to obtain the proxy enode url, the proxy ip, and your public ip in order to configure your validator.
+
+The proxy enode url can be found with the following command:
+```bash
+docker exec bpm-<node_id>-proxy geth --exec "admin.nodeInfo['enode'].split('//')[1].split('@')[0]" attach | tr -d '"'
+```
+
+The proxy ip can be found with the following command:
+```bash
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' bpm-<node_id>-proxy
+```
+
+Finally your public ip can be obtain with:
+```bash
+dig +short myip.opendns.com @resolver1.opendns.com
+```
+
+These are the minimum parameters needed to configure the validator node:
+```
+--subtype string                  The type of node. Must be either validator, `proxy` or `fullnode` (default "fullnode")
+--network string                  Mainnet or baklava testnet (default "baklava")
+--networkid string                The current Celo network id
+--signer string                   The signer address
+--keystore-file string            Location of the signer keystore json
+--keystore-pass string            The password for the keystore json
+--enode string                    The proxy enode id
+--proxy_external string           The external proxy ip
+--proxy_internal string           The internal proxy ip, use external if none
+--port string                     Port to listen to (default "30303")
+--bootnodes string                List of bootnodes to connect to
+```
+
+Now we are ready to configure our validator node:
+```bash
+bpm nodes configure celo --subtype validator --network <network> --networkid <networkid> --signer <signer_address> --keystore-file <path_to_keystore_file> --keystore-pass <path_to_keystore_password> --enode <proxy_enode> --proxy_internal <proxy_ip> --proxy_external <host_public_ip> --port <port> --bootnodes "<enode_URLs>"
+```
+Note: If both the proxy and validator are running on the same instance, you will need to change the port value for the validator to something other than 30303 since the proxy needs to communicate with the interweb.
+
+You should get an output similar to :
+```
+Writing file '/Users/blockdaemon/.bpm/nodes/snowy-morning-3844/celo.dockercmd'
+Writing file '/Users/blockdaemon/.bpm/nodes/snowy-morning-3844/configs/collector.env'
+Writing file '/Users/blockdaemon/.bpm/nodes/snowy-morning-3844/configs/keystore/validator.signer-<address>.json'
+Writing file '/Users/blockdaemon/.bpm/nodes/snowy-morning-3844/configs/.password.secret'
+
+Node with id "snowy-morning-3844" has been initialized.
+
+To change the configuration, modify the files here:
+    /Users/blockdaemon/.bpm/nodes/snowy-morning-3844
+To start the node, run:
+    bpm nodes start snowy-morning-3844
+To see the status of configured nodes, run:
+    bpm nodes status
+``` 
+
+Start the validator with the provided command in the output above.
+```bash
+bpm nodes start <node_id>
+```
+
+### Configure a Celo Attestation Node
+
+When running an attestation node you will also need to run an attestation-service node. First we will configure our attestation node.
+
+
+These are the minimum parameters needed to configure the attestation node:
+```
+--subtype string                  The type of node. Must be either validator, `proxy` or `fullnode` (default "fullnode")
+--network string                  Mainnet or baklava testnet (default "baklava")
+--networkid string                The current Celo network id
+--signer string                   The signer address
+--keystore-file string            Location of the signer keystore json
+--keystore-pass string            The password for the keystore json
+--bootnodes string                List of bootnodes to connect to
+```
+
+To view all available parameters run the configure command with `--help`:
+```bash
+bpm nodes configure celo --help
+```
+
+Configure the attestation node:
+```bash
+bpm nodes configure celo --subtype attestation-node --network <network> --networkid <networkid> --signer <signer_address> --keystore-file <path_to_keystore_file> --keystore-pass <path_to_keystore_password> --bootnodes "<enode_URLs>"
+```
+
+You should get an output similar to:
+```
+Writing file '/Users/blockdaemon/.bpm/nodes/wild-bird-8942/configs/.password.secret'
+Writing file '/Users/blockdaemon/.bpm/nodes/wild-bird-8942/celo.dockercmd'
+Writing file '/Users/blockdaemon/.bpm/nodes/wild-bird-8942/configs/collector.env'
+Writing file '/Users/blockdaemon/.bpm/nodes/wild-bird-8942/configs/keystore/attestation-node.signer.<address>.json'
+
+Node with id "wild-bird-8942" has been initialized.
+
+To change the configuration, modify the files here:
+    /Users/blockdaemon/.bpm/nodes/wild-bird-8942
+To start the node, run:
+    bpm nodes start wild-bird-8942
+To see the status of configured nodes, run:
+    bpm nodes status
+```
+
+Start the attestation node with the provided command in the output above.
+```bash
+bpm nodes start <node_id>
+```
+
+Before configuring the attestation-service node the attestation node needs to be fully synced.
+
+These are the minimum parameters needed to configure the attestation-service node:
+```
+--subtype string                  The type of node. Must be either validator, `proxy` or `fullnode` (default "fullnode")
+--network string                  Mainnet or baklava testnet (default "baklava")
+--networkid string                The current Celo network id
+--signer string                   The signer address
+--validator string                The validator address
+--node_url string                 Attestation node url, eg http://bpm-flower-pot-1234-attestattion-node:8545
+--db_user string                  Database user for attestation service postgres
+--db_password string              Database password for attestation service postgres
+--twilio_account_sid string       Twilio account SID for attesation service
+--twilio_auth_token string        Auth token for Twilio
+--twilio_service_sid string       Twilio messaging service SID for attestation services
+--port string                     Port to listen to (default "30303")
+```
+
+To view all available parameters run the configure command with `--help`:
+```bash
+bpm nodes configure celo --help
+```
+
+Configure the attestation-service node:
+```bash
+bpm nodes configure celo --subtype attestation-service --network <network> --networkid <networkid> --signer <signer_address> --validator <validator_address> --node_url http://bpm-<attestation_node_id>-attestation-node:8545 --db_user <user> --db_password <password> --twilio_service_sid <twilio_service_sid> --twilio_account_sid <twilio_account_sid> --twilio_auth_token <twilio_token> --port <port>
+```
+
+You hsould get an output similar to:
+```
+Writing file '/Users/blockdaemon/.bpm/nodes/sparkling-field-360/celo.dockercmd'
+Writing file '/Users/blockdaemon/.bpm/nodes/sparkling-field-360/configs/attestation-service.env'
+Writing file '/Users/blockdaemon/.bpm/nodes/sparkling-field-360/configs/postgres.env'
+
+Node with id "sparkling-field-360" has been initialized.
+
+To change the configuration, modify the files here:
+    /Users/blockdaemon/.bpm/nodes/sparkling-field-360
+To start the node, run:
+    bpm nodes start sparkling-field-360
+To see the status of configured nodes, run:
+    bpm nodes status
+```
+
+Start the attestation-service node with the provided command in the output above.
+```bash
+bpm nodes start <node_id>
+```
+
+Note your attestation-service node will show errors until your attenstation node is fully synced.
+
+#### Node status
+
+You can verify the status of all nodes by running the `status` command:
+
+```bash
+bpm nodes status
+```
+
+#### Starting and stopping a node
+
+To start the node, run the `node start` command. Replace `<node-id>` with the ID outputed by the `configure` or `status` command:
+
+```bash
+bpm nodes start <node-id>
+```
+
+You should get an output similar to:
+
+```
+Creating container 'bpm-solitary-bird-663-celoinit'
+Starting container 'bpm-solitary-bird-663-celoinit'
+Stopping container 'bpm-solitary-bird-663-celoinit'
+Removing container 'bpm-solitary-bird-663-celoinit'
+Creating container 'bpm-solitary-bird-663-filebeat'
+Starting container 'bpm-solitary-bird-663-filebeat'
+Creating container 'bpm-solitary-bird-663-fullnode'
+Starting container 'bpm-solitary-bird-663-fullnode'
+Creating container 'bpm-solitary-bird-663-collector'
+Starting container 'bpm-solitary-bird-663-collector'
+The node "solitary-bird-663" has been started.
+```
+
+This shows BPM creating and starting the Docker containers for Celo itself as well as monitoring agents.
+
+Verify the node status by running:
+
+```bash
+bpm nodes status
+```
+
+The node should now show up as `running`, similar to below:
+
+```
+        NODE NAME        | PACKAGE | STATUS
++------------------------+---------+---------+
+  solitary-bird-663      | celo    | running
+```
+
+To stop it temporarily, run:
+
+```bash
+bpm nodes stop <node-id>
+```
+
+#### Testing a node
+
+The nodes command allows you to test your running node. The tests being run are simple and should give you an indication if your node is running properly. Please allow the node to sync for a bit before running this command, this will ensure that you get the correct results.
+
+You can test your node by running the following command:
+```bash
+bpm nodes test <node_id>
+```
+
+You should get an output similar to:
+```
+testing container: bpm-<node_id>
+    Test [Container is running]   => true
+    Test [Peer Count]   => 19
+Total failed tests: 0
+Total passed tests: 2
+```
+
+#### Removing a node
+
+When removing a node you need to consider the following. A node consists of:
+
+1. Node configuration and secrets (e.g. accounts, passwords, private keys)
+2. Runtime (e.g. Docker networks and containers)
+3. Data (typically the parts of the Blockchain that have already been synced)
+
+Depending on the use-case it may be desirable to remove all or only parts of the node. For example:
+
+* In order to re-configure a node one might only want to remove the configuration but leave the data intact to avoid having to re-sync the Blockchain
+* If the node crashed due to an unexpected error it can make sense to remove the runtime and start it again but keep the configuration and data
+* If something went wrong during the initial sync it can help to remove the data and then start the node again to start syncing from scratch
+
+To support the above use-cases plus others we have allowed parameters/flags to be used with our `remove` command.
+
+You can view all the available parameters/flags by running the following BPM command:
+
+```bash
+bpm nodes remove --help
+```
+
+For now, let's remove the complete node:
+
+```bash
+bpm nodes remove <node-id> --all
+```
+
+!!! warning
+    By removing the whole node you will also remove the node identity. It's always advisable to backup the `~/.bpm/nodes/<node-id>` directory to a safe place before doing anything with the node.
+
 ## Parity
 
 [Parity](https://www.parity.io/ethereum/) is a fast and feature-rich multi-network Ethereum client.
@@ -718,7 +1085,7 @@ Starting container 'bpm-solitary-shadow-8810-collector'
 The node "solitary-shadow-8810" has been started.
 ```
 
-This shows BPM creating creating and starting the Docker containers for Tezos itself as well as monitoring agents.
+This shows BPM creating and starting the Docker containers for Tezos itself as well as monitoring agents.
 
 Verify the node status by running:
 
@@ -769,7 +1136,7 @@ bpm nodes remove <node-id> --all
 ```
 
 !!! warning
-    By removing the whole node you will also remove the node identity. It's always advisable to backup the `~/.bpm/noes/<node-id>` directory to a safe place before doing anything with the node.
+    By removing the whole node you will also remove the node identity. It's always advisable to backup the `~/.bpm/nodes/<node-id>` directory to a safe place before doing anything with the node.
 
 
 # Architecture Considerations
