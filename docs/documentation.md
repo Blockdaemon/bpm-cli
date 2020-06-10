@@ -448,6 +448,49 @@ monitoring-pack
 node-id
 : Each BPM node gets assigned a unique ID that is used with the `bpm nodes` commands. (Example: `bnn4gnjo6him0f09h07g`)
 
+## Removing nodes
+
+When removing a node you need to consider the following. A node consists of:
+
+1. Identity and similar secrets (e.g. accounts, private keys, certificates, ...)
+2. Node configuration
+3. Runtime (e.g. Docker networks and containers)
+4. Data (typically the parts of the Blockchain that have already been synced)
+
+Depending on the use-case it may be desirable to remove all or only parts of the node. For example:
+
+* In order to re-configure a node one might only want to remove the configuration but leave the data intact to avoid having to re-sync the Blockchain
+* If the node crashed due to an unexpected error it can make sense to remove the runtime and start it again but keep the configuration and data
+* If something went wrong during the initial sync it can help to remove the data and then start the node again to start syncing from scratch
+
+To support the above use-cases plus others we have allowed parameters/flags to be used with our `remove` command.
+
+You can view all the available parameters/flags by running the following BPM command:
+
+```bash
+bpm nodes remove --help
+```
+
+Which should return:
+
+```
+Remove blockchain node data and configuration. Select one of the required flags for the remove command.
+
+Usage:
+    bpm nodes remove <name> [flags]
+
+Flags:
+        --all        [Required] Remove all data, configuration files and node information. Linux only: To avoid file permission denied errors on Linux use 'sudo' with this command
+        --config     [Required] Remove all configuration files but keep data and node information
+        --data       [Required] Remove all data but keep configuration files and node information. Linux only: To avoid file permission denied errors on Linux use 'sudo' with this command
+    -h, --help       help for remove
+        --identity   [Required] Remove the identity of the node
+        --runtime    [Required] Remove all runtimes but keep configuration files and node information
+```
+
+**Linux only:** Depending on the package, it is possible that the data created is inaccesible by your user. If that's the case you will get `permission denied` errors during the removal. To avoid the errors, run the bpm command using `sudo`. Depending on how `sudo` is configured it is possible that this changes the home directory. Because the default location for the bpm data is in `$HOME/.bpm` there is a possibility that running bpm with `sudo` will target the wrong directory. To ensure that this doesn't happen it is advisable to use the `--base-dir` parameter to point to the absolute path of the bpm directory.
+
+
 ## Upgrades
 
 Even considering the general speed of changes in information technology, Blockchain is an outlier because it changes even faster. Some Blockchains release new versions weekly and it is important to stay up-to-date for security reasons, to use the latest features as well as to be able to connect to the Blockchain. Not upgrading carries the risk of eventually being left behind or connecting to a fork of the Blockchain.
@@ -1109,35 +1152,13 @@ bpm nodes stop <node-id>
 
 #### Removing the node
 
-When removing a node you need to consider the following. A node consists of:
-
-1. Node configuration and secrets (e.g. accounts, passwords, private keys)
-2. Runtime (e.g. Docker networks and containers)
-3. Data (typically the parts of the Blockchain that have already been synced)
-
-Depending on the use-case it may be desirable to remove all or only parts of the node. For example:
-
-* In order to re-configure a node one might only want to remove the configuration but leave the data intact to avoid having to re-sync the Blockchain
-* If the node crashed due to an unexpected error it can make sense to remove the runtime and start it again but keep the configuration and data
-* If something went wrong during the initial sync it can help to remove the data and then start the node again to start syncing from scratch
-
-To support the above use-cases plus others we have allowed parameters/flags to be used with our `remove` command.
-
-You can view all the available parameters/flags by running the following BPM command:
-
-```bash
-bpm nodes remove --help
-```
+BPM allows fine-grained control over what gets deleted. Please see [Removing nodes](#section/Usage/Removing-nodes) for a full explanation of the `remove` command.
 
 For now, let's remove the complete node:
 
 ```bash
 bpm nodes remove <node-id> --all
 ```
-
-!!! warning
-    By removing the whole node you will also remove the node identity. It's always advisable to backup the `~/.bpm/nodes/<node-id>` directory to a safe place before doing anything with the node.
-
 
 # Architecture Considerations
 
