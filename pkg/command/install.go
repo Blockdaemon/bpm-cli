@@ -30,7 +30,9 @@ func (p *CmdContext) InstallFile(pluginName string, sourcePath string) error {
 
 	targetPath := filepath.Join(config.PluginsDir(p.HomeDir), pluginName)
 	p.printfDebug("Remove previously installed version of there is one")
-	p.clearInstallationDestination(targetPath)
+	if err := p.clearInstallationDestination(targetPath); err != nil {
+		return err
+	}
 
 	if err := config.CopyFile(sourcePath, targetPath); err != nil {
 		return err
