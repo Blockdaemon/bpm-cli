@@ -87,25 +87,6 @@ brew install bpm-cli
 4. Extract the BPM CLI from the package: `sudo tar -xvzf ~/Downloads/bpm-cli_<version>_linux_amd64.tar.gz bpm`
 5. Ensure file permissions are set correctly: `sudo chmod 0755 ./bpm`
     
-### Installing the BPM CLI
-
-**Note:** In this section, you will need to replace values for placeholder found between `< >`:
-
-* `<BPM_URL>` with :
-    * Linux - `https://runner-test.sfo2.digitaloceanspaces.com/bpm-<VERSION>-linux-amd64`
-    * OSX - `https://runner-test.sfo2.digitaloceanspaces.com/bpm-<VERSION>-darwin-amd64`
-* `<OS>` with `darwin` or `linux` depending on your operating system.
-* `<VERSION>` with the BPM version, e.g. `0.7.0`
-
-
-Using wget you will download the binary for your OS. Then you will copy it to the correct bin directory path and set it to an executable binary.
-
-```bash
-wget <BPM_URL>
-sudo cp bpm-<VERSION>-<OS>-amd64 /usr/local/bin/bpm
-sudo chmod 755 /usr/local/bin/bpm
-```
-
 # Quickstart
 
 The following tutorials give you a quick overview of BPM. We will install the BPM CLI and use it to configure and run Blockchain nodes.
