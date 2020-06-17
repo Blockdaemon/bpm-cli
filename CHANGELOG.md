@@ -1,3 +1,14 @@
+# 0.14.1
+
+
+### Bug Fixes
+
+* linting complains about missing error handling ([d5b7bc9](https://gitlab.com/Blockdaemon/bpm-cli/commit/d5b7bc9ddaa90fb803d955bb0128b23de3f5298f))
+* rpm and deb packages put binary in an incorrect directory ([5922234](https://gitlab.com/Blockdaemon/bpm-cli/commit/59222346f0be968f99f76304a83bfe2f49cb02ab))
+* unable to install from file if there is a previous installation ([e4ecc69](https://gitlab.com/Blockdaemon/bpm-cli/commit/e4ecc6931119e937f0818b11c6792c4f2bc6c9b5))
+
+
+
 # 0.14.0
 
 ### Bug Fixes
