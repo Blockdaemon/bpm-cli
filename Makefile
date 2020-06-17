@@ -31,7 +31,7 @@ serve-docs:
 
 .PHONY: pre-release
 pre-release: 
-	@ test -n "$(version)" || (echo 'ERROR: version is not set. Call like this: make version=1.14.0-rc1 release'; exit 1) 
+	@ test -n "$(VERSION)" || (echo 'ERROR: VERSION is not set. Call like this: make VERSION=1.14.0-rc1 release'; exit 1) 
 
 	@ test -n "$(GITLAB_TOKEN)" || (echo 'ERROR: GITLAB_TOKEN is not set. See: https://goreleaser.com/quick-start/'; exit 1) 
 
@@ -49,8 +49,8 @@ dev-release: smoke-test check
 .PHONY: release
 release: pre-release smoke-test check
 	# tag it
-	git tag v$(version)
-	git push origin v$(version)
+	git tag v$(VERSION)
+	git push origin v$(VERSION)
 
 	# finally run the actually release
 	goreleaser release --rm-dist
