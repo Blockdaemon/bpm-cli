@@ -20,6 +20,7 @@ nfpms:
   - formats:
     - deb
     - rpm
+    bindir: /usr/bin
     vendor: Blockdaemon
     homepage: https://blockdaemon.com
     maintainer: Blockdaemon <support@blockdaemon.com>
