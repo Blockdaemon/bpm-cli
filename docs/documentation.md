@@ -894,6 +894,8 @@ The node should now show up as `running`, similar to below:
 +------------------------+---------+---------+
   solitary-bird-663      | celo    | running
 ```
+ 
+Occasionally, Celo nodes will not be able to peer and sync due to network bootnodes being full. This is a known issue that Celo is addressing presently to improve network stability for all users. If you encounter this issue, please contact Celo. If you have an urgent need to launch a node and no interim workaround is provided by Celo, please contact us at [support@blockdaemon.com](mailto:support@blockdaemon.com).
 
 To stop it temporarily, run:
 
