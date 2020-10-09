@@ -7,7 +7,7 @@ k8s_image_pull_secret_name = "regcred"
 nginx_ingress_loadbalancer = "dev.api.blockdaemon.com"
 
 dns_env_subdomain = "dev."
-dns_domain = "cli.bpm.docs.blockdaemon.com"
+dns_domain        = "cli.bpm.docs.blockdaemon.com"
 
 redoc_image = "redocly/redoc:v2.0.0-rc.41"
 

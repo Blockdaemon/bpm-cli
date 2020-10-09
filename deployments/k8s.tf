@@ -1,10 +1,9 @@
 locals {
   common_labels = {
-    app = "bpm-cli-docs"
     "app.kubernetes.io/managed-by" = "terraform"
     "app.kubernetes.io/part-of"    = "bpm"
     "app.kubernetes.io/component"  = "cli-docs"
-    "app.kubernetes.io/name"       = "bpm-cli-docs"
+    "app.kubernetes.io/name"       = "redoc"
   }
 }
 
@@ -47,13 +46,13 @@ resource "kubernetes_secret" "bpm_cli_image_pull_secret" {
 
   type = "kubernetes.io/dockerconfigjson"
 }
- 
+
 
 resource "kubernetes_deployment" "bpm_cli_deployment" {
   metadata {
-    name = "bpm-cli-docs"
+    name      = "bpm-cli-docs"
     namespace = var.k8s_namespace
-    labels = local.common_labels
+    labels    = local.common_labels
   }
 
   spec {
@@ -62,7 +61,7 @@ resource "kubernetes_deployment" "bpm_cli_deployment" {
     selector {
       match_labels = local.common_labels
     }
-  
+
     template {
       metadata {
         labels = local.common_labels
@@ -78,7 +77,7 @@ resource "kubernetes_deployment" "bpm_cli_deployment" {
           name  = "bpm-cli-redoc"
 
           env {
-            name = "SPEC_URL"
+            name  = "SPEC_URL"
             value = "https://${var.gcp_bucket_name}.storage.googleapis.com/swagger.yaml"
           }
 
@@ -116,9 +115,9 @@ resource "kubernetes_service" "bpm_cli_svc" {
   }
   spec {
     selector = local.common_labels
-    type = "ClusterIP"
+    type     = "ClusterIP"
     port {
-      port = 80
+      port        = 80
       target_port = 80
     }
   }
@@ -154,12 +153,12 @@ location /metrics {
   deny all;
 }
 EOF
-   }
- }
+    }
+  }
   spec {
     tls {
       secret_name = "bpm-cli-docs-tls-secret"
-      hosts = [local.fqdn]
+      hosts       = [local.fqdn]
     }
     rule {
       host = local.fqdn
