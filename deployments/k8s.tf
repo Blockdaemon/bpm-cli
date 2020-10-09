@@ -145,14 +145,9 @@ resource "kubernetes_ingress" "bpm_cli_ingress" {
     labels    = local.common_labels
 
     annotations = {
-      "kubernetes.io/ingress.class"                = "nginx"
-      "certmanager.k8s.io/cluster-issuer"          = "letsencrypt-prod"
-      "kubernetes.io/tls-acme"                     = "true"
-      "nginx.ingress.kubernetes.io/server-snippet" = <<EOF
-location /metrics {
-  deny all;
-}
-EOF
+      "kubernetes.io/ingress.class"       = "nginx"
+      "certmanager.k8s.io/cluster-issuer" = "letsencrypt-prod"
+      "kubernetes.io/tls-acme"            = "true"
     }
   }
   spec {
